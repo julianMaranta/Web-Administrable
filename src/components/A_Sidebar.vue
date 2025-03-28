@@ -1,6 +1,6 @@
 <template>
     <div class="sidebar">
-      <img src="@/assets/logo-sidebar.png" alt="Logo ENSEA" class="logo-sidebar"/>
+      <img src="" alt="Logo ENSEA" class="logo-sidebar"/>
       <div class="sidebar-buttons">
         <button @click="goToInicio" class="inicio-button"></button>
         <button @click="goToPerfil" class="perfil-button"></button> 
@@ -30,7 +30,7 @@
   
   <style scoped>
   .sidebar {
-    background-image: url('@/assets/sidebar-background.png');
+    background-image: url('');
   padding: 20px;
   width: 220px;
   height: 100vh;
@@ -65,7 +65,7 @@
 
 /* Estilos para el botón de "Inicio" */
 .inicio-button {
-  background-image: url('@/assets/boton-inicio.png');
+  background-image: url('');
   background-size: cover;
   background-position: center;
   color: white;
@@ -73,7 +73,7 @@
 }
 
 .perfil-button {
-  background-image: url('@/assets/boton-perfil-1.png');
+  background-image: url('');
   background-size: cover;
   background-position: center;
   color: white;
@@ -81,7 +81,7 @@
 }
 
 .comunidad-button {
-  background-image: url('@/assets/boton-comunidad.png');
+  background-image: url('');
   background-size: cover;
   background-position: center;
   color: white;
