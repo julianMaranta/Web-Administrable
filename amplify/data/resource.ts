@@ -82,14 +82,11 @@ const schema = a.schema({
       curso: a.belongsTo("Curso", "cursoId"),
       especializacionId: a.id(), // Opcional si la clase pertenece a una especialización
       especializacion: a.belongsTo("Especializacion", "especializacionId"),
-      tutoriaId: a.id(), // Opcional si la clase pertenece a una tutoría
-      tutoria: a.belongsTo("Tutoria", "tutoriaId"),
-      fecha: a.date(), // Campo requerido para la fecha de la clase
-      hora: a.time(), // Campo requerido para la hora de la clase
+      
       youtubeVideoUrl: a.string(),
       imagenes: a.json(), // Cambiado de string a json para almacenar enlaces y títulos
       texto: a.string(),
-      zoomLink: a.string(), // Nuevo campo para el link de Zoom
+      
       driveLinkClase: a.string(),
       pdfClase: a.string(), 
       index: a.integer(), // Nuevo campo para almacenar un índice
