@@ -18,9 +18,7 @@ const schema = a.schema({
       rol: a.enum(["Estudiante", "Administrador", "Profesor"]),
       cursosComprados: a.hasMany("CursoComprado", "usuarioId"),
       especializacionesCompradas: a.hasMany("EspecializacionComprada", "usuarioId"),
-      tutoriasCompradas: a.hasMany("TutoriaComprada", "usuarioId"),
-      certificadosComprados: a.hasMany("CertificadoComprado", "usuarioId"), // Nuevo campo para certificados comprados
-      comprobantes: a.hasOne("Comprobante", "usuarioId") // Relación hasOne con el campo usuarioId
+      
      
     })
     .authorization((allow) => [allow.publicApiKey()]),
