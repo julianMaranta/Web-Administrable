@@ -3,7 +3,7 @@
       <A_Sidebar/>
       <div class="content">
         <div class="logo-container">
-          <img src="@/assets/logo-eliminar-curso.png" alt="Logo ENSEA" class="logo-plataforma"/>
+          <img src="@/assets/" alt="Logo ENSEA" class="logo-plataforma"/>
         </div>
         <br>   
         <br>

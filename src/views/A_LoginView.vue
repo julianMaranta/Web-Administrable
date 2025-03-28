@@ -101,7 +101,7 @@
    width: calc(100%);
    position: relative;
  
-   background-image: url('@/assets/plataforma-background.png');
+   background-image: url('@/assets/');
    background-size: cover;
    background-position: center;
    min-height: 100vh;
@@ -169,7 +169,7 @@
    transition: transform 0.3s, background-color 0.3s;
    
    /* Añadir imagen de fondo */
-   background-image: url('@/assets/boton-login.png');
+   background-image: url('@/assets/');
    background-size: cover; /* Hace que la imagen cubra todo el botón */
    background-position: center; /* Centra la imagen */
    background-repeat: no-repeat; /* Evita que la imagen se repita */

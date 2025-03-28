@@ -3,7 +3,7 @@
      <A_Sidebar/>
      <div class="content">
        <div class="logo-container">
-         <img src="@/assets/logo-crear.png" alt="Logo ENSEA" class="logo-plataforma"/>
+         <img src="@/assets/" alt="Logo ENSEA" class="logo-plataforma"/>
        </div>
        <br>   
        <br>
@@ -92,7 +92,7 @@
      display: flex;
      justify-content: space-between;
      align-items: center;
-     background-image: url('@/assets/background-caja.png');
+     background-image: url('@/assets/');
      padding: 40px;
      border-radius: 40px;
      margin-bottom: 20px;
@@ -131,7 +131,7 @@
  }
  
  .crear-button {
-   background-image: url('@/assets/boton-crear.png');
+   background-image: url('@/assets/');
    background-size: cover;
    background-position: center;
    color: white;
