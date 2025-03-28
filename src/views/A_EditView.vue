@@ -3,7 +3,7 @@
     <A_Sidebar/>
     <div class="content">
       <div class="logo-container">
-        <img src="@/assets/" alt="Logo ENSEA" class="logo-plataforma"/>
+        <img src="" alt="Logo ENSEA" class="logo-plataforma"/>
       </div>
       <br>   
       <br>
@@ -89,7 +89,7 @@ body, html  {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-image: url('@/assets/');
+  background-image: url('');
   padding: 40px;
   border-radius: 40px;
   margin-bottom: 20px;
@@ -128,7 +128,7 @@ body, html  {
 }
 
 .editar-button {
-  background-image: url('@/assets/');
+  background-image: url('');
   background-size: cover;
   background-position: center;
   color: white;

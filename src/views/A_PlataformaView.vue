@@ -3,7 +3,7 @@
       <A_Sidebar/>
       <div class="content">
         <div class="logo-container">
-          <img src="@/assets/" alt="Logo ENSEA" class="logo-plataforma"/>
+          <img src="" alt="Logo ENSEA" class="logo-plataforma"/>
         </div>
         <br>   
         <br>
@@ -34,7 +34,7 @@
             <p>Gestiona los videos que has subido.</p>
           </div>
           <button @click="goToYouTube" id="youtube-button">
-            <img src="@/assets/" alt="Botón YouTube" />
+            <img src="" alt="Botón YouTube" />
           </button>
         </div>
         <div class="action-box">
@@ -43,7 +43,7 @@
             <p>Genera informes en formato Excel.</p>
           </div>
           <button @click="generateReport" id="excel-button">
-            <img src="@/assets/" alt="Botón Excel" />
+            <img src="" alt="Botón Excel" />
           </button>
         </div>
         
@@ -112,7 +112,7 @@
     width: calc(100% - 220px);
     position: relative;
   
-    background-image: url('@/assets/');
+    background-image: url('');
     background-size: cover;
     background-position: center;
     min-height: 100vh;
@@ -138,7 +138,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-image: url('@/assets/');
+    background-image: url('');
     padding: 40px;
     border-radius: 40px;
     margin-bottom: 20px;
@@ -224,7 +224,7 @@
   }
   
   .comunidad-button {
-    background-image: url('@/assets/');
+    background-image: url('');
     background-size: cover;
     background-position: center;
     color: white;
@@ -233,7 +233,7 @@
   }
   
   .crear-button {
-    background-image: url('@/assets/');
+    background-image: url('');
     background-size: cover;
     background-position: center;
     color: white;
@@ -241,7 +241,7 @@
     width: 200px;
   }
   .editar-button {
-    background-image: url('@/assets/');
+    background-image: url('');
     background-size: cover;
     background-position: center;
     color: white;
@@ -250,7 +250,7 @@
   }
   
   .eliminar-button {
-    background-image: url('@/assets/');
+    background-image: url('');
     background-size: cover;
     background-position: center;
     color: white;
@@ -258,7 +258,7 @@
     width: 200px;
   }
   .habilitar-button {
-    background-image: url('@/assets/');
+    background-image: url('');
     background-size: cover;
     background-position: center;
     color: white;
@@ -269,7 +269,7 @@
   @media screen and (max-width: 1024px) and (min-width: 769px) {
     .action-box {
     
-    background-image: url('@/assets/');
+    background-image: url('');
     
     border-radius: 70px;
    
