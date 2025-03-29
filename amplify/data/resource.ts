@@ -44,8 +44,7 @@ const schema = a.schema({
         caracteristicas: a.string().array(),
         fotos360: a.string().array(),
         videoTour: a.string(),
-        contacto: a.hasOne("Contacto", "propiedadId"),
-        visitas: a.hasMany("Visita", "propiedadId")
+       
       })
       .authorization(allow => [allow.publicApiKey()]),
 
@@ -70,8 +69,7 @@ const schema = a.schema({
         caracteristicas: a.string().array(),
         fotos360: a.string().array(),
         videoTour: a.string(),
-        contacto: a.hasOne("Contacto", "propiedadId"),
-        visitas: a.hasMany("Visita", "propiedadId")
+        
       })
       .authorization(allow => [allow.publicApiKey()]),
     
