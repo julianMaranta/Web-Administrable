@@ -27,17 +27,55 @@
               </div>
 
               <div class="form-group">
-                <label for="tipo-propiedad">Tipo de Propiedad</label>
-                <select id="tipo-propiedad" v-model="tipoPropiedad">
-                  <option value="Casa">Casa</option>
-                  <option value="Departamento">Departamento</option>
-                  <option value="Local Comercial">Local Comercial</option>
-                  <option value="PH">PH</option>
-                </select>
-              </div>
+  <label for="ubicacion">Ubicación</label>
+  <select id="ubicacion" v-model="ubicacion" required>
+    <option value="">Seleccione una ubicación</option>
+    
+    <optgroup label="Zona Centro">
+      <option value="La Plata (Casco Urbano)">La Plata (Casco Urbano)</option>
+      <option value="Tolosa">Tolosa</option>
+      <option value="Villa Elvira">Villa Elvira</option>
+    </optgroup>
+    
+    <optgroup label="Barrios Residenciales">
+      <option value="City Bell">City Bell</option>
+      <option value="Manuel B. Gonnet">Manuel B. Gonnet</option>
+      <option value="Villa Elisa">Villa Elisa</option>
+    </optgroup>
+    
+    <optgroup label="Localidades Periféricas">
+      <option value="Abasto">Abasto</option>
+      <option value="Joaquín Gorina">Joaquín Gorina</option>
+      <option value="Lisandro Olmos">Lisandro Olmos</option>
+      <option value="Melchor Romero">Melchor Romero</option>
+      <option value="Ringuelet">Ringuelet</option>
+    </optgroup>
+    
+    <option value="Los Hornos">Los Hornos</option>
+  </select>
+</div>
 
               <div class="form-group">
-                <label for="precio-alquiler">Precio Alquiler ($)</label>
+  <label for="tipo-propiedad">Tipo de Propiedad</label>
+  <select id="tipo-propiedad" v-model="tipoPropiedad" required>
+    <option value="">Seleccione un tipo</option>
+    <option value="Casa">Casa</option>
+    <option value="Departamento">Departamento</option>
+    <option value="PH">PH</option>
+    <option value="Local Comercial">Local Comercial</option>
+    <option value="Oficina">Oficina</option>
+    <option value="Quinta">Quinta</option>
+    <option value="Cochera">Cochera</option>
+    <option value="Hotel">Hotel</option>
+    <option value="Terreno">Terreno</option>
+    <option value="Campo">Campo</option>
+    <option value="Fondo de Comercio">Fondo de Comercio</option>
+    <option value="Galpón">Galpón</option>
+  </select>
+</div>
+
+              <div class="form-group">
+                <label for="precio-alquiler">Precio Venta ($)</label>
                 <input id="precio-alquiler" v-model.number="precioVenta" type="number" />
               </div>
 
@@ -73,6 +111,11 @@
                 <label for="map-link">Link Google Maps</label>
                 <input id="map-link" v-model="mapLink" placeholder="URL de Google Maps" />
               </div>
+
+              <div class="form-group">
+          <label for="youtube-video-url">Link del Video de YouTube</label>
+          <input v-model="youtubeVideoUrl" id="youtube-video-url" placeholder="Link del video de YouTube" />
+        </div>
 
               <div class="form-group">
                 <label for="descripcion">Descripción</label>
@@ -133,6 +176,7 @@ const selectedPropertyId = ref<string | null>(null);
 
 // Campos editables
 const direccion = ref('');
+const ubicacion = ref('');
 const tipoPropiedad = ref('');
 const precioVenta = ref(0);
 const precioExpensas = ref(0);
@@ -141,6 +185,7 @@ const banos = ref(0);
 const cochera = ref('Si');
 const metrosCuadrados = ref(0);
 const mapLink = ref('');
+const youtubeVideoUrl = ref('');
 const descripcion = ref('');
 const imagenes = ref<{url: string, descripcion: string}[]>([]);
 
@@ -173,6 +218,7 @@ const loadPropertyData = async (id: string) => {
     if (response.data) {
       const propiedad = response.data;
       direccion.value = propiedad.direccion;
+      ubicacion.value = propiedad.ubicacion;
       tipoPropiedad.value = propiedad.tipoPropiedad || '';
       precioVenta.value = propiedad.precioVenta || 0;
       precioExpensas.value = propiedad.precioExpensas || 0;
@@ -181,6 +227,7 @@ const loadPropertyData = async (id: string) => {
       cochera.value = propiedad.cochera || 'No';
       metrosCuadrados.value = propiedad.metrosCuadrados || 0;
       mapLink.value = propiedad.mapLink || '';
+      youtubeVideoUrl.value = propiedad.youtubeVideoUrl || '';
       descripcion.value = propiedad.descripcion || '';
       imagenes.value = propiedad.imagenes ? JSON.parse(propiedad.imagenes) : [];
     }
@@ -206,6 +253,7 @@ const updateProperty = async () => {
     await client.models.PropiedadVenta.update({
       id: selectedPropertyId.value,
       direccion: direccion.value,
+      ubicacion: ubicacion.value,
       tipoPropiedad: tipoPropiedad.value,
       precioVenta: precioVenta.value,
       precioExpensas: precioExpensas.value,
@@ -214,6 +262,7 @@ const updateProperty = async () => {
       cochera: cochera.value,
       metrosCuadrados: metrosCuadrados.value,
       mapLink: mapLink.value,
+      youtubeVideoUrl: youtubeVideoUrl.value,
       descripcion: descripcion.value,
       imagenes: JSON.stringify(imagenes.value)
     });

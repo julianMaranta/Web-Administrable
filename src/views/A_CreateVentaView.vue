@@ -14,18 +14,55 @@
         </div>
 
         <div class="form-group">
-          <label for="tipo-propiedad">Tipo de Propiedad</label>
-          <select id="tipo-propiedad" v-model="tipoPropiedad">
-            <option value="">Seleccione un tipo</option>
-            <option value="Casa">Casa</option>
-            <option value="Departamento">Departamento</option>
-            <option value="Local Comercial">Local Comercial</option>
-            <option value="PH">PH</option>
-          </select>
-        </div>
+  <label for="ubicacion">Ubicación</label>
+  <select id="ubicacion" v-model="ubicacion" required>
+    <option value="">Seleccione una ubicación</option>
+    
+    <optgroup label="Zona Centro">
+      <option value="La Plata (Casco Urbano)">La Plata (Casco Urbano)</option>
+      <option value="Tolosa">Tolosa</option>
+      <option value="Villa Elvira">Villa Elvira</option>
+    </optgroup>
+    
+    <optgroup label="Barrios Residenciales">
+      <option value="City Bell">City Bell</option>
+      <option value="Manuel B. Gonnet">Manuel B. Gonnet</option>
+      <option value="Villa Elisa">Villa Elisa</option>
+    </optgroup>
+    
+    <optgroup label="Localidades Periféricas">
+      <option value="Abasto">Abasto</option>
+      <option value="Joaquín Gorina">Joaquín Gorina</option>
+      <option value="Lisandro Olmos">Lisandro Olmos</option>
+      <option value="Melchor Romero">Melchor Romero</option>
+      <option value="Ringuelet">Ringuelet</option>
+    </optgroup>
+    
+    <option value="Los Hornos">Los Hornos</option>
+  </select>
+</div>
 
         <div class="form-group">
-          <label for="precio-alquiler">Precio Alquiler ($)</label>
+  <label for="tipo-propiedad">Tipo de Propiedad</label>
+  <select id="tipo-propiedad" v-model="tipoPropiedad" required>
+    <option value="">Seleccione un tipo</option>
+    <option value="Casa">Casa</option>
+    <option value="Departamento">Departamento</option>
+    <option value="PH">PH</option>
+    <option value="Local Comercial">Local Comercial</option>
+    <option value="Oficina">Oficina</option>
+    <option value="Quinta">Quinta</option>
+    <option value="Cochera">Cochera</option>
+    <option value="Hotel">Hotel</option>
+    <option value="Terreno">Terreno</option>
+    <option value="Campo">Campo</option>
+    <option value="Fondo de Comercio">Fondo de Comercio</option>
+    <option value="Galpón">Galpón</option>
+  </select>
+</div>
+
+        <div class="form-group">
+          <label for="precio-alquiler">Precio Venta ($)</label>
           <input id="precio-alquiler" v-model.number="precioVenta" type="number" placeholder="Ej: 150000" />
         </div>
 
@@ -116,6 +153,7 @@ const router = useRouter();
 
 // Datos de la propiedad
 const direccion = ref('');
+const ubicacion = ref('');
 const tipoPropiedad = ref('');
 const precioVenta = ref(0);
 const precioExpensas = ref(0);
@@ -126,6 +164,7 @@ const banos = ref(0);
 const cochera = ref('Si');
 const metrosCuadrados = ref(0);
 const mapLink = ref('');
+const youtubeVideoUrl = ref('');
 const descripcion = ref('');
 const imagenes = ref([{ url: '', descripcion: '' }]);
 
@@ -158,6 +197,7 @@ const createProperty = async () => {
     // Crear la propiedad
     const nuevaPropiedad = await client.models.PropiedadVenta.create({
       direccion: direccion.value,
+      ubicacion: ubicacion.value,
       tipoPropiedad: tipoPropiedad.value,
       precioVenta: precioVenta.value,
       precioExpensas: precioExpensas.value,
@@ -168,6 +208,7 @@ const createProperty = async () => {
       cochera: cochera.value,
       metrosCuadrados: metrosCuadrados.value,
       mapLink: mapLink.value,
+      youtubeVideoUrl: youtubeVideoUrl.value,
       descripcion: descripcion.value,
       imagenes: JSON.stringify(imagenes.value),
       estado: 'Disponible'

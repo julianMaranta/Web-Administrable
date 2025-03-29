@@ -14,11 +14,7 @@ const schema = a.schema({
       dni: a.string(), // Nuevo campo para el D.N.I.
       cuil: a.string(), // Nuevo campo para el CUIL
       tramite: a.string(), // Nuevo campo para el Número de Trámite
-      contrasena: a.string().required(),
-      rol: a.enum(["Estudiante", "Administrador", "Profesor"]),
-      
-      
-     
+      contrasena: a.string().required(), 
     })
     .authorization((allow) => [allow.publicApiKey()]),
 
@@ -26,6 +22,7 @@ const schema = a.schema({
       PropiedadAlquiler: a
       .model({
         direccion: a.string().required(),
+        ubicacion: a.string().required(),
         tipoPropiedad: a.string().required(), // Sin validación de valores específicos
         precioAlquiler: a.float().required(),
         precioExpensas: a.float(),
@@ -43,7 +40,7 @@ const schema = a.schema({
         fechaPublicacion: a.datetime(),
         caracteristicas: a.string().array(),
         fotos360: a.string().array(),
-        videoTour: a.string(),
+        youtubeVideoUrl: a.string(),
        
       })
       .authorization(allow => [allow.publicApiKey()]),
@@ -51,6 +48,7 @@ const schema = a.schema({
       PropiedadVenta: a
       .model({
         direccion: a.string().required(),
+        ubicacion: a.string().required(),
         tipoPropiedad: a.string().required(), // Sin validación de valores específicos
         precioVenta: a.float().required(),
         precioExpensas: a.float(),
@@ -68,7 +66,7 @@ const schema = a.schema({
         fechaPublicacion: a.datetime(),
         caracteristicas: a.string().array(),
         fotos360: a.string().array(),
-        videoTour: a.string(),
+        youtubeVideoUrl: a.string(),
         
       })
       .authorization(allow => [allow.publicApiKey()]),
