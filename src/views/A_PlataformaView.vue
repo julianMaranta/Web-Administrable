@@ -318,7 +318,7 @@
   @media screen and (max-width: 1024px) and (min-width: 769px) {
     .action-box {
     
-    background-image: url('@/assets/fondo-caja-tablet.png');
+    background-image: url('');
     
     border-radius: 70px;
    
