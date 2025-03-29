@@ -15,6 +15,7 @@ const schema = a.schema({
       cuil: a.string(), // Nuevo campo para el CUIL
       tramite: a.string(), // Nuevo campo para el Número de Trámite
       contrasena: a.string().required(), 
+      rol: a.enum(["Estudiante", "Administrador", "Profesor"]),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 

@@ -3,7 +3,7 @@
     <A_Sidebar/>
     <div class="content">
       <div class="logo-container">
-        <img src="@/assets/logo-inmobiliaria.png" alt="Logo Inmobiliaria" class="logo-plataforma"/>
+        <img src="" alt="Logo Inmobiliaria" class="logo-plataforma"/>
       </div>
       <br>   
       <br>
