@@ -1,6 +1,6 @@
 <template>
     <div class="sidebar">
-      <img src="@/assets/Logo Maranta 3.png" alt="Logo ENSEA" class="logo-sidebar"/>
+      <img src="@/assets/logo-maranta-blanco.png" alt="Logo ENSEA" class="logo-sidebar"/>
       <div class="sidebar-buttons">
         <button @click="goToInicio" class="inicio-button"></button>
         <button @click="goToCrear" class="crear-button"></button>
@@ -70,7 +70,7 @@
 }
 
 .sidebar-buttons {
-  margin-top: 120px;
+  margin-top: 60px;
 }
 
 .sidebar button {
