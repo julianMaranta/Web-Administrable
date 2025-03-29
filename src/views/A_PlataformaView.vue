@@ -3,21 +3,21 @@
       <A_Sidebar/>
       <div class="content">
         <div class="logo-container">
-          <img src="" alt="Logo ENSEA" class="logo-plataforma"/>
+          <img src="@/assets/Logo NUEVO Maranta-2.png" alt="Logo ENSEA" class="logo-plataforma"/>
         </div>
         <br>   
         <br>
         <div class="action-box">
           <div class="action-info">
             <h2>CREAR</h2>
-            <p>Crea cursos, especializaciones, tutorias y usuarios!</p>
+            <p>Crea propiedades.</p>
           </div>
           <button @click="create" class="crear-button"></button>
         </div>
         <div class="action-box">
           <div class="action-info">
             <h2>EDITAR</h2>
-            <p>Edita los cursos, especializaciones, tutorias y usuarios que has creado.</p>
+            <p>Edita propiedades.</p>
           </div>
           <button @click="edit" class="editar-button"></button>
         </div>
@@ -30,11 +30,20 @@
         </div>
         <div class="action-box">
           <div class="action-info">
-            <h2>GESTIONAR ARGENPROP</h2>
-            <p>Gestiona los videos que has subido.</p>
+            <h2>GESTIONAR IMÁGENES</h2>
+            <p>Gestiona imágenes.</p>
+          </div>
+          <button @click="goToDropbox" id="dropbox-button">
+            <img src="@/assets/Boton Dropbox.png" alt="Botón Dropbox" />
+          </button>
+        </div>
+        <div class="action-box">
+          <div class="action-info">
+            <h2>GESTIONAR VIDEOS</h2>
+            <p>Gestiona videos.</p>
           </div>
           <button @click="goToYouTube" id="youtube-button">
-            <img src="" alt="Botón YouTube" />
+            <img src="@/assets/Boton YouTube.png" alt="Botón YouTube" />
           </button>
         </div>
         <div class="action-box">
@@ -43,9 +52,19 @@
             <p>Genera informes en formato Excel.</p>
           </div>
           <button @click="generateReport" id="excel-button">
-            <img src="" alt="Botón Excel" />
+            <img src="@/assets/Boton Excel.png" alt="Botón Excel" />
           </button>
         </div>
+        <div class="action-box">
+          <div class="action-info">
+            <h2>GESTIONAR ARGENPROP</h2>
+            <p>Gestiona Argenprop.</p>
+          </div>
+          <button @click="goToArgenprop" id="argenprop-button">
+            <img src="@/assets/Boton-Argenprop-Caja.png" alt="Botón Argenprop" />
+          </button>
+        </div>
+        
         
       </div>
     </div>
@@ -71,16 +90,9 @@
     router.push('/plataforma-administrador-eliminar');
   };
   
-  const productos = () => {
-    router.push('/plataforma-administrador-productos');
+  const goToDropbox = () => {
+    window.location.href = 'https://www.dropbox.com/home';
   };
-  const aprobar = () => {
-    router.push('/aprobar-comprobantes');
-  };
-  
-  const goToComunidad = () => {
-      router.push('/comunidad-sea-administrador');
-    };
   
   const goToYouTube = () => {
     window.location.href = 'https://www.youtube.com/';
@@ -88,6 +100,10 @@
   
   const generateReport = () => {
     router.push('/descargar-informe');
+  };
+
+  const goToArgenprop = () => {
+    window.location.href = 'https://www.argenprop.com/';
   };
   
   </script>
@@ -112,7 +128,7 @@
     width: calc(100% - 220px);
     position: relative;
   
-    background-image: url('');
+    background-image: url('@/assets/');
     background-size: cover;
     background-position: center;
     min-height: 100vh;
@@ -138,7 +154,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-image: url('');
+    background-image: url('@/assets/caja-plataforma.png');
     padding: 40px;
     border-radius: 40px;
     margin-bottom: 20px;
@@ -222,18 +238,58 @@
     height: 80px;
     object-fit: contain;
   }
-  
-  .comunidad-button {
-    background-image: url('');
-    background-size: cover;
-    background-position: center;
-    color: white;
-    height: 60px;
-    width: 200px;
+
+  /* Estilos del botón y la imagen de Dropbox */
+  #dropbox-button {
+    background-color: white;
+    color: #000000;
+    border: 1px solid #000000;
+    padding: 0px; 
+    border-radius: 25px;
+    width: 150px;
+    height: 80px;
+    transition: transform 0.3s;
   }
   
+  #dropbox-button:hover {
+   
+    color: white;
+    transform: scale(1.1);
+  }
+  
+  #dropbox-button img {
+    width: 130px;
+    height: 80px;
+    object-fit: contain;
+  }
+
+   /* Estilos del botón y la imagen de Argenprop */
+   #argenprop-button {
+    background-color: white;
+    color: #000000;
+    border: 1px solid #000000;
+    padding: 0px; 
+    border-radius: 25px;
+    width: 150px;
+    height: 80px;
+    transition: transform 0.3s;
+  }
+  
+  #argenprop-button:hover {
+   
+    color: white;
+    transform: scale(1.1);
+  }
+  
+  #argenprop-button img {
+    width: 130px;
+    height: 80px;
+    object-fit: contain;
+  }
+
+  
   .crear-button {
-    background-image: url('');
+    background-image: url('@/assets/background-boton-crear.png');
     background-size: cover;
     background-position: center;
     color: white;
@@ -241,7 +297,7 @@
     width: 200px;
   }
   .editar-button {
-    background-image: url('');
+    background-image: url('@/assets/background-boton-editar.png');
     background-size: cover;
     background-position: center;
     color: white;
@@ -250,15 +306,7 @@
   }
   
   .eliminar-button {
-    background-image: url('');
-    background-size: cover;
-    background-position: center;
-    color: white;
-    height: 60px;
-    width: 200px;
-  }
-  .habilitar-button {
-    background-image: url('');
+    background-image: url('@/assets/background-boton-eliminar.png');
     background-size: cover;
     background-position: center;
     color: white;
@@ -266,10 +314,11 @@
     width: 200px;
   }
   
+  
   @media screen and (max-width: 1024px) and (min-width: 769px) {
     .action-box {
     
-    background-image: url('');
+    background-image: url('@/assets/fondo-caja-tablet.png');
     
     border-radius: 70px;
    

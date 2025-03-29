@@ -1,10 +1,15 @@
 <template>
     <div class="sidebar">
-      <img src="" alt="Logo ENSEA" class="logo-sidebar"/>
+      <img src="@/assets/Logo Maranta 3.png" alt="Logo ENSEA" class="logo-sidebar"/>
       <div class="sidebar-buttons">
         <button @click="goToInicio" class="inicio-button"></button>
-        <button @click="goToPerfil" class="perfil-button"></button> 
-        <button @click="goToComunidad" class="comunidad-button"></button>
+        <button @click="goToCrear" class="crear-button"></button>
+        <button @click="goToEditar" class="editar-button"></button>  
+        <button @click="goToEliminar" class="eliminar-button"></button> 
+        <button @click="goToImagenes" class="imagenes-button"></button>
+        <button @click="goToVideos" class="videos-button"></button> 
+        <button @click="goToExcel" class="excel-button"></button> 
+        <button @click="goToArgenprop" class="argenprop-button"></button> 
       </div>
     </div>
   </template>
@@ -18,19 +23,39 @@
     router.push('/plataforma-administrador');
   };
 
-  const goToPerfil = () => {
-    router.push('/configurar-perfil-administrador');
+  const goToCrear = () => {
+    router.push('/plataforma-administrador-crear');
   };
 
 
-  const goToComunidad = () => {
-    router.push('/comunidad-sea-administrador');
+  const goToEditar = () => {
+    router.push('/plataforma-administrador-editar');
+  };
+
+  const goToEliminar = () => {
+    router.push('/plataforma-administrador-eliminar');
+  };
+
+  const goToImagenes = () => {
+    router.push('https://www.dropbox.com/home');
+  };
+
+  const goToVideos = () => {
+    router.push('https://www.youtube.com/');
+  };
+
+  const goToExcel = () => {
+    router.push('/descargar-informe');
+  };
+
+  const goToArgenprop = () => {
+    router.push('https://www.argenprop.com/');
   };
   </script>
   
   <style scoped>
   .sidebar {
-    background-image: url('');
+    background-image: url('@/assets/fondo-menu.png');
   padding: 20px;
   width: 220px;
   height: 100vh;
@@ -65,29 +90,67 @@
 
 /* Estilos para el botón de "Inicio" */
 .inicio-button {
-  background-image: url('');
+  background-image: url('@/assets/boton-inicio.png');
   background-size: cover;
   background-position: center;
   color: white;
   height: 60px;
 }
 
-.perfil-button {
-  background-image: url('');
+.crear-button {
+  background-image: url('@/assets/boton-crear.png');
   background-size: cover;
   background-position: center;
   color: white;
   height: 60px;
 }
 
-.comunidad-button {
-  background-image: url('');
+.editar-button {
+  background-image: url('@/assets/boton-editar.png');
   background-size: cover;
   background-position: center;
   color: white;
   height: 60px;
-  
+}
 
+.eliminar-button {
+  background-image: url('@/assets/boton-eliminar.png');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  height: 60px;
+}
+
+.imagenes-button {
+  background-image: url('@/assets/boton-imagenes.png');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  height: 60px;
+}
+
+.videos-button {
+  background-image: url('@/assets/boton-videos.png');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  height: 60px;
+}
+
+.excel-button {
+  background-image: url('@/assets/boton-excel.png');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  height: 60px;
+}
+
+.argenprop-button {
+  background-image: url('@/assets/boton-argenprop.png');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  height: 60px;
 }
 
 .sidebar button:hover {
