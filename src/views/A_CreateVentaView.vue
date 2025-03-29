@@ -1,383 +1,343 @@
 <template>
-    <div class="container">
-      <A_Sidebar/>
-      <div class="content">
-        <div class="logo-container">
-          <img src="" alt="Logo ENSEA" class="logo-plataforma"/>
-        </div>
-        <br>   
-        <br>
-        <form @submit.prevent="createEspecializacion">
-          <div class="form-group">
-            <label for="especializacion-name">Nombre de la Especialización</label>
-            <input id="especializacion-name" v-model="especializacionName" placeholder="Escribe aquí..." />
-          </div>
-  
-          <div class="form-group">
-              <label for="youtube-video-url">Link del Video Presentación</label>
-              <input v-model="videoUrl" id="video-url" placeholder="Link del video de YouTube" />
-          </div>
-  
-          <div class="form-group">
-            <label for="driveLink">Link de Google Drive</label>
-            <input id="driveLink" v-model=" driveLink" placeholder="Escribe aquí..." />
-          </div>
-          <div class="form-group">
-            <label for="descripcion">Descripción</label>
-            <input id="descripcion" v-model="descripcion" placeholder="Escribe aquí..." />
-          </div>
-          <div class="form-group">
-    <label for="especializacion-imagen">Link de la Imagen de la Especialización</label>
-    <input id="especializacion-imagen" v-model="especializacionImagen" placeholder="Escribe el link de la imagen..." />
-  </div>
-          <div class="form-group">
-              <label for="link-pago">Link de Pago - Mercado Pago</label>
-              <input id="link-pago" v-model="linkPago" placeholder="Escribe aquí..." />
-            </div>
-  
-          <!-- Profesores -->
-          <div v-for="(profesorSeleccionado, index) in profesoresSeleccionados" :key="index" class="form-group">
-            <label>Profesor {{ index + 1 }}</label>
-            <select v-model="profesorSeleccionado.profesor" placeholder="Selecciona un profesor">
-              <option v-for="profesor in profesores" :key="profesor.id" :value="profesor.nombre">
-                {{ profesor.nombre }}
-              </option>
-            </select>
-            <button type="button" @click="removeProfesor(index)">Eliminar Profesor</button>
-          </div>
-          <button type="button" @click="addProfesor">Agregar Profesor</button>
-  
-          <div class="form-group">
-            <label for="student-count">Cantidad de Alumnos</label>
-            <input id="student-count" v-model.number="studentCount" placeholder="Escribe aquí..." type="number" />
-          </div>
-  
-          <div v-for="(clase, index) in clases" :key="index" class="form-group">
-            <label>Clase {{ index + 1 }}</label>
-            <label for="clase-nombre">Nombre de la Clase</label>
-            <input v-model="clase.nombre" id="clase-nombre" placeholder="Nombre de la clase" />
-  
-            <label for="clase-tematica">Temática de la Clase</label>
-            <input v-model="clase.tematica" id="clase-tematica" placeholder="Temática de la clase" />
-  
-            <label for="youtube-video-url">Link del Video de YouTube</label>
-            <input v-model="clase.youtubeVideoUrl" id="youtube-video-url" placeholder="Link del video de YouTube" />
-  
-            <label for="drive-link-clase">Link de Google Drive - Clase</label>
-            <input v-model="clase.driveLinkClase" id="drive-link-clase" placeholder="Link de Google Drive - Clase" />
-  
-            <label for="pdf-clase">Link de PDF - Clase</label>
-            <input v-model="clase.pdfClase" id="pdf-clase" placeholder="Link de PDF - Clase" />
-  
-            <label for="imagenes">Links de las Imágenes y GIFs</label>
-            <div class="image-links">
-              <div v-for="(imageLink, imgIndex) in clase.imagenes" :key="imgIndex" class="image-link-item">
-                <input v-model="clase.imagenes[imgIndex].url" placeholder="Link de la imagen" />
-                <input v-model="clase.imagenes[imgIndex].titulo" placeholder="Título de la imagen" />
-                <button   type="button" @click="removeImageLink(index, imgIndex)">Eliminar</button>
-              </div>
-              <button  type="button" @click="addImageLink(index)">Agregar Link de Imagen o GIF</button>
-            </div>
-  
-            <label for="texto">Texto Adicional</label>
-            <textarea v-model="clase.texto" id="texto" placeholder="Texto adicional" rows="3"></textarea>
-  
-            <button type="button" @click="removeClass(index)">Eliminar Clase</button>
-          </div>
-  
-          <button type="button" @click="addClass">Agregar Clase</button>
-          <button type="submit">Crear Especialización</button>
-        </form>
+  <div class="container">
+    <A_Sidebar/>
+    <div class="content">
+      <div class="logo-container">
+        <img src="" alt="Logo Inmobiliaria" class="logo-plataforma"/>
       </div>
-  
-      <!-- Modal de Confirmación -->
-      <div v-if="showConfirmationModal" class="modal-overlay">
-        <div class="modal-content">
-          <h2>Especialización Creada Exitosamente</h2>
-          <p>La especialización ha sido creada exitosamente.</p>
-          <button @click="redirectToAdminCreate">Ir al Inicio</button>
+      <br>   
+      <br>
+      <form @submit.prevent="createProperty">
+        <div class="form-group">
+          <label for="direccion">Dirección de la Propiedad</label>
+          <input id="direccion" v-model="direccion" placeholder="Ej: Av. Corrientes 1234" />
         </div>
+
+        <div class="form-group">
+          <label for="tipo-propiedad">Tipo de Propiedad</label>
+          <select id="tipo-propiedad" v-model="tipoPropiedad">
+            <option value="">Seleccione un tipo</option>
+            <option value="Casa">Casa</option>
+            <option value="Departamento">Departamento</option>
+            <option value="Local Comercial">Local Comercial</option>
+            <option value="PH">PH</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="precio-alquiler">Precio Alquiler ($)</label>
+          <input id="precio-alquiler" v-model.number="precioVenta" type="number" placeholder="Ej: 150000" />
+        </div>
+
+        <div class="form-group">
+          <label for="precio-expensas">Precio Expensas ($)</label>
+          <input id="precio-expensas" v-model.number="precioExpensas" type="number" placeholder="Ej: 15000" />
+        </div>
+
+        <div class="form-group">
+          <label for="habitaciones">Cantidad de Habitaciones</label>
+          <input id="habitaciones" v-model.number="habitaciones" type="number" placeholder="Ej: 3" />
+        </div>
+
+        <div class="form-group">
+          <label for="ambientes">Cantidad de Ambientes</label>
+          <input id="ambientes" v-model.number="ambientes" type="number" placeholder="Ej: 4" />
+        </div>
+
+        <div class="form-group">
+          <label for="antiguedad">Antigüedad (años)</label>
+          <input id="antiguedad" v-model.number="antiguedad" type="number" placeholder="Ej: 10" />
+        </div>
+
+        <div class="form-group">
+          <label for="banos">Cantidad de Baños</label>
+          <input id="banos" v-model.number="banos" type="number" placeholder="Ej: 2" />
+        </div>
+
+        <div class="form-group">
+          <label for="cochera">Cochera</label>
+          <select id="cochera" v-model="cochera">
+            <option value="Si">Si</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="metros-cuadrados">Metros Cuadrados (m²)</label>
+          <input id="metros-cuadrados" v-model.number="metrosCuadrados" type="number" placeholder="Ej: 80" />
+        </div>
+
+        <div class="form-group">
+          <label for="map-link">Link de Google Maps</label>
+          <input id="map-link" v-model="mapLink" placeholder="Pegue el link de Google Maps aquí" />
+        </div>
+
+        <div class="form-group">
+          <label for="descripcion">Descripción</label>
+          <textarea id="descripcion" v-model="descripcion" placeholder="Describa la propiedad..." rows="4"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="imagenes">Imágenes de la Propiedad</label>
+          <div class="image-links">
+            <div v-for="(imagen, index) in imagenes" :key="index" class="image-link-item">
+              <input v-model="imagenes[index].url" placeholder="URL de la imagen" />
+              <input v-model="imagenes[index].descripcion" placeholder="Descripción de la imagen" />
+              <button type="button" @click="removeImage(index)">Eliminar</button>
+            </div>
+            <button type="button" @click="addImage">Agregar Imagen</button>
+          </div>
+        </div>
+
+        <button type="submit">Publicar Propiedad</button>
+      </form>
+    </div>
+
+    <!-- Modal de Confirmación -->
+    <div v-if="showConfirmationModal" class="modal-overlay">
+      <div class="modal-content">
+        <h2>Propiedad Publicada Exitosamente</h2>
+        <p>La propiedad ha sido creada y publicada exitosamente.</p>
+        <button @click="redirectToAdmin">Volver al Panel</button>
       </div>
     </div>
-  </template>
-  
-  
-  <script setup lang="ts">
-  import A_Sidebar from '../components/A_Sidebar.vue';
-  import { ref, onMounted } from 'vue';
-  import { useRouter } from 'vue-router';
-  import { generateClient } from 'aws-amplify/data';
-  import type { Schema } from '../../amplify/data/resource';
-  
-  const client = generateClient<Schema>();
-  const router = useRouter();
-  
-  const especializacionName = ref('');
-  const videoUrl = ref('');
-  const especializacionImagen = ref('');
-  const descripcion = ref('');
-  const linkPago = ref('');
-  const driveLink = ref('');
-  const studentCount = ref(0);
-  const clases = ref([
-    { index: 0, nombre: '', videoUrl:'', tematica: '', youtubeVideoUrl: '',driveLinkClase: '', pdfClase: '', imagenes: [{ url: '', titulo: '' }],  texto: '' },
-  ]);
-  
-  const showConfirmationModal = ref(false);
-  
-  const profesores = ref<any[]>([]);
-  const profesoresSeleccionados = ref([{ profesor: '' }]);
-  
-  onMounted(async () => {
-    try {
-      const profesoresResponse = await client.models.Usuario.list({
-        filter: { rol: { eq: "Profesor" } }
-      });
-      if (profesoresResponse && profesoresResponse.data) {
-        profesores.value = profesoresResponse.data;
-      } else {
-        throw new Error('Error al obtener la lista de profesores.');
-      }
-    } catch (error) {
-      console.error('Error al cargar profesores:', error);
+  </div>
+</template>
+
+<script setup lang="ts">
+import A_Sidebar from '../components/A_Sidebar.vue';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { generateClient } from 'aws-amplify/data';
+import type { Schema } from '../../amplify/data/resource';
+
+const client = generateClient<Schema>();
+const router = useRouter();
+
+// Datos de la propiedad
+const direccion = ref('');
+const tipoPropiedad = ref('');
+const precioVenta = ref(0);
+const precioExpensas = ref(0);
+const habitaciones = ref(0);
+const ambientes = ref(0);
+const antiguedad = ref(0);
+const banos = ref(0);
+const cochera = ref('Si');
+const metrosCuadrados = ref(0);
+const mapLink = ref('');
+const descripcion = ref('');
+const imagenes = ref([{ url: '', descripcion: '' }]);
+
+const showConfirmationModal = ref(false);
+
+const addImage = () => {
+  imagenes.value.push({ url: '', descripcion: '' });
+};
+
+const removeImage = (index: number) => {
+  imagenes.value.splice(index, 1);
+};
+
+const createProperty = async () => {
+  try {
+    // Validaciones
+    if (!direccion.value.trim()) {
+      throw new Error('La dirección es obligatoria.');
     }
-  });
-  
-  const addProfesor = () => {
-    profesoresSeleccionados.value.push({ profesor: '' });
-  };
-  
-  const removeProfesor = (index: number) => {
-    profesoresSeleccionados.value.splice(index, 1);
-  };
-  
-  const addClass = () => {
-    const newIndex = clases.value.length; // El índice es igual a la longitud actual del array
-    clases.value.push({
-      index: newIndex, // Asignar el índice correcto
-      nombre: '',
-      videoUrl: '',
-      tematica: '',
-      youtubeVideoUrl: '',
-      driveLinkClase: '',
-      pdfClase: '',
-      imagenes: [{ url: '', titulo: '' }],
-      texto: '',
+    if (!tipoPropiedad.value) {
+      throw new Error('El tipo de propiedad es obligatorio.');
+    }
+    if (precioVenta.value <= 0) {
+      throw new Error('El precio de alquiler debe ser mayor a cero.');
+    }
+    if (metrosCuadrados.value <= 0) {
+      throw new Error('Los metros cuadrados deben ser mayores a cero.');
+    }
+
+    // Crear la propiedad
+    const nuevaPropiedad = await client.models.PropiedadVenta.create({
+      direccion: direccion.value,
+      tipoPropiedad: tipoPropiedad.value,
+      precioVenta: precioVenta.value,
+      precioExpensas: precioExpensas.value,
+      habitaciones: habitaciones.value,
+      ambientes: ambientes.value,
+      antiguedad: antiguedad.value,
+      banos: banos.value,
+      cochera: cochera.value,
+      metrosCuadrados: metrosCuadrados.value,
+      mapLink: mapLink.value,
+      descripcion: descripcion.value,
+      imagenes: JSON.stringify(imagenes.value),
+      estado: 'Disponible'
     });
-  };
-  
-  const removeClass = (index: number) => {
-    clases.value.splice(index, 1);
-    // Reasignar los índices de las clases restantes
-    clases.value.forEach((clase, i) => (clase.index = i));
-  };
-  
-  const addImageLink = (claseIndex: number) => {
-    clases.value[claseIndex].imagenes.push({ url: '', titulo: '' });
-  };
-  
-  const removeImageLink = (claseIndex: number, imageIndex: number) => {
-    clases.value[claseIndex].imagenes.splice(imageIndex, 1);
-  };
-  
-  const createEspecializacion = async () => {
-    try {
-      // Validaciones previas (sin cambios)
-      if (!especializacionName.value.trim()) {
-        throw new Error('El nombre es obligatorio.');
-      }
-      if (!descripcion.value.trim()) {
-        throw new Error('La descripción es obligatoria.');
-      }
-      if (!linkPago.value.trim()) {
-        throw new Error('El Link de Pago es obligatorio.');
-      }
-      if (!driveLink.value.trim()) {
-        throw new Error('El link de Google Drive es obligatorio.');
-      }
-      if (profesoresSeleccionados.value.length === 0) {
-        throw new Error('Debe seleccionar al menos un Profesor.');
-      }
-      if (studentCount.value <= 0) {
-        throw new Error('La cantidad de alumnos debe ser mayor a cero.');
-      }
-       
-      
-  
-      const nuevaEspecializacion = await client.models.Especializacion.create({
-        nombre: especializacionName.value,
-        videoUrl: videoUrl.value,
-        descripcion: descripcion.value,
-        linkPago: linkPago.value,
-        driveLink: driveLink.value,
-        profesores: profesoresSeleccionados.value.map((p) => p.profesor), // Asignar los profesores seleccionados
-        cantidadDeAlumnos: studentCount.value,
-        imagen: especializacionImagen.value,
-    
-      });
-  
-      if (nuevaEspecializacion.data) {
-        const especializacionId = nuevaEspecializacion.data.id;
-  
-      // Crear las clases asociadas al curso
-      for (const clase of clases.value) {
-          await client.models.Clase.create({
-            index: clase.index, // Asegurar que el índice se envíe correctamente
-            nombre: clase.nombre,
-            tematica: clase.tematica,
-            especializacionId: especializacionId,
-            youtubeVideoUrl: clase.youtubeVideoUrl,
-            driveLinkClase: clase.driveLinkClase,
-            pdfClase: clase.pdfClase,
-            imagenes: JSON.stringify(clase.imagenes),
-            texto: clase.texto,
-          });
-        }
-  
-        // Agregar todos los profesores seleccionados al modelo CursoComprado
-        for (const profesorSeleccionado of profesoresSeleccionados.value) {
-          const profesor = profesores.value.find(prof => prof.nombre === profesorSeleccionado.profesor);
-          if (profesor) {
-            await client.models.EspecializacionComprada.create({
-              usuarioId: profesor.id,
-              especializacionId:  especializacionId,
-              usuarioNombre: profesor.nombre,
-              usuarioCorreo: profesor.correo,
-            });
-            console.log('Profesor agregado a CursosComprados:', profesor.nombre);
-          }
-        }
-  
-        showConfirmationModal.value = true;
-      }
-    } catch (error) {
-      console.error('Error al crear la especialización:', error);
+
+    if (nuevaPropiedad.data) {
+      showConfirmationModal.value = true;
     }
-  };
-  
-  const redirectToAdminCreate = () => {
-    router.push({ path: '/plataforma-administrador' });
-  };
-  </script>
-  
-  
-  <style scoped>
-  /* Estilos generales */
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    margin: 0;
-    padding: 0;
+  } catch (error) {
+    console.error('Error al crear la propiedad:', error);
+    alert(error instanceof Error ? error.message : 'Ocurrió un error al crear la propiedad');
   }
-  
-  .container {
-    display: flex;
-  }
-  
-  .content {
-    margin-left: 220px;
-    padding: 20px;
-    width: calc(100% - 220px);
-    position: relative;
-  }
-  
-  .logo-plataforma {
-    width: 500px; /* Cambia este valor según el tamaño que desees para la imagen */
-    padding: 5px; /* Ajusta el espacio interior si es necesario */
-  }
-  
-  .logo-container {
-    text-align: left; 
-    margin-bottom: 5px;
-    width: 160px; /* Ajusta el ancho del contenedor acorde al tamaño de la imagen */
-    height: auto; /* Mantén la proporción de la imagen */
-  }
-  
-  h1 {
-    font-size: 2rem;
-    color: #000000;
-    margin-bottom: 20px;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  label {
-    display: block;
-    margin-bottom: 5px;
-    color: #000000;
-  }
-  
-  input,
-  select,
-  textarea {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-  }
-  
-  button[type="submit"],
-  button[type="button"] {
-    margin-top: 15px;
-    padding: 10px 20px;
-    background-color: #7f1a6c;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  button[type="submit"]:hover,
-  button[type="button"]:hover {
-    background-color: #e97b0d;
-  }
-  
-  .modal-overlay {
-    text-align: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .modal-content {
-    text-align: center;
-    background-color: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  }
-  
-  .modal-content h2 {
-    margin-bottom: 20px;
-    font-size: 22px;
-  }
-  .modal-content p {
-    margin-bottom: 20px;
-    font-size: 20px;
-  }
-  
-  .modal-content button {
-    font-size: 18px;
-    padding: 10px 20px;
-    margin-top: 20px;
-    background-color: #7f1a6c;
-    color: white;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .modal-content button:hover {
-    background-color: #e97b0d;
-  }
-  </style>
-  
+};
+
+const redirectToAdmin = () => {
+  showConfirmationModal.value = false;
+  router.push('/panel-inmobiliario');
+};
+</script>
+
+<style scoped>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  display: flex;
+}
+
+.content {
+  margin-left: 220px;
+  padding: 20px;
+  width: calc(100% - 220px);
+  position: relative;
+}
+
+.content h1 {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.logo-plataforma {
+  width: 300px;
+  padding: 5px;
+}
+
+.logo-container {
+  text-align: left; 
+  margin-bottom: 5px;
+  width: 160px;
+  height: auto;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+.image-links {
+  margin-top: 10px;
+}
+
+.image-link-item {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.image-link-item input {
+  flex: 1;
+}
+
+.modal-overlay {
+  text-align: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  text-align: center;
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  width: 90%;
+}
+
+.modal-content h2 {
+  margin-bottom: 20px;
+  font-size: 22px;
+  color: #2c3e50;
+}
+
+.modal-content p {
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: #34495e;
+}
+
+.modal-content button {
+  font-size: 16px;
+  padding: 10px 20px;
+  margin-top: 20px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.modal-content button:hover {
+  background-color: #2980b9;
+}
+
+button[type="submit"],
+button[type="button"] {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover,
+button[type="button"]:hover {
+  background-color: #27ae60;
+}
+
+button[type="button"] {
+  background-color: #3498db;
+}
+
+button[type="button"]:hover {
+  background-color: #2980b9;
+}
+</style>

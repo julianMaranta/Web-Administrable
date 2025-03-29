@@ -53,25 +53,16 @@
       }
   
       // Cargar datos de Cursos
-      const cursosResponse = await client.models.Curso.list();
-      if (cursosResponse.data) {
-        cursos.value = cursosResponse.data;
-      }
+    
   
       // Cargar datos de Especializaciones
-      const especializacionesResponse = await client.models.Especializacion.list();
-      if (especializacionesResponse.data) {
-        especializaciones.value = especializacionesResponse.data;
-      }
+      
   
       // Cargar datos de Tutorías
       
   
       // Cargar datos de Clases
-      const clasesResponse = await client.models.Clase.list();
-      if (clasesResponse.data) {
-        clases.value = clasesResponse.data;
-      }
+      
 
        // Cargar datos de Certificados
       

@@ -16,89 +16,66 @@ const schema = a.schema({
       tramite: a.string(), // Nuevo campo para el Número de Trámite
       contrasena: a.string().required(),
       rol: a.enum(["Estudiante", "Administrador", "Profesor"]),
-      cursosComprados: a.hasMany("CursoComprado", "usuarioId"),
-      especializacionesCompradas: a.hasMany("EspecializacionComprada", "usuarioId"),
+      
       
      
     })
     .authorization((allow) => [allow.publicApiKey()]),
 
-    Curso: a
-    .model({
-      nombre: a.string().required(),
-      descripcion: a.string(),
-      linkPago: a.string(),
-      driveLink: a.string(),
-      profesores: a.string().array(), // Se cambia para almacenar múltiples profesores
-      cantidadDeAlumnos: a.integer().required(),
-      clases: a.hasMany("Clase", "cursoId"),
-      cursosComprados: a.hasMany("CursoComprado", "cursoId"),
-      videoUrl: a.string(),
-    })
-    .authorization((allow) => [allow.publicApiKey()]),
+    
+      PropiedadAlquiler: a
+      .model({
+        direccion: a.string().required(),
+        tipoPropiedad: a.string().required(), // Sin validación de valores específicos
+        precioAlquiler: a.float().required(),
+        precioExpensas: a.float(),
+        habitaciones: a.integer(),
+        ambientes: a.integer(),
+        antiguedad: a.integer(),
+        banos: a.integer(),
+        cochera: a.string(), // "Si" o "No" pero sin validación
+        metrosCuadrados: a.float().required(),
+        mapLink: a.string(), // URL como string normal
+        descripcion: a.string(),
+        imagenes: a.string(), // Cadena JSON simple
+        estado: a.string().default("Disponible"), // Sin validación de valores
+        destacada: a.boolean().default(false),
+        fechaPublicacion: a.datetime(),
+        caracteristicas: a.string().array(),
+        fotos360: a.string().array(),
+        videoTour: a.string(),
+        contacto: a.hasOne("Contacto", "propiedadId"),
+        visitas: a.hasMany("Visita", "propiedadId")
+      })
+      .authorization(allow => [allow.publicApiKey()]),
 
-    Especializacion: a
-    .model({
-      nombre: a.string().required(),
-      descripcion: a.string(),
-      imagen: a.string(),
-      linkPago: a.string(),
-      driveLink: a.string(),
-      profesores: a.string().array(), // Se cambia para almacenar múltiples profesores
-      cantidadDeAlumnos: a.integer().required(),
-      clases: a.hasMany("Clase", "especializacionId"),
-      especializacionesCompradas: a.hasMany("EspecializacionComprada", "especializacionId"),
-      videoUrl: a.string(),
-    })
-    .authorization((allow) => [allow.publicApiKey()]),
+      PropiedadVenta: a
+      .model({
+        direccion: a.string().required(),
+        tipoPropiedad: a.string().required(), // Sin validación de valores específicos
+        precioVenta: a.float().required(),
+        precioExpensas: a.float(),
+        habitaciones: a.integer(),
+        ambientes: a.integer(),
+        antiguedad: a.integer(),
+        banos: a.integer(),
+        cochera: a.string(), // "Si" o "No" pero sin validación
+        metrosCuadrados: a.float().required(),
+        mapLink: a.string(), // URL como string normal
+        descripcion: a.string(),
+        imagenes: a.string(), // Cadena JSON simple
+        estado: a.string().default("Disponible"), // Sin validación de valores
+        destacada: a.boolean().default(false),
+        fechaPublicacion: a.datetime(),
+        caracteristicas: a.string().array(),
+        fotos360: a.string().array(),
+        videoTour: a.string(),
+        contacto: a.hasOne("Contacto", "propiedadId"),
+        visitas: a.hasMany("Visita", "propiedadId")
+      })
+      .authorization(allow => [allow.publicApiKey()]),
+    
 
-    CursoComprado: a
-    .model({
-      usuarioId: a.id().required(),
-      cursoId: a.id().required(),
-      usuario: a.belongsTo("Usuario", "usuarioId"),
-      curso: a.belongsTo("Curso", "cursoId"),
-      usuarioNombre: a.string(),  // Nuevo campo
-      usuarioCorreo: a.string(),  // Nuevo campo
-    })
-    .authorization((allow) => [allow.publicApiKey()]),
-
-    EspecializacionComprada: a
-    .model({
-      usuarioId: a.id().required(),
-      especializacionId: a.id().required(),
-      usuario: a.belongsTo("Usuario", "usuarioId"),
-      especializacion: a.belongsTo("Especializacion", "especializacionId"),
-      usuarioNombre: a.string(),  // Nuevo campo
-      usuarioCorreo: a.string(),  // Nuevo campo
-    })
-    .authorization((allow) => [allow.publicApiKey()]),
-
-    Clase: a
-    .model({
-      nombre: a.string().required(),
-      tematica: a.string().required(),
-      cursoId: a.id(), // Opcional si la clase pertenece a un curso
-      curso: a.belongsTo("Curso", "cursoId"),
-      especializacionId: a.id(), // Opcional si la clase pertenece a una especialización
-      especializacion: a.belongsTo("Especializacion", "especializacionId"),
-      
-      youtubeVideoUrl: a.string(),
-      imagenes: a.json(), // Cambiado de string a json para almacenar enlaces y títulos
-      texto: a.string(),
-      
-      driveLinkClase: a.string(),
-      pdfClase: a.string(), 
-      index: a.integer(), // Nuevo campo para almacenar un índice
-      
-    })
-    .authorization((allow) => [allow.publicApiKey()]),
-
-  Todo: a
-    .model({
-      content: a.string(),
-    })
-    .authorization((allow) => [allow.publicApiKey()]),
 });
 
 export type Schema = ClientSchema<typeof schema>;
