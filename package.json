@@ -18,6 +18,7 @@
     "aws-amplify": "^6.6.6",
     "vue": "^3.4.21",
     "vue-router": "^4.5.0",
+    "vue3-carousel": "^0.15.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

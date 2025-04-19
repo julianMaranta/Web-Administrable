@@ -22,12 +22,28 @@
               <p class="property-type">{{ propiedad.tipoPropiedad }}</p>
             </div>
             
-            <img 
-              :src="getFirstImage(propiedad)" 
-              :alt="`Propiedad en ${propiedad.ubicacion}`" 
-              class="property-image"
-              @error="handleImageError"
-            />
+                 <!-- Carrusel de imágenes -->
+                 <div class="property-carousel" v-if="getPropertyImages(propiedad).length > 0">
+              <Carousel :items-to-show="1" :wrap-around="true">
+                <Slide v-for="(image, index) in getPropertyImages(propiedad)" :key="index">
+                  <img 
+                    :src="image.url" 
+                    :alt="`Imagen ${index + 1} de la propiedad`"
+                    class="carousel-image"
+                    @error="handleImageError"
+                  />
+                </Slide>
+                
+                <template #addons>
+                  <Navigation />
+                  <Pagination />
+                </template>
+              </Carousel>
+            </div>
+            
+            <div v-else class="no-images-placeholder">
+              <img src="@/assets/placeholder-property.jpg" alt="Imagen no disponible" class="placeholder-image" />
+            </div>
             
             <div class="property-details">
               <div class="detail-row">
@@ -88,6 +104,8 @@ import { ref, onMounted, reactive, computed } from 'vue';
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '../../amplify/data/resource';
 import { useRouter } from 'vue-router';
+import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
+import 'vue3-carousel/dist/carousel.css';
 
 const router = useRouter();
 
@@ -207,16 +225,38 @@ const propiedadesMostradas = computed(() => {
   return [...ventas, ...alquileres];
 });
 
-const getFirstImage = (prop: PropiedadVenta | PropiedadAlquiler) => {
+// Función para procesar imágenes de Dropbox
+const getPropertyImages = (propiedad: any) => {
+  if (!propiedad.imagenes) return [];
+  
   try {
-    if (prop.imagenes) {
-      const imagenes = typeof prop.imagenes === 'string' ? JSON.parse(prop.imagenes) : prop.imagenes;
-      return imagenes[0]?.url || '';
-    }
-  } catch (e) {
-    console.error('Error al procesar imágenes:', e);
+    const imagenes = typeof propiedad.imagenes === 'string' 
+      ? JSON.parse(propiedad.imagenes) 
+      : propiedad.imagenes;
+
+    return imagenes.map((img: any) => {
+      let url = img.url || img;
+      
+      // Transformar URLs de Dropbox
+      if (url.includes('dropbox.com')) {
+        url = url.replace('www.dropbox.com', 'dl.dropboxusercontent.com');
+        
+        if (url.includes('?dl=0')) {
+          url = url.replace('?dl=0', '?raw=1');
+        } else if (!url.includes('?raw=1')) {
+          url += '?raw=1';
+        }
+      }
+      
+      return {
+        url,
+        title: typeof img === 'object' ? img.titulo : `Imagen de propiedad`
+      };
+    });
+  } catch (error) {
+    console.error('Error procesando imágenes:', error);
+    return [];
   }
-  return '';
 };
 
 const formatPrice = (price?: number | null) => {
@@ -374,5 +414,52 @@ onMounted(() => {
 h2 {
   color: #0a0f64;
   margin-bottom: 20px;
+}
+
+/* Nuevos estilos para el carrusel */
+.property-carousel {
+  width: 100%;
+  height: 250px;
+  position: relative;
+}
+
+.carousel-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 8px 8px 0 0;
+}
+
+.no-images-placeholder {
+  width: 100%;
+  height: 250px;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholder-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Personalización del carrusel */
+:deep(.carousel__prev),
+:deep(.carousel__next) {
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  color: #0a0f64;
+}
+
+:deep(.carousel__pagination-button) {
+  background-color: #ccc;
+}
+
+:deep(.carousel__pagination-button--active) {
+  background-color: #0a0f64;
 }
 </style>
