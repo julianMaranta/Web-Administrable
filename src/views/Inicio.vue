@@ -60,7 +60,12 @@
               </div>
             </div>
             
-            <button class="view-details-button">Ver detalles</button>
+            <button 
+    class="view-details-button"
+    @click="viewPropertyDetails(propiedad)"
+  >
+    Ver detalles
+  </button>
           </div>
         </div>
         
@@ -82,6 +87,9 @@ import PropertySearch from '@/components/PropertySearch.vue';
 import { ref, onMounted, reactive, computed } from 'vue';
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '../../amplify/data/resource';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const client = generateClient<Schema>();
 
@@ -221,6 +229,17 @@ const handleImageError = (event: Event) => {
     target.src = '@/assets/placeholder-property.jpg';
   }
 };
+
+const viewPropertyDetails = (propiedad: any) => {
+  router.push({
+    name: 'property-detail',
+    params: { 
+      id: propiedad.id,
+      type: propiedad.tipo
+    }
+  });
+};
+
 
 onMounted(() => {
   loadAllProperties();

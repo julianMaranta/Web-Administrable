@@ -213,23 +213,24 @@ const resetFilters = () => {
 <style scoped>
 .search-container {
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 24px;
-  margin-bottom: 32px;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 25px;
 }
 
 .search-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 18px;
 }
 
-.search-header h2 {
-  font-size: 1.5rem;
+.search-title {
+  font-size: 1.3rem;
   color: #333;
   margin: 0;
+  font-weight: 600;
 }
 
 .operation-toggle {
@@ -244,8 +245,9 @@ const resetFilters = () => {
   border: none;
   background: #f5f5f5;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.2s;
   font-weight: 500;
+  font-size: 0.9rem;
 }
 
 .operation-toggle button.active {
@@ -256,34 +258,44 @@ const resetFilters = () => {
 .search-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+}
+
+.form-rows-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .form-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 16px;
-  margin-bottom: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+}
+
+.form-row.last-row {
+  align-items: flex-end;
 }
 
 .form-group {
-  display: flex;
-  flex-direction: column;
+  margin-bottom: 0;
 }
 
 .form-group label {
   font-size: 0.9rem;
+  margin-bottom: 6px;
   color: #555;
-  margin-bottom: 8px;
-  font-weight: 500;
+  display: block;
 }
 
 .form-group input,
 .form-group select {
   padding: 10px 12px;
+  font-size: 0.95rem;
+  height: 42px;
+  width: 100%;
   border: 1px solid #ddd;
   border-radius: 6px;
-  font-size: 0.95rem;
+  box-sizing: border-box;
 }
 
 .range-inputs {
@@ -298,26 +310,32 @@ const resetFilters = () => {
 }
 
 .range-inputs span {
-  color: #777;
   font-size: 0.9rem;
+  color: #777;
 }
 
 .form-actions {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  margin-top: 16px;
+  margin-top: 5px;
+}
+
+.primary-button,
+.secondary-button {
+  padding: 10px 20px;
+  font-size: 0.95rem;
+  height: 42px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
 }
 
 .primary-button {
   background: #0a0f64;
   color: white;
   border: none;
-  padding: 12px 24px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background 0.3s;
 }
 
 .primary-button:hover {
@@ -328,11 +346,6 @@ const resetFilters = () => {
   background: #f5f5f5;
   color: #333;
   border: 1px solid #ddd;
-  padding: 12px 24px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s;
 }
 
 .secondary-button:hover {
@@ -344,23 +357,40 @@ const resetFilters = () => {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
+    margin-bottom: 15px;
   }
   
   .operation-toggle {
     width: 100%;
   }
   
+  .operation-toggle button {
+    flex: 1;
+    text-align: center;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  
+  .form-actions {
+    grid-column: span 2;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 480px) {
   .form-row {
     grid-template-columns: 1fr;
   }
   
   .form-actions {
-    flex-direction: column;
+    grid-column: span 1;
   }
   
-  .primary-button,
-  .secondary-button {
-    width: 100%;
+  .search-container {
+    padding: 16px;
   }
 }
 </style>

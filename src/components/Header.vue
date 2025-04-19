@@ -4,7 +4,7 @@
         <img src="@/assets/Logo NUEVO Maranta-2.png" alt="" class="logo" />
         
       </div>
-      <nav class="navbar">
+      <!-- <nav class="navbar">
         <ul class="nav-links">
           <li><a href="#">Alquiler</a></li>
           <li><a href="#">Venta</a></li>
@@ -12,7 +12,7 @@
           <li><a href="#">Tasaciones</a></li>
           <li><a href="#">Empresa</a></li>
         </ul>
-      </nav>
+      </nav>-->
     </header>
   </template>
   
