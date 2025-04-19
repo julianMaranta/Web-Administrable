@@ -211,12 +211,12 @@ const getFirstImage = (prop: PropiedadVenta | PropiedadAlquiler) => {
   try {
     if (prop.imagenes) {
       const imagenes = typeof prop.imagenes === 'string' ? JSON.parse(prop.imagenes) : prop.imagenes;
-      return imagenes[0]?.url || '@/assets/placeholder-property.jpg';
+      return imagenes[0]?.url || '';
     }
   } catch (e) {
     console.error('Error al procesar imágenes:', e);
   }
-  return '@/assets/placeholder-property.jpg';
+  return '';
 };
 
 const formatPrice = (price?: number | null) => {
@@ -226,7 +226,7 @@ const formatPrice = (price?: number | null) => {
 const handleImageError = (event: Event) => {
   const target = event.target as HTMLImageElement | null;
   if (target) {
-    target.src = '@/assets/placeholder-property.jpg';
+    target.src = '';
   }
 };
 
