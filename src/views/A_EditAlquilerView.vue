@@ -414,7 +414,7 @@ onMounted(() => {
 
 /* Estilos para botones */
 .update-button {
-  background-color: #4CAF50;
+  background-color: #0014ac;
   color: white;
   padding: 12px 24px;
   border: none;
@@ -426,11 +426,11 @@ onMounted(() => {
 }
 
 .update-button:hover {
-  background-color: #45a049;
+  background-color: #0014ac;
 }
 
 .add-image-btn {
-  background-color: #2196F3;
+  background-color: #0014ac;
   color: white;
   padding: 8px 16px;
   border: none;
@@ -440,7 +440,7 @@ onMounted(() => {
 }
 
 .remove-image-btn {
-  background-color: #f44336;
+  background-color: #0014ac;
   color: white;
   padding: 6px 12px;
   border: none;
@@ -484,17 +484,17 @@ onMounted(() => {
 }
 
 .confirm-button {
-  background-color: #4CAF50;
+  background-color: #0014ac;
   color: white;
 }
 
 .cancel-button {
-  background-color: #f44336;
+  background-color: #0014ac;
   color: white;
 }
 
 .success-button {
-  background-color: #2196F3;
+  background-color: #0014ac;
   color: white;
   margin-top: 20px;
 }
