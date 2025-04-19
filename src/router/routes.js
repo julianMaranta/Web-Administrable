@@ -89,8 +89,9 @@ const routes = [
   },
   {
     path: '/propiedad/:type/:id',
-    name: 'propiedad',
-    component: () => import('../views/PropertyDetail.vue')
+    name: 'property-detail', // Asegúrate que este nombre coincida con el usado en router.push()
+    component: () => import('../views/PropertyDetail.vue'),
+    props: true
   },
  
   {

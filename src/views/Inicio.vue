@@ -231,14 +231,15 @@ const handleImageError = (event: Event) => {
 };
 
 const viewPropertyDetails = (propiedad: any) => {
+  console.log('Navegando a:', propiedad.id, propiedad.tipo) // Para depuración
   router.push({
-    name: 'property-detail',
+    name: 'property-detail', // Este nombre DEBE coincidir con el de tu ruta
     params: { 
       id: propiedad.id,
       type: propiedad.tipo
     }
-  });
-};
+  })
+}
 
 
 onMounted(() => {
