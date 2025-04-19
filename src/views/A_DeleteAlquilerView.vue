@@ -150,7 +150,7 @@ const cancelDelete = () => {
 
 const redirectToAdmin = () => {
   showSuccessModal.value = false;
-  router.push('/panel-inmobiliario');
+  router.push('/plataforma-administrador');
 };
 
 // Ciclo de vida

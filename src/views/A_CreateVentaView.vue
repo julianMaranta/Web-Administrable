@@ -225,7 +225,7 @@ const createProperty = async () => {
 
 const redirectToAdmin = () => {
   showConfirmationModal.value = false;
-  router.push('/panel-inmobiliario');
+  router.push('/plataforma-administrador');
 };
 </script>
 

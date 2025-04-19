@@ -1,34 +1,207 @@
-<script setup lang="ts"> 
+<script setup lang="ts">
 import '@/assets/main.css';
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
+import { ref, onMounted, reactive, computed } from 'vue';
+import { generateClient } from 'aws-amplify/data';
+import type { Schema } from '../../amplify/data/resource';
+
+const client = generateClient<Schema>();
+
+// Tipos con manejo explícito de null/undefined
+type PropiedadVenta = Awaited<ReturnType<typeof client.models.PropiedadVenta.list>>['data'][number];
+type PropiedadAlquiler = Awaited<ReturnType<typeof client.models.PropiedadAlquiler.list>>['data'][number];
+
+const propiedadesVenta = ref<PropiedadVenta[]>([]);
+const propiedadesAlquiler = ref<PropiedadAlquiler[]>([]);
+const loading = ref(true);
+const searchQuery = reactive({
+  operacion: '',
+  provincia: '',
+  localidad: '',
+  direccion: '',
+  precioMax: '',
+  tipoPropiedad: '',
+  habitaciones: '',
+  banos: ''
+});
+
+const loadProperties = async () => {
+  try {
+    const ventaResponse = await client.models.PropiedadVenta.list();
+    propiedadesVenta.value = ventaResponse.data || [];
+    
+    const alquilerResponse = await client.models.PropiedadAlquiler.list();
+    propiedadesAlquiler.value = alquilerResponse.data || [];
+    
+  } catch (error) {
+    console.error('Error al cargar propiedades:', error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const filteredProperties = computed(() => {
+  const ventas = propiedadesVenta.value.map(p => ({ ...p, tipo: 'venta' as const }));
+  const alquileres = propiedadesAlquiler.value.map(p => ({ ...p, tipo: 'alquiler' as const }));
+  const allProperties = [...ventas, ...alquileres];
+  
+  return allProperties.filter(prop => {
+    // Filtros con manejo de valores nulos
+    if (searchQuery.operacion && !prop.tipo.includes(searchQuery.operacion.toLowerCase())) {
+      return false;
+    }
+    
+    if (searchQuery.provincia && !prop.ubicacion?.toLowerCase().includes(searchQuery.provincia.toLowerCase())) {
+      return false;
+    }
+    
+    if (searchQuery.localidad && !prop.ubicacion?.toLowerCase().includes(searchQuery.localidad.toLowerCase())) {
+      return false;
+    }
+    
+    if (searchQuery.direccion && !prop.direccion?.toLowerCase().includes(searchQuery.direccion.toLowerCase())) {
+      return false;
+    }
+    
+    if (searchQuery.precioMax) {
+      const precio = prop.tipo === 'venta' ? prop.precioVenta : prop.precioAlquiler;
+      if (!precio || precio > Number(searchQuery.precioMax)) {
+        return false;
+      }
+    }
+    
+    if (searchQuery.tipoPropiedad && !prop.tipoPropiedad?.toLowerCase().includes(searchQuery.tipoPropiedad.toLowerCase())) {
+      return false;
+    }
+    
+    if (searchQuery.habitaciones && (prop.habitaciones === null || prop.habitaciones === undefined || 
+        prop.habitaciones < Number(searchQuery.habitaciones))) {
+      return false;
+    }
+    
+    if (searchQuery.banos && (prop.banos === null || prop.banos === undefined || 
+        prop.banos < Number(searchQuery.banos))) {
+      return false;
+    }
+    
+    return true;
+  });
+});
+
+const getFirstImage = (prop: PropiedadVenta | PropiedadAlquiler) => {
+  try {
+    if (prop.imagenes) {
+      const imagenes = typeof prop.imagenes === 'string' ? JSON.parse(prop.imagenes) : prop.imagenes;
+      return imagenes[0]?.url || '@/assets/placeholder-property.jpg';
+    }
+  } catch (e) {
+    console.error('Error al procesar imágenes:', e);
+  }
+  return '@/assets/placeholder-property.jpg';
+};
+
+const formatPrice = (price?: number | null) => {
+  return price ? '$' + price.toLocaleString() : 'Consultar';
+};
+
+const handleImageError = (event: Event) => {
+  const target = event.target as HTMLImageElement | null;
+  if (target) {
+    target.src = '@/assets/placeholder-property.jpg';
+  }
+};
+
+onMounted(() => {
+  loadProperties();
+});
 </script>
 
 <template>
   <div class="page-container">
     <Header />
 
-    <!-- Barra de búsqueda pegada al header -->
     <section class="search-section">
       <h2>Busca tu propiedad:</h2>
       <div class="search-fields">
-        <input type="text" placeholder="Operación:" />
-        <input type="text" placeholder="Provincia:" />
-        <input type="text" placeholder="Localidad:" />
-        <input type="text" placeholder="Dirección:" />
-        <input type="text" placeholder="Precio:" />
-        <button class="search-button">BUSCAR</button>
+        <select v-model="searchQuery.operacion">
+          <option value="">Todas las operaciones</option>
+          <option value="venta">Venta</option>
+          <option value="alquiler">Alquiler</option>
+        </select>
+        
+        <input v-model="searchQuery.provincia" type="text" placeholder="Provincia" />
+        <input v-model="searchQuery.localidad" type="text" placeholder="Localidad" />
+        <input v-model="searchQuery.direccion" type="text" placeholder="Dirección" />
+        <input v-model="searchQuery.precioMax" type="number" placeholder="Precio máximo" />
+        <input v-model="searchQuery.tipoPropiedad" type="text" placeholder="Tipo (Casa, Depto)" />
+        <input v-model="searchQuery.habitaciones" type="number" placeholder="Mín. habitaciones" />
+        <input v-model="searchQuery.banos" type="number" placeholder="Mín. baños" />
       </div>
     </section>
 
-    <!-- Sección de Propiedades ocupa todo el espacio disponible -->
     <main class="featured-properties">
-      <h2>Propiedades Destacadas:</h2>
-      <div class="property-grid">
-        <div class="property-card" v-for="n in 4" :key="n">
-          <p>Calle XX<br />XXXXXX</p>
-          <img src="@/assets/Logo Maranta 3.png" alt="Casa destacada" />
-
+      <div v-if="loading" class="loading">Cargando propiedades...</div>
+      
+      <div v-else>
+        <h2>Propiedades Disponibles ({{ filteredProperties.length }})</h2>
+        
+        <div class="property-grid">
+          <div v-for="propiedad in filteredProperties" :key="propiedad.id" class="property-card">
+            <div class="property-header">
+              <span class="property-badge" :class="propiedad.tipo">
+                {{ propiedad.tipo === 'venta' ? 'VENTA' : 'ALQUILER' }}
+              </span>
+              <span v-if="propiedad.destacada" class="featured-badge">DESTACADA</span>
+              <h3>{{ propiedad.direccion }}</h3>
+              <p>{{ propiedad.ubicacion }}</p>
+              <p class="property-type">{{ propiedad.tipoPropiedad }}</p>
+            </div>
+            
+            <img 
+              :src="getFirstImage(propiedad)" 
+              :alt="`Propiedad en ${propiedad.ubicacion}`" 
+              class="property-image"
+              @error="handleImageError"
+            />
+            
+            <div class="property-details">
+              <div class="detail-row">
+                <span class="detail-label">Precio:</span>
+                <span class="detail-value">
+                  {{ formatPrice(propiedad.tipo === 'venta' ? propiedad.precioVenta : propiedad.precioAlquiler) }}
+                </span>
+              </div>
+              
+              <div class="detail-row">
+                <div class="detail-item">
+                  <span class="detail-label">Hab:</span>
+                  <span class="detail-value">{{ propiedad.habitaciones ?? '-' }}</span>
+                </div>
+                
+                <div class="detail-item">
+                  <span class="detail-label">Baños:</span>
+                  <span class="detail-value">{{ propiedad.banos ?? '-' }}</span>
+                </div>
+                
+                <div class="detail-item">
+                  <span class="detail-label">m²:</span>
+                  <span class="detail-value">{{ propiedad.metrosCuadrados }}</span>
+                </div>
+              </div>
+              
+              <div v-if="propiedad.cochera" class="detail-row">
+                <span class="detail-label">Cochera:</span>
+                <span class="detail-value">{{ propiedad.cochera }}</span>
+              </div>
+            </div>
+            
+            <button class="view-details-button">Ver detalles</button>
+          </div>
+        </div>
+        
+        <div v-if="filteredProperties.length === 0" class="no-results">
+          No se encontraron propiedades con los filtros seleccionados
         </div>
       </div>
     </main>
@@ -38,88 +211,197 @@ import Footer from '@/components/Footer.vue';
 </template>
 
 <style scoped>
-/* Estructura principal */
 .page-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background-color: #f5f5f5;
 }
 
-/* Barra de búsqueda pegada al header */
 .search-section {
-  background-color: white;
-  padding: 20px;
-  border-bottom: 2px solid #ccc;
-  text-align: center;
-}
-
-/* Contenedor de los inputs */
-.search-fields {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.search-fields input {
-  padding: 8px;
-  width: 200px;
-  border: 2px solid black;
-  border-radius: 5px;
-}
-
-.search-button {
   background-color: #0a0f64;
+  padding: 20px;
   color: white;
-  padding: 10px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.search-section h2 {
+  margin: 0 0 15px 0;
+  font-size: 1.5rem;
+}
+
+.search-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.search-fields input, 
+.search-fields select {
+  padding: 10px 15px;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
+  font-size: 14px;
 }
 
-/* Propiedades ocupan el resto del espacio disponible */
 .featured-properties {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center; /* Centra verticalmente */
-  align-items: center;
-  text-align: center;
-  padding: 20px;
+  padding: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
 }
 
-/* Grid de tarjetas */
+.featured-properties h2 {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  border-bottom: 2px solid #0a0f64;
+  padding-bottom: 10px;
+}
+
 .property-grid {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  flex-wrap: wrap;
-  width: 100%;
-  flex-grow: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
 }
 
 .property-card {
-  border: 2px solid black;
-  padding: 10px;
+  background: white;
   border-radius: 10px;
-  text-align: center;
-  width: 250px;
-  height: 300px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 }
 
-.property-card img {
-  width: 100%;
-  padding: 60px;
-  height: auto;
-  border-radius: 5px;
-}
-
-/* Resaltar una propiedad al pasar el mouse */
 .property-card:hover {
-  border: 2px solid blue;
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+.property-header {
+  padding: 15px;
+  position: relative;
+}
+
+.property-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+}
+
+.property-badge.venta {
+  background-color: #e74c3c;
+}
+
+.property-badge.alquiler {
+  background-color: #3498db;
+}
+
+.featured-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  background-color: #f39c12;
+  color: white;
+}
+
+.property-card h3 {
+  margin: 10px 0 5px 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.property-type {
+  font-style: italic;
+  color: #666;
+  font-size: 0.9rem;
+  margin: 5px 0;
+}
+
+.property-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 1px solid #eee;
+}
+
+.property-details {
+  padding: 15px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+}
+
+.detail-label {
+  font-size: 0.9rem;
+  color: #666;
+  margin-right: 5px;
+}
+
+.detail-value {
+  font-weight: bold;
+  color: #333;
+  font-size: 1rem;
+}
+
+.view-details-button {
+  margin: 15px;
+  padding: 12px;
+  background-color: #0a0f64;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.view-details-button:hover {
+  background-color: #1a237e;
+}
+
+.loading, .no-results {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .search-fields {
+    grid-template-columns: 1fr;
+  }
+  
+  .property-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

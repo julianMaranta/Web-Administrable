@@ -290,7 +290,7 @@ const cancelEdit = () => {
 
 const redirectToAdmin = () => {
   showSuccessModal.value = false;
-  router.push('/panel-inmobiliario');
+  router.push('/plataforma-administrador');
 };
 
 onMounted(() => {
