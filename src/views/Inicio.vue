@@ -2,6 +2,7 @@
 import '@/assets/main.css';
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
+import PropertySearch from '@/components/PropertySearch.vue';
 import { ref, onMounted, reactive, computed } from 'vue';
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '../../amplify/data/resource';
@@ -15,24 +16,70 @@ type PropiedadAlquiler = Awaited<ReturnType<typeof client.models.PropiedadAlquil
 const propiedadesVenta = ref<PropiedadVenta[]>([]);
 const propiedadesAlquiler = ref<PropiedadAlquiler[]>([]);
 const loading = ref(true);
-const searchQuery = reactive({
+const searchParams = reactive({
   operacion: '',
-  provincia: '',
-  localidad: '',
   direccion: '',
-  precioMax: '',
+  ubicacion: '',
   tipoPropiedad: '',
-  habitaciones: '',
-  banos: ''
+  precioMin: null as number | null,
+  precioMax: null as number | null,
+  habitaciones: null as number | null,
+  banos: null as number | null,
+  cochera: '',
+  metrosMin: null as number | null,
+  metrosMax: null as number | null,
+  antiguedadMax: null as number | null
 });
 
 const loadProperties = async () => {
   try {
-    const ventaResponse = await client.models.PropiedadVenta.list();
-    propiedadesVenta.value = ventaResponse.data || [];
+    loading.value = true;
     
-    const alquilerResponse = await client.models.PropiedadAlquiler.list();
-    propiedadesAlquiler.value = alquilerResponse.data || [];
+    if (searchParams.operacion === 'alquiler' || !searchParams.operacion) {
+      const alquilerResponse = await client.models.PropiedadAlquiler.list({
+        filter: {
+          direccion: { contains: searchParams.direccion },
+          ubicacion: { contains: searchParams.ubicacion },
+          tipoPropiedad: { contains: searchParams.tipoPropiedad },
+          precioAlquiler: { 
+            ge: searchParams.precioMin || undefined,
+            le: searchParams.precioMax || undefined
+          },
+          habitaciones: searchParams.habitaciones ? { eq: searchParams.habitaciones } : undefined,
+          banos: searchParams.banos ? { eq: searchParams.banos } : undefined,
+          cochera: searchParams.cochera ? { eq: searchParams.cochera } : undefined,
+          metrosCuadrados: { 
+            ge: searchParams.metrosMin || undefined,
+            le: searchParams.metrosMax || undefined
+          },
+          antiguedad: searchParams.antiguedadMax ? { le: searchParams.antiguedadMax } : undefined
+        }
+      });
+      propiedadesAlquiler.value = alquilerResponse.data || [];
+    }
+    
+    if (searchParams.operacion === 'venta' || !searchParams.operacion) {
+      const ventaResponse = await client.models.PropiedadVenta.list({
+        filter: {
+          direccion: { contains: searchParams.direccion },
+          ubicacion: { contains: searchParams.ubicacion },
+          tipoPropiedad: { contains: searchParams.tipoPropiedad },
+          precioVenta: { 
+            ge: searchParams.precioMin || undefined,
+            le: searchParams.precioMax || undefined
+          },
+          habitaciones: searchParams.habitaciones ? { eq: searchParams.habitaciones } : undefined,
+          banos: searchParams.banos ? { eq: searchParams.banos } : undefined,
+          cochera: searchParams.cochera ? { eq: searchParams.cochera } : undefined,
+          metrosCuadrados: { 
+            ge: searchParams.metrosMin || undefined,
+            le: searchParams.metrosMax || undefined
+          },
+          antiguedad: searchParams.antiguedadMax ? { le: searchParams.antiguedadMax } : undefined
+        }
+      });
+      propiedadesVenta.value = ventaResponse.data || [];
+    }
     
   } catch (error) {
     console.error('Error al cargar propiedades:', error);
@@ -41,52 +88,23 @@ const loadProperties = async () => {
   }
 };
 
+const handleSearch = (params: typeof searchParams) => {
+  Object.assign(searchParams, params);
+  loadProperties();
+};
+
 const filteredProperties = computed(() => {
   const ventas = propiedadesVenta.value.map(p => ({ ...p, tipo: 'venta' as const }));
   const alquileres = propiedadesAlquiler.value.map(p => ({ ...p, tipo: 'alquiler' as const }));
-  const allProperties = [...ventas, ...alquileres];
   
-  return allProperties.filter(prop => {
-    // Filtros con manejo de valores nulos
-    if (searchQuery.operacion && !prop.tipo.includes(searchQuery.operacion.toLowerCase())) {
-      return false;
-    }
-    
-    if (searchQuery.provincia && !prop.ubicacion?.toLowerCase().includes(searchQuery.provincia.toLowerCase())) {
-      return false;
-    }
-    
-    if (searchQuery.localidad && !prop.ubicacion?.toLowerCase().includes(searchQuery.localidad.toLowerCase())) {
-      return false;
-    }
-    
-    if (searchQuery.direccion && !prop.direccion?.toLowerCase().includes(searchQuery.direccion.toLowerCase())) {
-      return false;
-    }
-    
-    if (searchQuery.precioMax) {
-      const precio = prop.tipo === 'venta' ? prop.precioVenta : prop.precioAlquiler;
-      if (!precio || precio > Number(searchQuery.precioMax)) {
-        return false;
-      }
-    }
-    
-    if (searchQuery.tipoPropiedad && !prop.tipoPropiedad?.toLowerCase().includes(searchQuery.tipoPropiedad.toLowerCase())) {
-      return false;
-    }
-    
-    if (searchQuery.habitaciones && (prop.habitaciones === null || prop.habitaciones === undefined || 
-        prop.habitaciones < Number(searchQuery.habitaciones))) {
-      return false;
-    }
-    
-    if (searchQuery.banos && (prop.banos === null || prop.banos === undefined || 
-        prop.banos < Number(searchQuery.banos))) {
-      return false;
-    }
-    
-    return true;
-  });
+  // Filtramos según la operación seleccionada
+  if (searchParams.operacion === 'alquiler') {
+    return alquileres;
+  } else if (searchParams.operacion === 'venta') {
+    return ventas;
+  }
+  
+  return [...ventas, ...alquileres];
 });
 
 const getFirstImage = (prop: PropiedadVenta | PropiedadAlquiler) => {
@@ -121,24 +139,7 @@ onMounted(() => {
   <div class="page-container">
     <Header />
 
-    <section class="search-section">
-      <h2>Busca tu propiedad:</h2>
-      <div class="search-fields">
-        <select v-model="searchQuery.operacion">
-          <option value="">Todas las operaciones</option>
-          <option value="venta">Venta</option>
-          <option value="alquiler">Alquiler</option>
-        </select>
-        
-        <input v-model="searchQuery.provincia" type="text" placeholder="Provincia" />
-        <input v-model="searchQuery.localidad" type="text" placeholder="Localidad" />
-        <input v-model="searchQuery.direccion" type="text" placeholder="Dirección" />
-        <input v-model="searchQuery.precioMax" type="number" placeholder="Precio máximo" />
-        <input v-model="searchQuery.tipoPropiedad" type="text" placeholder="Tipo (Casa, Depto)" />
-        <input v-model="searchQuery.habitaciones" type="number" placeholder="Mín. habitaciones" />
-        <input v-model="searchQuery.banos" type="number" placeholder="Mín. baños" />
-      </div>
-    </section>
+    <PropertySearch @search="handleSearch" />
 
     <main class="featured-properties">
       <div v-if="loading" class="loading">Cargando propiedades...</div>
@@ -215,75 +216,35 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #f5f5f5;
 }
 
 .search-section {
-  background-color: #0a0f64;
   padding: 20px;
-  color: white;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.search-section h2 {
-  margin: 0 0 15px 0;
-  font-size: 1.5rem;
-}
-
-.search-fields {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 15px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.search-fields input, 
-.search-fields select {
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  font-size: 14px;
+  background-color: #f5f5f5;
 }
 
 .featured-properties {
+  padding: 20px;
   flex: 1;
-  padding: 30px;
-  max-width: 1400px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-.featured-properties h2 {
-  color: #333;
-  margin-bottom: 20px;
-  font-size: 1.8rem;
-  border-bottom: 2px solid #0a0f64;
-  padding-bottom: 10px;
 }
 
 .property-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 25px;
+  gap: 20px;
+  margin-top: 20px;
 }
 
 .property-card {
-  background: white;
-  border-radius: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  transition: transform 0.3s, box-shadow 0.3s;
-  display: flex;
-  flex-direction: column;
+  transition: transform 0.3s;
 }
 
 .property-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
 .property-header {
@@ -303,43 +264,28 @@ onMounted(() => {
 }
 
 .property-badge.venta {
-  background-color: #e74c3c;
+  background-color: #0a0f64;
 }
 
 .property-badge.alquiler {
-  background-color: #3498db;
+  background-color: #4CAF50;
 }
 
 .featured-badge {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  padding: 5px 10px;
+  display: inline-block;
+  background-color: #FFC107;
+  color: #333;
+  padding: 3px 8px;
   border-radius: 4px;
   font-size: 12px;
   font-weight: bold;
-  background-color: #f39c12;
-  color: white;
-}
-
-.property-card h3 {
-  margin: 10px 0 5px 0;
-  font-size: 1.2rem;
-  color: #333;
-}
-
-.property-type {
-  font-style: italic;
-  color: #666;
-  font-size: 0.9rem;
-  margin: 5px 0;
+  margin-bottom: 5px;
 }
 
 .property-image {
   width: 100%;
   height: 200px;
   object-fit: cover;
-  border-bottom: 1px solid #eee;
 }
 
 .property-details {
@@ -350,38 +296,31 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
-  align-items: center;
 }
 
 .detail-item {
   display: flex;
+  flex-direction: column;
   align-items: center;
 }
 
 .detail-label {
-  font-size: 0.9rem;
+  font-size: 12px;
   color: #666;
-  margin-right: 5px;
 }
 
 .detail-value {
   font-weight: bold;
-  color: #333;
-  font-size: 1rem;
 }
 
 .view-details-button {
-  margin: 15px;
-  padding: 12px;
+  width: 100%;
+  padding: 10px;
   background-color: #0a0f64;
   color: white;
   border: none;
-  border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
-  font-weight: bold;
-  text-transform: uppercase;
-  font-size: 0.9rem;
 }
 
 .view-details-button:hover {
@@ -391,17 +330,7 @@ onMounted(() => {
 .loading, .no-results {
   text-align: center;
   padding: 40px;
-  font-size: 1.2rem;
+  font-size: 18px;
   color: #666;
-}
-
-@media (max-width: 768px) {
-  .search-fields {
-    grid-template-columns: 1fr;
-  }
-  
-  .property-grid {
-    grid-template-columns: 1fr;
-  }
 }
 </style>
