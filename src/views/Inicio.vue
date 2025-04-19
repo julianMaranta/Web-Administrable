@@ -1,140 +1,3 @@
-<script setup lang="ts">
-import '@/assets/main.css';
-import Header from '@/components/Header.vue';
-import Footer from '@/components/Footer.vue';
-import PropertySearch from '@/components/PropertySearch.vue';
-import { ref, onMounted, reactive, computed } from 'vue';
-import { generateClient } from 'aws-amplify/data';
-import type { Schema } from '../../amplify/data/resource';
-
-const client = generateClient<Schema>();
-
-// Tipos con manejo explícito de null/undefined
-type PropiedadVenta = Awaited<ReturnType<typeof client.models.PropiedadVenta.list>>['data'][number];
-type PropiedadAlquiler = Awaited<ReturnType<typeof client.models.PropiedadAlquiler.list>>['data'][number];
-
-const propiedadesVenta = ref<PropiedadVenta[]>([]);
-const propiedadesAlquiler = ref<PropiedadAlquiler[]>([]);
-const loading = ref(true);
-const searchParams = reactive({
-  operacion: '',
-  direccion: '',
-  ubicacion: '',
-  tipoPropiedad: '',
-  precioMin: null as number | null,
-  precioMax: null as number | null,
-  habitaciones: null as number | null,
-  banos: null as number | null,
-  cochera: '',
-  metrosMin: null as number | null,
-  metrosMax: null as number | null,
-  antiguedadMax: null as number | null
-});
-
-const loadProperties = async () => {
-  try {
-    loading.value = true;
-    
-    if (searchParams.operacion === 'alquiler' || !searchParams.operacion) {
-      const alquilerResponse = await client.models.PropiedadAlquiler.list({
-        filter: {
-          direccion: { contains: searchParams.direccion },
-          ubicacion: { contains: searchParams.ubicacion },
-          tipoPropiedad: { contains: searchParams.tipoPropiedad },
-          precioAlquiler: { 
-            ge: searchParams.precioMin || undefined,
-            le: searchParams.precioMax || undefined
-          },
-          habitaciones: searchParams.habitaciones ? { eq: searchParams.habitaciones } : undefined,
-          banos: searchParams.banos ? { eq: searchParams.banos } : undefined,
-          cochera: searchParams.cochera ? { eq: searchParams.cochera } : undefined,
-          metrosCuadrados: { 
-            ge: searchParams.metrosMin || undefined,
-            le: searchParams.metrosMax || undefined
-          },
-          antiguedad: searchParams.antiguedadMax ? { le: searchParams.antiguedadMax } : undefined
-        }
-      });
-      propiedadesAlquiler.value = alquilerResponse.data || [];
-    }
-    
-    if (searchParams.operacion === 'venta' || !searchParams.operacion) {
-      const ventaResponse = await client.models.PropiedadVenta.list({
-        filter: {
-          direccion: { contains: searchParams.direccion },
-          ubicacion: { contains: searchParams.ubicacion },
-          tipoPropiedad: { contains: searchParams.tipoPropiedad },
-          precioVenta: { 
-            ge: searchParams.precioMin || undefined,
-            le: searchParams.precioMax || undefined
-          },
-          habitaciones: searchParams.habitaciones ? { eq: searchParams.habitaciones } : undefined,
-          banos: searchParams.banos ? { eq: searchParams.banos } : undefined,
-          cochera: searchParams.cochera ? { eq: searchParams.cochera } : undefined,
-          metrosCuadrados: { 
-            ge: searchParams.metrosMin || undefined,
-            le: searchParams.metrosMax || undefined
-          },
-          antiguedad: searchParams.antiguedadMax ? { le: searchParams.antiguedadMax } : undefined
-        }
-      });
-      propiedadesVenta.value = ventaResponse.data || [];
-    }
-    
-  } catch (error) {
-    console.error('Error al cargar propiedades:', error);
-  } finally {
-    loading.value = false;
-  }
-};
-
-const handleSearch = (params: typeof searchParams) => {
-  Object.assign(searchParams, params);
-  loadProperties();
-};
-
-const filteredProperties = computed(() => {
-  const ventas = propiedadesVenta.value.map(p => ({ ...p, tipo: 'venta' as const }));
-  const alquileres = propiedadesAlquiler.value.map(p => ({ ...p, tipo: 'alquiler' as const }));
-  
-  // Filtramos según la operación seleccionada
-  if (searchParams.operacion === 'alquiler') {
-    return alquileres;
-  } else if (searchParams.operacion === 'venta') {
-    return ventas;
-  }
-  
-  return [...ventas, ...alquileres];
-});
-
-const getFirstImage = (prop: PropiedadVenta | PropiedadAlquiler) => {
-  try {
-    if (prop.imagenes) {
-      const imagenes = typeof prop.imagenes === 'string' ? JSON.parse(prop.imagenes) : prop.imagenes;
-      return imagenes[0]?.url || '@/assets/placeholder-property.jpg';
-    }
-  } catch (e) {
-    console.error('Error al procesar imágenes:', e);
-  }
-  return '@/assets/placeholder-property.jpg';
-};
-
-const formatPrice = (price?: number | null) => {
-  return price ? '$' + price.toLocaleString() : 'Consultar';
-};
-
-const handleImageError = (event: Event) => {
-  const target = event.target as HTMLImageElement | null;
-  if (target) {
-    target.src = '@/assets/placeholder-property.jpg';
-  }
-};
-
-onMounted(() => {
-  loadProperties();
-});
-</script>
-
 <template>
   <div class="page-container">
     <Header />
@@ -145,10 +8,10 @@ onMounted(() => {
       <div v-if="loading" class="loading">Cargando propiedades...</div>
       
       <div v-else>
-        <h2>Propiedades Disponibles ({{ filteredProperties.length }})</h2>
+        <h2>Propiedades Disponibles ({{ propiedadesMostradas.length }})</h2>
         
         <div class="property-grid">
-          <div v-for="propiedad in filteredProperties" :key="propiedad.id" class="property-card">
+          <div v-for="propiedad in propiedadesMostradas" :key="propiedad.id" class="property-card">
             <div class="property-header">
               <span class="property-badge" :class="propiedad.tipo">
                 {{ propiedad.tipo === 'venta' ? 'VENTA' : 'ALQUILER' }}
@@ -187,7 +50,7 @@ onMounted(() => {
                 
                 <div class="detail-item">
                   <span class="detail-label">m²:</span>
-                  <span class="detail-value">{{ propiedad.metrosCuadrados }}</span>
+                  <span class="detail-value">{{ propiedad.metrosCuadrados ?? '-' }}</span>
                 </div>
               </div>
               
@@ -201,7 +64,7 @@ onMounted(() => {
           </div>
         </div>
         
-        <div v-if="filteredProperties.length === 0" class="no-results">
+        <div v-if="propiedadesMostradas.length === 0" class="no-results">
           No se encontraron propiedades con los filtros seleccionados
         </div>
       </div>
@@ -211,16 +74,164 @@ onMounted(() => {
   </div>
 </template>
 
+<script setup lang="ts">
+import '@/assets/main.css';
+import Header from '@/components/Header.vue';
+import Footer from '@/components/Footer.vue';
+import PropertySearch from '@/components/PropertySearch.vue';
+import { ref, onMounted, reactive, computed } from 'vue';
+import { generateClient } from 'aws-amplify/data';
+import type { Schema } from '../../amplify/data/resource';
+
+const client = generateClient<Schema>();
+
+type PropiedadVenta = Awaited<ReturnType<typeof client.models.PropiedadVenta.list>>['data'][number];
+type PropiedadAlquiler = Awaited<ReturnType<typeof client.models.PropiedadAlquiler.list>>['data'][number];
+
+// Todas las propiedades sin filtrar
+const allPropiedadesVenta = ref<PropiedadVenta[]>([]);
+const allPropiedadesAlquiler = ref<PropiedadAlquiler[]>([]);
+
+// Propiedades filtradas
+const filteredPropiedadesVenta = ref<PropiedadVenta[]>([]);
+const filteredPropiedadesAlquiler = ref<PropiedadAlquiler[]>([]);
+
+const loading = ref(true);
+const searchParams = reactive({
+  operacion: '',
+  direccion: '',
+  ubicacion: '',
+  tipoPropiedad: '',
+  precioMin: null as number | null,
+  precioMax: null as number | null,
+  habitaciones: null as number | null,
+  banos: null as number | null,
+  cochera: '',
+  metrosMin: null as number | null,
+  metrosMax: null as number | null,
+  antiguedadMax: null as number | null
+});
+
+// Cargar todas las propiedades al inicio
+const loadAllProperties = async () => {
+  try {
+    loading.value = true;
+    
+    const [ventaResponse, alquilerResponse] = await Promise.all([
+      client.models.PropiedadVenta.list(),
+      client.models.PropiedadAlquiler.list()
+    ]);
+    
+    allPropiedadesVenta.value = ventaResponse.data || [];
+    allPropiedadesAlquiler.value = alquilerResponse.data || [];
+    
+    // Al inicio, mostrar todas las propiedades
+    filteredPropiedadesVenta.value = [...allPropiedadesVenta.value];
+    filteredPropiedadesAlquiler.value = [...allPropiedadesAlquiler.value];
+    
+  } catch (error) {
+    console.error('Error al cargar propiedades:', error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const filterProperties = () => {
+  // Si no hay filtros activos, mostrar todo
+  if (Object.values(searchParams).every(val => 
+    val === null || val === '' || val === undefined
+  )) {
+    filteredPropiedadesVenta.value = [...allPropiedadesVenta.value];
+    filteredPropiedadesAlquiler.value = [...allPropiedadesAlquiler.value];
+    return;
+  }
+
+  const filterFn = (prop: PropiedadVenta | PropiedadAlquiler, tipo: 'venta' | 'alquiler') => {
+    // Verificar tipo de operación
+    if (searchParams.operacion && searchParams.operacion !== tipo) return false;
+    
+    // Verificar campos de texto
+    if (searchParams.direccion && !prop.direccion?.toLowerCase().includes(searchParams.direccion.toLowerCase())) {
+      return false;
+    }
+    if (searchParams.ubicacion && !prop.ubicacion?.toLowerCase().includes(searchParams.ubicacion.toLowerCase())) {
+      return false;
+    }
+    if (searchParams.tipoPropiedad && !prop.tipoPropiedad?.toLowerCase().includes(searchParams.tipoPropiedad.toLowerCase())) {
+      return false;
+    }
+    
+    // Verificar precio
+    const precio = tipo === 'venta' 
+      ? (prop as PropiedadVenta).precioVenta 
+      : (prop as PropiedadAlquiler).precioAlquiler;
+      
+    if (searchParams.precioMin !== null && (precio ?? 0) < searchParams.precioMin) return false;
+    if (searchParams.precioMax !== null && (precio ?? 0) > searchParams.precioMax) return false;
+    
+    // Verificar otros campos numéricos
+    if (searchParams.habitaciones !== null && prop.habitaciones !== searchParams.habitaciones) return false;
+    if (searchParams.banos !== null && prop.banos !== searchParams.banos) return false;
+    if (searchParams.cochera && prop.cochera !== searchParams.cochera) return false;
+    if (searchParams.metrosMin !== null && (prop.metrosCuadrados ?? 0) < searchParams.metrosMin) return false;
+    if (searchParams.metrosMax !== null && (prop.metrosCuadrados ?? 0) > searchParams.metrosMax) return false;
+    if (searchParams.antiguedadMax !== null && (prop.antiguedad ?? 0) > searchParams.antiguedadMax) return false;
+    
+    return true;
+  };
+
+  filteredPropiedadesVenta.value = allPropiedadesVenta.value.filter(prop => filterFn(prop, 'venta'));
+  filteredPropiedadesAlquiler.value = allPropiedadesAlquiler.value.filter(prop => filterFn(prop, 'alquiler'));
+};
+
+const handleSearch = (params: typeof searchParams) => {
+  Object.assign(searchParams, params);
+  filterProperties();
+};
+
+const propiedadesMostradas = computed(() => {
+  const ventas = filteredPropiedadesVenta.value.map(p => ({ ...p, tipo: 'venta' as const }));
+  const alquileres = filteredPropiedadesAlquiler.value.map(p => ({ ...p, tipo: 'alquiler' as const }));
+  
+  if (searchParams.operacion === 'alquiler') return alquileres;
+  if (searchParams.operacion === 'venta') return ventas;
+  
+  return [...ventas, ...alquileres];
+});
+
+const getFirstImage = (prop: PropiedadVenta | PropiedadAlquiler) => {
+  try {
+    if (prop.imagenes) {
+      const imagenes = typeof prop.imagenes === 'string' ? JSON.parse(prop.imagenes) : prop.imagenes;
+      return imagenes[0]?.url || '@/assets/placeholder-property.jpg';
+    }
+  } catch (e) {
+    console.error('Error al procesar imágenes:', e);
+  }
+  return '@/assets/placeholder-property.jpg';
+};
+
+const formatPrice = (price?: number | null) => {
+  return price ? '$' + price.toLocaleString('es-AR') : 'Consultar';
+};
+
+const handleImageError = (event: Event) => {
+  const target = event.target as HTMLImageElement | null;
+  if (target) {
+    target.src = '@/assets/placeholder-property.jpg';
+  }
+};
+
+onMounted(() => {
+  loadAllProperties();
+});
+</script>
+
 <style scoped>
 .page-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-}
-
-.search-section {
-  padding: 20px;
-  background-color: #f5f5f5;
 }
 
 .featured-properties {
@@ -332,5 +343,16 @@ onMounted(() => {
   padding: 40px;
   font-size: 18px;
   color: #666;
+}
+
+.property-type {
+  color: #666;
+  font-style: italic;
+  margin-top: 5px;
+}
+
+h2 {
+  color: #0a0f64;
+  margin-bottom: 20px;
 }
 </style>

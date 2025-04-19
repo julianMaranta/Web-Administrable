@@ -1,124 +1,14 @@
-<script setup lang="ts">
-import '@/assets/main.css';
-import Header from '@/components/Header.vue';
-import Footer from '@/components/Footer.vue';
-import { ref, onMounted, reactive, computed } from 'vue';
-import { generateClient } from 'aws-amplify/data';
-import type { Schema } from '../../amplify/data/resource';
-
-const client = generateClient<Schema>();
-
-// Definición de tipos para las propiedades
-type PropiedadVenta = Awaited<ReturnType<typeof client.models.PropiedadVenta.list>>['data'][number];
-type PropiedadAlquiler = Awaited<ReturnType<typeof client.models.PropiedadAlquiler.list>>['data'][number];
-
-// Datos reactivos con tipos correctos
-const propiedadesVenta = ref<PropiedadVenta[]>([]);
-const propiedadesAlquiler = ref<PropiedadAlquiler[]>([]);
-const loading = ref(true);
-const searchQuery = reactive({
-  operacion: 'alquiler', // 'alquiler' o 'venta'
-  direccion: '',
-  ubicacion: '',
-  tipoPropiedad: '',
-  precioMin: null as number | null,
-  precioMax: null as number | null,
-  habitaciones: null as number | null,
-  ambientes: null as number | null,
-  banos: null as number | null,
-  cochera: '',
-  metrosMin: null as number | null,
-  metrosMax: null as number | null,
-  antiguedadMax: null as number | null
-});
-
-// Cargar propiedades según filtros
-const searchProperties = async () => {
-  loading.value = true;
-  try {
-    if (searchQuery.operacion === 'alquiler') {
-      const response = await client.models.PropiedadAlquiler.list({
-        filter: {
-          direccion: { contains: searchQuery.direccion },
-          ubicacion: { contains: searchQuery.ubicacion },
-          tipoPropiedad: { contains: searchQuery.tipoPropiedad },
-          precioAlquiler: { 
-            ge: searchQuery.precioMin || undefined,
-            le: searchQuery.precioMax || undefined
-          },
-          habitaciones: searchQuery.habitaciones ? { eq: searchQuery.habitaciones } : undefined,
-          ambientes: searchQuery.ambientes ? { eq: searchQuery.ambientes } : undefined,
-          banos: searchQuery.banos ? { eq: searchQuery.banos } : undefined,
-          cochera: searchQuery.cochera ? { eq: searchQuery.cochera } : undefined,
-          metrosCuadrados: { 
-            ge: searchQuery.metrosMin || undefined,
-            le: searchQuery.metrosMax || undefined
-          },
-          antiguedad: searchQuery.antiguedadMax ? { le: searchQuery.antiguedadMax } : undefined
-        }
-      });
-      propiedadesAlquiler.value = response.data || [];
-    } else {
-      const response = await client.models.PropiedadVenta.list({
-        filter: {
-          direccion: { contains: searchQuery.direccion },
-          ubicacion: { contains: searchQuery.ubicacion },
-          tipoPropiedad: { contains: searchQuery.tipoPropiedad },
-          precioVenta: { 
-            ge: searchQuery.precioMin || undefined,
-            le: searchQuery.precioMax || undefined
-          },
-          habitaciones: searchQuery.habitaciones ? { eq: searchQuery.habitaciones } : undefined,
-          ambientes: searchQuery.ambientes ? { eq: searchQuery.ambientes } : undefined,
-          banos: searchQuery.banos ? { eq: searchQuery.banos } : undefined,
-          cochera: searchQuery.cochera ? { eq: searchQuery.cochera } : undefined,
-          metrosCuadrados: { 
-            ge: searchQuery.metrosMin || undefined,
-            le: searchQuery.metrosMax || undefined
-          },
-          antiguedad: searchQuery.antiguedadMax ? { le: searchQuery.antiguedadMax } : undefined
-        }
-      });
-      propiedadesVenta.value = response.data || [];
-    }
-  } catch (error) {
-    console.error('Error al buscar propiedades:', error);
-  } finally {
-    loading.value = false;
-  }
-};
-
-// Propiedades filtradas para mostrar
-const propiedadesMostradas = computed(() => {
-  return searchQuery.operacion === 'alquiler' ? propiedadesAlquiler.value : propiedadesVenta.value;
-});
-
-// Resetear filtros
-const resetFilters = () => {
-  searchQuery.direccion = '';
-  searchQuery.ubicacion = '';
-  searchQuery.tipoPropiedad = '';
-  searchQuery.precioMin = null;
-  searchQuery.precioMax = null;
-  searchQuery.habitaciones = null;
-  searchQuery.ambientes = null;
-  searchQuery.banos = null;
-  searchQuery.cochera = '';
-  searchQuery.metrosMin = null;
-  searchQuery.metrosMax = null;
-  searchQuery.antiguedadMax = null;
-};
-
-onMounted(() => {
-  searchProperties();
-});
-</script>
-
 <template>
   <div class="search-container">
     <div class="search-header">
       <h2>Buscar Propiedades</h2>
       <div class="operation-toggle">
+        <button 
+          @click="searchQuery.operacion = ''" 
+          :class="{ active: searchQuery.operacion === '' }"
+        >
+          Todas
+        </button>
         <button 
           @click="searchQuery.operacion = 'alquiler'" 
           :class="{ active: searchQuery.operacion === 'alquiler' }"
@@ -192,9 +82,7 @@ onMounted(() => {
 
       <div class="form-row">
         <div class="form-group">
-          <label>
-            Precio {{ searchQuery.operacion === 'alquiler' ? 'Alquiler' : 'Venta' }} (USD)
-          </label>
+          <label>Precio (USD)</label>
           <div class="range-inputs">
             <input 
               type="number" 
@@ -240,16 +128,6 @@ onMounted(() => {
 
       <div class="form-row">
         <div class="form-group">
-          <label for="ambientes">Ambientes</label>
-          <input 
-            id="ambientes" 
-            type="number" 
-            v-model.number="searchQuery.ambientes" 
-            placeholder="Cualquier cantidad" 
-          />
-        </div>
-
-        <div class="form-group">
           <label for="banos">Baños</label>
           <input 
             id="banos" 
@@ -284,12 +162,53 @@ onMounted(() => {
           Limpiar Filtros
         </button>
         <button type="submit" class="primary-button">
-          {{ loading ? 'Buscando...' : 'Buscar Propiedades' }}
+          Buscar Propiedades
         </button>
       </div>
     </form>
   </div>
 </template>
+
+<script setup lang="ts">
+import { reactive } from 'vue';
+
+const emit = defineEmits(['search']);
+
+const searchQuery = reactive({
+  operacion: '',
+  direccion: '',
+  ubicacion: '',
+  tipoPropiedad: '',
+  precioMin: null as number | null,
+  precioMax: null as number | null,
+  habitaciones: null as number | null,
+  banos: null as number | null,
+  cochera: '',
+  metrosMin: null as number | null,
+  metrosMax: null as number | null,
+  antiguedadMax: null as number | null
+});
+
+const searchProperties = () => {
+  emit('search', { ...searchQuery });
+};
+
+const resetFilters = () => {
+  searchQuery.operacion = '';
+  searchQuery.direccion = '';
+  searchQuery.ubicacion = '';
+  searchQuery.tipoPropiedad = '';
+  searchQuery.precioMin = null;
+  searchQuery.precioMax = null;
+  searchQuery.habitaciones = null;
+  searchQuery.banos = null;
+  searchQuery.cochera = '';
+  searchQuery.metrosMin = null;
+  searchQuery.metrosMax = null;
+  searchQuery.antiguedadMax = null;
+  emit('search', { ...searchQuery });
+};
+</script>
 
 <style scoped>
 .search-container {
