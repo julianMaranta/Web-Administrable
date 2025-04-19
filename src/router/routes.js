@@ -87,17 +87,10 @@ const routes = [
     name: 'inicio',
     component: () => import('../views/Inicio.vue')
   },
-
-  {
-    path: '/',
-    name: 'property-list',
-    component: PropertyList
-  },
   {
     path: '/propiedad/:type/:id',
-    name: 'property-detail',
-    component: PropertyDetail,
-    props: true
+    name: 'propiedad',
+    component: () => import('../views/PropertyDetail.vue')
   },
  
   {
