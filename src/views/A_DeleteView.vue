@@ -1,96 +1,88 @@
 <template>
-    <div class="container">
+  <div class="container">
     <A_Sidebar/>
     <div class="content">
       <div class="logo-container">
-        <img src="" alt="Logo ENSEA" class="logo-plataforma"/>
+        <img src="@/assets/Logo NUEVO Maranta-2.png" alt="Logo ENSEA" class="logo-plataforma"/>
       </div>
       <br>   
       <br>
-      
-        
-        <div class="action-box">
-          <div class="action-info">
-            <h2>ALQUILER</h2>
-            <p>Elimina cursos.</p>
-          </div>
-          <button @click="deleteCourse"  class="delete-button"></button>
+      <div class="action-box">
+        <div class="action-info">
+          <h2>ALQUILER</h2>
+          <p>Elimina cursos.</p>
         </div>
-        <div class="action-box">
-          <div class="action-info">
-            <h2>VENTA</h2>
-            <p>Elimina Especializaciones.</p>
-          </div>
-          <button @click="deleteEspecializacion"  class="delete-button"></button>
-        </div>
-        
+        <button @click="deleteAlquiler" class="eliminar-button"></button>
       </div>
-    
+      <div class="action-box">
+        <div class="action-info">
+          <h2>VENTA</h2>
+          <p>Elimina Especializaciones.</p>
+        </div>
+        <button @click="deleteVenta" class="eliminar-button"></button>
+      </div>
+    </div>
   </div>
-  </template>
-  
-  <script setup>
-  import A_Sidebar from '../components/A_Sidebar.vue';
-  import { useRouter } from 'vue-router';
-  
-  const router = useRouter();
-  
+</template>
 
-  const deleteCourse = () => {
-    router.push('/delete-course'); // Navega a la vista de edición de cursos
-  };
-  
-  const deleteEspecializacion = () => {
-    router.push('/delete-especializacion');
-  };
+<script setup>
+import A_Sidebar from '../components/A_Sidebar.vue';
+import { useRouter } from 'vue-router';
 
-  const deleteTutoria = () => {
-    router.push('/delete-tutoria');
-  };
-  
-  const deleteUser = () => {
-    router.push('/delete-user');
-  };
-  </script>
-  
+const router = useRouter();
+
+const deleteAlquiler = () => {
+  router.push('/plataforma-administrador-eliminar-alquiler');
+};
+
+const deleteVenta = () => {
+  router.push('/plataforma-administrador-eliminar-venta');
+};
+
+</script>
 
 <style scoped>
-body, html  {
+body, html {
   font-family: Arial, sans-serif;
   background-color: #f0f0f0;
   margin: 0;
   padding: 0;
+  height: 100%;
 }
 
 .container {
   display: flex;
+  min-height: 100vh;
 }
 
 .content {
   margin-left: 220px;
-  background-color: #f0f0f0;
   padding: 20px;
   width: calc(100% - 220px);
   position: relative;
+  background-image: url('');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
 }
 
 .logo-plataforma {
-  width: 500px; /* Cambia este valor según el tamaño que desees para la imagen */
-  padding: 5px; /* Ajusta el espacio interior si es necesario */
+  width: 500px;
+  padding: 5px;
 }
 
 .logo-container {
-  text-align: left; 
+  text-align: left;
   margin-bottom: 5px;
-  width: 160px; /* Ajusta el ancho del contenedor acorde al tamaño de la imagen */
-  height: auto; /* Mantén la proporción de la imagen */
+  width: 160px;
+  height: auto;
 }
 
 .action-box {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-image: url('');
+  background-image: url('@/assets/caja-plataforma.png');
   padding: 40px;
   border-radius: 40px;
   margin-bottom: 20px;
@@ -112,28 +104,35 @@ body, html  {
 }
 
 .action-box button {
-  background-color: white; /* This makes the background always visible */
+  background-color: white;
   color: #000000;
   border: 1px solid #000000;
-  padding: 20px; /* Increased padding for larger buttons */
-  border-radius: 50px; /* This makes the button rounded */
+  padding: 15px;
+  border-radius: 30px;
   cursor: pointer;
-  font-size: 20px; /* Increased font size */
-  transition: transform 0.3s; /* Smooth transition */
+  font-size: 20px;
+  transition: transform 0.3s;
 }
 
 .action-box button:hover {
   background-color: #7f1a6c;
-  color: white; /* Change text color on hover */
-  transform: scale(1.1); /* Enlarge button on hover */
+  color: white;
+  transform: scale(1.1);
 }
 
-.delete-button {
-  background-image: url('');
+.eliminar-button {
+  background-image: url('@/assets/background-boton-eliminar.png');
   background-size: cover;
   background-position: center;
   color: white;
   height: 60px;
   width: 200px;
+}
+
+@media screen and (max-width: 1024px) and (min-width: 769px) {
+  .action-box {
+    background-image: url('@/assets/fondo-caja-tablet.png');
+    border-radius: 70px;
+  }
 }
 </style>

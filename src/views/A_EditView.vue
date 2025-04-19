@@ -1,68 +1,58 @@
 <template>
-    <div class="container">
+  <div class="container">
     <A_Sidebar/>
     <div class="content">
       <div class="logo-container">
-        <img src="" alt="Logo ENSEA" class="logo-plataforma"/>
+        <img src="@/assets/Logo NUEVO Maranta-2.png" alt="Logo ENSEA" class="logo-plataforma"/>
       </div>
       <br>   
       <br>
-        <div class="action-box">
-          <div class="action-info">
-            <h2>ALQUILER</h2>
-            <p>Edita cursos.</p>
-          </div>
-          <button @click="editCourse"  class="editar-button"></button>
+      <div class="action-box">
+        <div class="action-info">
+          <h2>ALQUILER</h2>
+          <p>Edita cursos.</p>
         </div>
-        <div class="action-box">
-          <div class="action-info">
-            <h2>VENTA</h2>
-            <p>Edita Especializaciones</p>
-          </div>
-          <button @click="editEspecializacion"  class="editar-button"></button>
+        <button @click="editAlquiler" class="editar-button"></button>
+      </div>
+      <div class="action-box">
+        <div class="action-info">
+          <h2>VENTA</h2>
+          <p>Edita Especializaciones</p>
         </div>
-        
+        <button @click="editVenta" class="editar-button"></button>
       </div>
     </div>
-  </template>
-  
-  <script setup>
-  import A_Sidebar from '../components/A_Sidebar.vue';
-  import { useRouter } from 'vue-router';
-  
-  const router = useRouter();
+  </div>
+</template>
 
-  
-  const editCourse = () => {
-    router.push('/course-list'); // Navega a la vista de edición de cursos
-  };
-  
-  const editEspecializacion = () => {
-    
-    router.push('/especializacion-list');
-  };
-  const editTutoria = () => {
-    
-    router.push('/tutoria-list');
-  };
-  
-  const editUser = () => {
-    console.log('Editing user');
-    router.push('/user-list');
-  };
-  </script>
-  
+<script setup>
+import A_Sidebar from '../components/A_Sidebar.vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const editAlquiler = () => {
+  router.push('/plataforma-administrador-editar-alquiler');
+};
+
+const editVenta = () => {
+  router.push('/plataforma-administrador-editar-venta');
+};
+
+</script>
 
 <style scoped>
-body, html  {
+body, html {
   font-family: Arial, sans-serif;
   background-color: #f0f0f0;
   margin: 0;
   padding: 0;
+  height: 100%;
 }
 
 .container {
   display: flex;
+  min-height: 100vh;
 }
 
 .content {
@@ -70,26 +60,29 @@ body, html  {
   padding: 20px;
   width: calc(100% - 220px);
   position: relative;
-  background-color: #f0f0f0;
+  background-image: url('');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
 }
 
 .logo-plataforma {
-  width: 500px; /* Cambia este valor según el tamaño que desees para la imagen */
-  padding: 5px; /* Ajusta el espacio interior si es necesario */
+  width: 500px;
+  padding: 5px;
 }
 
 .logo-container {
-  text-align: left; 
+  text-align: left;
   margin-bottom: 5px;
-  width: 160px; /* Ajusta el ancho del contenedor acorde al tamaño de la imagen */
-  height: auto; /* Mantén la proporción de la imagen */
+  width: 160px;
+  height: auto;
 }
 
 .action-box {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-image: url('');
+  background-image: url('@/assets/caja-plataforma.png');
   padding: 40px;
   border-radius: 40px;
   margin-bottom: 20px;
@@ -111,28 +104,35 @@ body, html  {
 }
 
 .action-box button {
-  background-color: white; /* This makes the background always visible */
+  background-color: white;
   color: #000000;
-  border: none;
-  padding: 20px; /* Increased padding for larger buttons */
-  border-radius: 50px; /* This makes the button rounded */
+  border: 1px solid #000000;
+  padding: 15px;
+  border-radius: 30px;
   cursor: pointer;
-  font-size: 20px; /* Increased font size */
-  transition: transform 0.3s; /* Smooth transition */
+  font-size: 20px;
+  transition: transform 0.3s;
 }
 
 .action-box button:hover {
   background-color: #7f1a6c;
-  color: white; /* Change text color on hover */
-  transform: scale(1.1); /* Enlarge button on hover */
+  color: white;
+  transform: scale(1.1);
 }
 
 .editar-button {
-  background-image: url('');
+  background-image: url('@/assets/background-boton-editar.png');
   background-size: cover;
   background-position: center;
   color: white;
   height: 60px;
   width: 200px;
+}
+
+@media screen and (max-width: 1024px) and (min-width: 769px) {
+  .action-box {
+    background-image: url('@/assets/fondo-caja-tablet.png');
+    border-radius: 70px;
+  }
 }
 </style>

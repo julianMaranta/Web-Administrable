@@ -349,7 +349,7 @@ body {
   font-size: 16px;
   padding: 10px 20px;
   margin-top: 20px;
-  background-color: #3498db;
+  background-color: #0014ac;
   color: white;
   border: none;
   border-radius: 5px;
@@ -358,14 +358,14 @@ body {
 }
 
 .modal-content button:hover {
-  background-color: #2980b9;
+  background-color: #0014ac;
 }
 
 button[type="submit"],
 button[type="button"] {
   margin-top: 15px;
   padding: 10px 20px;
-  background-color: #2ecc71;
+  background-color: #0014ac;
   color: white;
   border: none;
   border-radius: 5px;
@@ -376,14 +376,14 @@ button[type="button"] {
 
 button[type="submit"]:hover,
 button[type="button"]:hover {
-  background-color: #27ae60;
+  background-color: #0014ac;
 }
 
 button[type="button"] {
-  background-color: #3498db;
+  background-color: #0014ac;
 }
 
 button[type="button"]:hover {
-  background-color: #2980b9;
+  background-color: #0014ac;
 }
 </style>
