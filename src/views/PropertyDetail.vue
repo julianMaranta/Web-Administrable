@@ -23,10 +23,14 @@
             v-for="(img, index) in propertyImages" 
             :key="index"
             :src="img.url" 
-            :alt="`Imagen ${index + 1} de la propiedad`"
+            :alt="img.title"
             class="gallery-image"
             @click="openGallery(index)"
+            @error="handleImageError"
           />
+          <div v-if="propertyImages.length === 0" class="no-images">
+            <img src="@/assets/placeholder-property.jpg" alt="Imagen no disponible" />
+          </div>
         </div>
         
         <div class="property-info">
@@ -91,7 +95,11 @@
       <div v-if="showGallery" class="gallery-modal" @click.self="closeGallery">
         <div class="gallery-content">
           <button class="close-button" @click="closeGallery">&times;</button>
-          <img :src="currentImage.url" :alt="`Imagen ${currentImageIndex + 1} de la propiedad`" />
+          <img 
+            :src="currentImage.url" 
+            :alt="currentImage.title" 
+            @error="handleImageError"
+          />
           <div class="gallery-controls">
             <button @click="prevImage" :disabled="currentImageIndex === 0">Anterior</button>
             <span>{{ currentImageIndex + 1 }} / {{ propertyImages.length }}</span>
@@ -122,12 +130,39 @@
   const propertyId = route.params.id as string;
   const propertyType = route.params.type as 'venta' | 'alquiler';
   
+  // Función para transformar URLs de Dropbox
+  const transformDropboxUrl = (url: string) => {
+    if (!url) return '';
+    
+    if (url.includes('dropbox.com')) {
+      url = url.replace('www.dropbox.com', 'dl.dropboxusercontent.com');
+      
+      if (url.includes('?dl=0')) {
+        url = url.replace('?dl=0', '?raw=1');
+      } else if (!url.includes('?raw=1')) {
+        url += '?raw=1';
+      }
+    }
+    return url;
+  };
+  
   const propertyImages = computed(() => {
     if (!property.value?.imagenes) return [];
+    
     try {
-      return typeof property.value.imagenes === 'string' 
+      const imagenes = typeof property.value.imagenes === 'string' 
         ? JSON.parse(property.value.imagenes) 
         : property.value.imagenes;
+  
+      return imagenes.map((img: any) => {
+        let url = img.url || img;
+        url = transformDropboxUrl(url);
+        
+        return {
+          url,
+          title: typeof img === 'object' ? img.titulo : `Imagen de la propiedad ${property.value.direccion}`
+        };
+      });
     } catch (e) {
       console.error('Error al procesar imágenes:', e);
       return [];
@@ -135,7 +170,10 @@
   });
   
   const currentImage = computed(() => {
-    return propertyImages.value[currentImageIndex.value] || { url: '@/assets/placeholder-property.jpg' };
+    return propertyImages.value[currentImageIndex.value] || { 
+      url: require('@/assets/placeholder-property.jpg'),
+      title: 'Imagen no disponible'
+    };
   });
   
   const loadProperty = async () => {
@@ -159,6 +197,14 @@
   
   const formatPrice = (price?: number | null) => {
     return price ? '$' + price.toLocaleString('es-AR') : 'Consultar';
+  };
+  
+  const handleImageError = (event: Event) => {
+    const target = event.target as HTMLImageElement;
+    if (target) {
+      target.src = require('@/assets/placeholder-property.jpg');
+      target.onerror = null; // Prevenir bucles infinitos
+    }
   };
   
   const openGallery = (index: number) => {
@@ -192,10 +238,17 @@
   </script>
   
   <style scoped>
+  .page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
   .property-detail-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+    flex: 1;
   }
   
   .property-header {
@@ -270,11 +323,27 @@
     object-fit: cover;
     border-radius: 8px;
     cursor: pointer;
-    transition: transform 0.3s;
+    transition: transform 0.3s, opacity 0.3s;
   }
   
   .gallery-image:hover {
     transform: scale(1.02);
+    opacity: 0.9;
+  }
+  
+  .no-images {
+    width: 100%;
+    padding: 40px;
+    text-align: center;
+    background: #f5f5f5;
+    border-radius: 8px;
+    grid-column: 1 / -1;
+  }
+  
+  .no-images img {
+    max-width: 100%;
+    max-height: 300px;
+    opacity: 0.7;
   }
   
   .property-info {
@@ -389,6 +458,13 @@
     margin-bottom: 20px;
   }
   
+  .loading {
+    text-align: center;
+    padding: 50px;
+    font-size: 1.2rem;
+    color: #666;
+  }
+  
   /* Estilos para el modal de la galería */
   .gallery-modal {
     position: fixed;
@@ -407,18 +483,23 @@
     position: relative;
     max-width: 90%;
     max-height: 90%;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
   }
   
   .gallery-content img {
-    max-height: 80vh;
-    max-width: 100%;
-    border-radius: 8px;
+    max-height: 70vh;
+    max-width: 90vw;
+    object-fit: contain;
+    border-radius: 4px;
   }
   
   .close-button {
     position: absolute;
     top: -40px;
-    right: 0;
+    right: -10px;
     background: none;
     border: none;
     color: white;
@@ -468,6 +549,10 @@
     .features-section ul {
       grid-template-columns: 1fr 1fr;
     }
+    
+    .gallery-image {
+      height: 200px;
+    }
   }
   
   @media (max-width: 480px) {
@@ -480,8 +565,18 @@
       grid-template-columns: 1fr;
     }
     
-    .gallery-image {
-      height: 200px;
+    .gallery-content {
+      padding: 10px;
+    }
+    
+    .gallery-content img {
+      max-height: 60vh;
+    }
+    
+    .close-button {
+      top: -35px;
+      right: 0;
+      font-size: 1.8rem;
     }
   }
   </style>
