@@ -18,15 +18,14 @@
           </div>
         </div>
         
-        <!-- Carrusel principal -->
-        <div class="main-carousel-container" v-if="propertyImages.length > 0">
-          <Carousel :items-to-show="1" :wrap-around="true" :autoplay="3000">
-            <Slide v-for="(img, index) in propertyImages" :key="index">
+        <!-- Carrusel de imágenes (igual que en la vista principal) -->
+        <div class="property-carousel" v-if="propertyImages.length > 0">
+          <Carousel :items-to-show="1" :wrap-around="true">
+            <Slide v-for="(image, index) in propertyImages" :key="index">
               <img 
-                :src="img.url" 
-                :alt="img.title"
-                class="main-carousel-image"
-                @click="openGallery(index)"
+                :src="image.url" 
+                :alt="`Imagen ${index + 1} de la propiedad`"
+                class="carousel-image"
                 @error="handleImageError"
               />
             </Slide>
@@ -37,22 +36,8 @@
           </Carousel>
         </div>
         
-        <div v-else class="no-images">
-          <img src="@/assets/placeholder-property.jpg" alt="Imagen no disponible" />
-        </div>
-        
-        <!-- Miniaturas para navegación (opcional) -->
-        <div class="thumbnails" v-if="propertyImages.length > 1">
-          <img 
-            v-for="(img, index) in propertyImages" 
-            :key="'thumb-' + index"
-            :src="img.url" 
-            :alt="'Miniatura ' + (index + 1)"
-            class="thumbnail"
-            :class="{ 'active-thumbnail': currentSlide === index }"
-            @click="goToSlide(index)"
-            @error="handleImageError"
-          />
+        <div v-else class="no-images-placeholder">
+          <img src="@/assets/placeholder-property.jpg" alt="Imagen no disponible" class="placeholder-image" />
         </div>
         
         <div class="property-info">
@@ -112,44 +97,18 @@
       </div>
       
       <Footer />
-      
-      <!-- Modal para galería de imágenes (fullscreen) -->
-      <div v-if="showGallery" class="gallery-modal" @click.self="closeGallery">
-        <div class="gallery-content">
-          <button class="close-button" @click="closeGallery">&times;</button>
-          <Carousel 
-            ref="modalCarousel"
-            :items-to-show="1" 
-            :wrap-around="true"
-            v-model="currentSlide"
-          >
-            <Slide v-for="(img, index) in propertyImages" :key="'modal-' + index">
-              <img 
-                :src="img.url" 
-                :alt="img.title"
-                class="modal-image"
-                @error="handleImageError"
-              />
-            </Slide>
-            <template #addons>
-              <Navigation />
-              <Pagination />
-            </template>
-          </Carousel>
-        </div>
-      </div>
     </div>
   </template>
   
   <script setup lang="ts">
- import { ref, computed, onMounted, nextTick } from 'vue'; // Añade nextTick aquí
-import { useRoute, useRouter } from 'vue-router';
-import Header from '@/components/Header.vue';
-import Footer from '@/components/Footer.vue';
-import { generateClient } from 'aws-amplify/data';
-import type { Schema } from '../../amplify/data/resource';
-import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
-import 'vue3-carousel/dist/carousel.css';
+  import { ref, computed, onMounted } from 'vue';
+  import { useRoute, useRouter } from 'vue-router';
+  import Header from '@/components/Header.vue';
+  import Footer from '@/components/Footer.vue';
+  import { generateClient } from 'aws-amplify/data';
+  import type { Schema } from '../../amplify/data/resource';
+  import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
+  import 'vue3-carousel/dist/carousel.css';
   
   const client = generateClient<Schema>();
   const route = useRoute();
@@ -157,51 +116,60 @@ import 'vue3-carousel/dist/carousel.css';
   
   const property = ref<any>(null);
   const loading = ref(true);
-  const showGallery = ref(false);
-  const currentSlide = ref(0);
-  const modalCarousel = ref<any>(null);
   
   const propertyId = route.params.id as string;
   const propertyType = route.params.type as 'venta' | 'alquiler';
   
-  // Función para transformar URLs de Dropbox
-  const transformDropboxUrl = (url: string) => {
-    if (!url) return '';
-    
-    if (url.includes('dropbox.com')) {
-      url = url.replace('www.dropbox.com', 'dl.dropboxusercontent.com');
-      
-      if (url.includes('?dl=0')) {
-        url = url.replace('?dl=0', '?raw=1');
-      } else if (!url.includes('?raw=1')) {
-        url += '?raw=1';
-      }
-    }
-    return url;
-  };
-  
-  const propertyImages = computed(() => {
-    if (!property.value?.imagenes) return [];
+  // Función idéntica a la de la vista principal para procesar imágenes
+  const getPropertyImages = (propiedad: any) => {
+    if (!propiedad?.imagenes) return [];
     
     try {
-      const imagenes = typeof property.value.imagenes === 'string' 
-        ? JSON.parse(property.value.imagenes) 
-        : property.value.imagenes;
+      const imagenes = typeof propiedad.imagenes === 'string' 
+        ? JSON.parse(propiedad.imagenes) 
+        : propiedad.imagenes;
   
       return imagenes.map((img: any) => {
         let url = img.url || img;
-        url = transformDropboxUrl(url);
+        
+        // Transformar URLs de Dropbox (igual que en la vista principal)
+        if (url.includes('dropbox.com')) {
+          url = url.replace('www.dropbox.com', 'dl.dropboxusercontent.com');
+          
+          if (url.includes('?dl=0')) {
+            url = url.replace('?dl=0', '?raw=1');
+          } else if (!url.includes('?raw=1')) {
+            url += '?raw=1';
+          }
+        }
         
         return {
           url,
-          title: typeof img === 'object' ? img.titulo : `Imagen de la propiedad ${property.value.direccion}`
+          title: typeof img === 'object' ? img.titulo : `Imagen de propiedad`
         };
       });
-    } catch (e) {
-      console.error('Error al procesar imágenes:', e);
+    } catch (error) {
+      console.error('Error procesando imágenes:', error);
       return [];
     }
+  };
+  
+  // Computed para las imágenes transformadas
+  const propertyImages = computed(() => {
+    return property.value ? getPropertyImages(property.value) : [];
   });
+  
+  const formatPrice = (price?: number | null) => {
+    return price ? '$' + price.toLocaleString('es-AR') : 'Consultar';
+  };
+  
+  // Manejador de errores idéntico al de la vista principal
+  const handleImageError = (event: Event) => {
+    const target = event.target as HTMLImageElement | null;
+    if (target) {
+      target.src = '';
+    }
+  };
   
   const loadProperty = async () => {
     try {
@@ -222,38 +190,6 @@ import 'vue3-carousel/dist/carousel.css';
     }
   };
   
-  const formatPrice = (price?: number | null) => {
-    return price ? '$' + price.toLocaleString('es-AR') : 'Consultar';
-  };
-  
-  const handleImageError = (event: Event) => {
-    const target = event.target as HTMLImageElement;
-    if (target) {
-      target.src = require('@/assets/placeholder-property.jpg');
-      target.onerror = null; // Prevenir bucles infinitos
-    }
-  };
-  
-  const openGallery = (index: number) => {
-    currentSlide.value = index;
-    showGallery.value = true;
-    
-    // Esperar a que el modal se renderice antes de mover el carrusel
-    nextTick(() => {
-      if (modalCarousel.value) {
-        modalCarousel.value.slideTo(index);
-      }
-    });
-  };
-  
-  const closeGallery = () => {
-    showGallery.value = false;
-  };
-  
-  const goToSlide = (index: number) => {
-    currentSlide.value = index;
-  };
-  
   const goBack = () => {
     router.go(-1);
   };
@@ -264,6 +200,7 @@ import 'vue3-carousel/dist/carousel.css';
   </script>
   
   <style scoped>
+  /* Estilos del contenedor principal */
   .page-container {
     display: flex;
     flex-direction: column;
@@ -277,6 +214,7 @@ import 'vue3-carousel/dist/carousel.css';
     flex: 1;
   }
   
+  /* Estilos del header de la propiedad */
   .property-header {
     margin-bottom: 30px;
     text-align: center;
@@ -336,72 +274,37 @@ import 'vue3-carousel/dist/carousel.css';
     border-radius: 4px;
   }
   
-  /* Estilos para el carrusel principal */
-  .main-carousel-container {
-    margin-bottom: 20px;
+  /* Estilos del carrusel (igual que en la vista principal) */
+  .property-carousel {
+    margin-bottom: 30px;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
-  .main-carousel-image {
+  .carousel-image {
     width: 100%;
     height: 500px;
     object-fit: cover;
-    cursor: pointer;
-    transition: transform 0.3s;
   }
   
-  .main-carousel-image:hover {
-    transform: scale(1.01);
-  }
-  
-  /* Estilos para las miniaturas */
-  .thumbnails {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    padding: 10px 0;
-    margin-bottom: 30px;
-    scrollbar-width: thin;
-  }
-  
-  .thumbnail {
-    width: 80px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 4px;
-    cursor: pointer;
-    border: 2px solid transparent;
-    transition: all 0.3s;
-  }
-  
-  .thumbnail:hover {
-    opacity: 0.8;
-    border-color: #0a0f64;
-  }
-  
-  .active-thumbnail {
-    border-color: #0a0f64;
-    opacity: 0.8;
-  }
-  
-  /* Estilos para cuando no hay imágenes */
-  .no-images {
+  .no-images-placeholder {
     width: 100%;
-    padding: 40px;
-    text-align: center;
+    height: 300px;
     background: #f5f5f5;
-    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-bottom: 30px;
+    border-radius: 8px;
   }
   
-  .no-images img {
+  .placeholder-image {
     max-width: 100%;
-    max-height: 300px;
+    max-height: 100%;
     opacity: 0.7;
   }
   
+  /* Estilos de la información de la propiedad */
   .property-info {
     background: #f9f9f9;
     padding: 25px;
@@ -486,6 +389,7 @@ import 'vue3-carousel/dist/carousel.css';
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
   }
   
+  /* Estilos del botón de volver */
   .back-button {
     display: block;
     margin: 0 auto;
@@ -503,6 +407,7 @@ import 'vue3-carousel/dist/carousel.css';
     background: #1a237e;
   }
   
+  /* Estilos para cuando no se encuentra la propiedad */
   .not-found {
     text-align: center;
     padding: 50px 20px;
@@ -521,47 +426,7 @@ import 'vue3-carousel/dist/carousel.css';
     color: #666;
   }
   
-  /* Estilos para el modal de la galería */
-  .gallery-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.9);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .gallery-content {
-    position: relative;
-    width: 90%;
-    max-width: 1200px;
-    height: 90vh;
-  }
-  
-  .modal-image {
-    max-height: 80vh;
-    max-width: 100%;
-    object-fit: contain;
-    border-radius: 4px;
-  }
-  
-  .close-button {
-    position: absolute;
-    top: -50px;
-    right: 0;
-    background: none;
-    border: none;
-    color: white;
-    font-size: 2.5rem;
-    cursor: pointer;
-    z-index: 1001;
-  }
-  
-  /* Personalización del carrusel */
+  /* Personalización del carrusel (igual que en la vista principal) */
   :deep(.carousel__prev),
   :deep(.carousel__next) {
     background-color: rgba(255, 255, 255, 0.7);
@@ -589,11 +454,7 @@ import 'vue3-carousel/dist/carousel.css';
       font-size: 1rem;
     }
     
-    .price-section h2 {
-      font-size: 1.5rem;
-    }
-    
-    .main-carousel-image {
+    .carousel-image {
       height: 350px;
     }
     
@@ -611,30 +472,13 @@ import 'vue3-carousel/dist/carousel.css';
       padding: 15px;
     }
     
-    .main-carousel-image {
+    .carousel-image {
       height: 250px;
     }
     
     .details-grid,
     .features-section ul {
       grid-template-columns: 1fr;
-    }
-    
-    .gallery-content {
-      width: 95%;
-      height: 85vh;
-    }
-    
-    .close-button {
-      top: -40px;
-      right: -10px;
-      font-size: 2rem;
-    }
-    
-    :deep(.carousel__prev),
-    :deep(.carousel__next) {
-      width: 30px;
-      height: 30px;
     }
   }
   </style>
