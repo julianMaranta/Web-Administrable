@@ -18,7 +18,7 @@
           </div>
         </div>
         
-        <!-- Carrusel de imágenes (igual que en la vista principal) -->
+        <!-- Carrusel de imágenes IDÉNTICO al de la vista principal -->
         <div class="property-carousel" v-if="propertyImages.length > 0">
           <Carousel :items-to-show="1" :wrap-around="true">
             <Slide v-for="(image, index) in propertyImages" :key="index">
@@ -120,9 +120,9 @@
   const propertyId = route.params.id as string;
   const propertyType = route.params.type as 'venta' | 'alquiler';
   
-  // Función idéntica a la de la vista principal para procesar imágenes
+  // Función IDÉNTICA a la de la vista principal para procesar imágenes
   const getPropertyImages = (propiedad: any) => {
-    if (!propiedad?.imagenes) return [];
+    if (!propiedad.imagenes) return [];
     
     try {
       const imagenes = typeof propiedad.imagenes === 'string' 
@@ -154,16 +154,17 @@
     }
   };
   
-  // Computed para las imágenes transformadas
+  // Computed para obtener las imágenes transformadas
   const propertyImages = computed(() => {
     return property.value ? getPropertyImages(property.value) : [];
   });
   
+  // Función IDÉNTICA a la de la vista principal para formatear precios
   const formatPrice = (price?: number | null) => {
     return price ? '$' + price.toLocaleString('es-AR') : 'Consultar';
   };
   
-  // Manejador de errores idéntico al de la vista principal
+  // Manejador de errores IDÉNTICO al de la vista principal
   const handleImageError = (event: Event) => {
     const target = event.target as HTMLImageElement | null;
     if (target) {
@@ -274,7 +275,7 @@
     border-radius: 4px;
   }
   
-  /* Estilos del carrusel (igual que en la vista principal) */
+  /* Estilos del carrusel IDÉNTICOS a los de la vista principal */
   .property-carousel {
     margin-bottom: 30px;
     border-radius: 8px;
@@ -426,7 +427,7 @@
     color: #666;
   }
   
-  /* Personalización del carrusel (igual que en la vista principal) */
+  /* Personalización del carrusel IDÉNTICA a la de la vista principal */
   :deep(.carousel__prev),
   :deep(.carousel__next) {
     background-color: rgba(255, 255, 255, 0.7);
