@@ -18,19 +18,41 @@
           </div>
         </div>
         
-        <div class="property-gallery">
+        <!-- Carrusel principal -->
+        <div class="main-carousel-container" v-if="propertyImages.length > 0">
+          <Carousel :items-to-show="1" :wrap-around="true" :autoplay="3000">
+            <Slide v-for="(img, index) in propertyImages" :key="index">
+              <img 
+                :src="img.url" 
+                :alt="img.title"
+                class="main-carousel-image"
+                @click="openGallery(index)"
+                @error="handleImageError"
+              />
+            </Slide>
+            <template #addons>
+              <Navigation />
+              <Pagination />
+            </template>
+          </Carousel>
+        </div>
+        
+        <div v-else class="no-images">
+          <img src="@/assets/placeholder-property.jpg" alt="Imagen no disponible" />
+        </div>
+        
+        <!-- Miniaturas para navegación (opcional) -->
+        <div class="thumbnails" v-if="propertyImages.length > 1">
           <img 
             v-for="(img, index) in propertyImages" 
-            :key="index"
+            :key="'thumb-' + index"
             :src="img.url" 
-            :alt="img.title"
-            class="gallery-image"
-            @click="openGallery(index)"
+            :alt="'Miniatura ' + (index + 1)"
+            class="thumbnail"
+            :class="{ 'active-thumbnail': currentSlide === index }"
+            @click="goToSlide(index)"
             @error="handleImageError"
           />
-          <div v-if="propertyImages.length === 0" class="no-images">
-            <img src="@/assets/placeholder-property.jpg" alt="Imagen no disponible" />
-          </div>
         </div>
         
         <div class="property-info">
@@ -91,32 +113,43 @@
       
       <Footer />
       
-      <!-- Modal para galería de imágenes -->
+      <!-- Modal para galería de imágenes (fullscreen) -->
       <div v-if="showGallery" class="gallery-modal" @click.self="closeGallery">
         <div class="gallery-content">
           <button class="close-button" @click="closeGallery">&times;</button>
-          <img 
-            :src="currentImage.url" 
-            :alt="currentImage.title" 
-            @error="handleImageError"
-          />
-          <div class="gallery-controls">
-            <button @click="prevImage" :disabled="currentImageIndex === 0">Anterior</button>
-            <span>{{ currentImageIndex + 1 }} / {{ propertyImages.length }}</span>
-            <button @click="nextImage" :disabled="currentImageIndex === propertyImages.length - 1">Siguiente</button>
-          </div>
+          <Carousel 
+            ref="modalCarousel"
+            :items-to-show="1" 
+            :wrap-around="true"
+            v-model="currentSlide"
+          >
+            <Slide v-for="(img, index) in propertyImages" :key="'modal-' + index">
+              <img 
+                :src="img.url" 
+                :alt="img.title"
+                class="modal-image"
+                @error="handleImageError"
+              />
+            </Slide>
+            <template #addons>
+              <Navigation />
+              <Pagination />
+            </template>
+          </Carousel>
         </div>
       </div>
     </div>
   </template>
   
   <script setup lang="ts">
-  import { ref, computed, onMounted } from 'vue';
-  import { useRoute, useRouter } from 'vue-router';
-  import Header from '@/components/Header.vue';
-  import Footer from '@/components/Footer.vue';
-  import { generateClient } from 'aws-amplify/data';
-  import type { Schema } from '../../amplify/data/resource';
+ import { ref, computed, onMounted, nextTick } from 'vue'; // Añade nextTick aquí
+import { useRoute, useRouter } from 'vue-router';
+import Header from '@/components/Header.vue';
+import Footer from '@/components/Footer.vue';
+import { generateClient } from 'aws-amplify/data';
+import type { Schema } from '../../amplify/data/resource';
+import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
+import 'vue3-carousel/dist/carousel.css';
   
   const client = generateClient<Schema>();
   const route = useRoute();
@@ -125,7 +158,8 @@
   const property = ref<any>(null);
   const loading = ref(true);
   const showGallery = ref(false);
-  const currentImageIndex = ref(0);
+  const currentSlide = ref(0);
+  const modalCarousel = ref<any>(null);
   
   const propertyId = route.params.id as string;
   const propertyType = route.params.type as 'venta' | 'alquiler';
@@ -169,13 +203,6 @@
     }
   });
   
-  const currentImage = computed(() => {
-    return propertyImages.value[currentImageIndex.value] || { 
-      url: require('@/assets/placeholder-property.jpg'),
-      title: 'Imagen no disponible'
-    };
-  });
-  
   const loadProperty = async () => {
     try {
       loading.value = true;
@@ -208,24 +235,23 @@
   };
   
   const openGallery = (index: number) => {
-    currentImageIndex.value = index;
+    currentSlide.value = index;
     showGallery.value = true;
+    
+    // Esperar a que el modal se renderice antes de mover el carrusel
+    nextTick(() => {
+      if (modalCarousel.value) {
+        modalCarousel.value.slideTo(index);
+      }
+    });
   };
   
   const closeGallery = () => {
     showGallery.value = false;
   };
   
-  const prevImage = () => {
-    if (currentImageIndex.value > 0) {
-      currentImageIndex.value--;
-    }
-  };
-  
-  const nextImage = () => {
-    if (currentImageIndex.value < propertyImages.value.length - 1) {
-      currentImageIndex.value++;
-    }
+  const goToSlide = (index: number) => {
+    currentSlide.value = index;
   };
   
   const goBack = () => {
@@ -310,34 +336,64 @@
     border-radius: 4px;
   }
   
-  .property-gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 15px;
-    margin-bottom: 30px;
-  }
-  
-  .gallery-image {
-    width: 100%;
-    height: 250px;
-    object-fit: cover;
+  /* Estilos para el carrusel principal */
+  .main-carousel-container {
+    margin-bottom: 20px;
     border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .main-carousel-image {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
     cursor: pointer;
-    transition: transform 0.3s, opacity 0.3s;
+    transition: transform 0.3s;
   }
   
-  .gallery-image:hover {
-    transform: scale(1.02);
-    opacity: 0.9;
+  .main-carousel-image:hover {
+    transform: scale(1.01);
   }
   
+  /* Estilos para las miniaturas */
+  .thumbnails {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 10px 0;
+    margin-bottom: 30px;
+    scrollbar-width: thin;
+  }
+  
+  .thumbnail {
+    width: 80px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s;
+  }
+  
+  .thumbnail:hover {
+    opacity: 0.8;
+    border-color: #0a0f64;
+  }
+  
+  .active-thumbnail {
+    border-color: #0a0f64;
+    opacity: 0.8;
+  }
+  
+  /* Estilos para cuando no hay imágenes */
   .no-images {
     width: 100%;
     padding: 40px;
     text-align: center;
     background: #f5f5f5;
     border-radius: 8px;
-    grid-column: 1 / -1;
+    margin-bottom: 30px;
   }
   
   .no-images img {
@@ -472,7 +528,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.9);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -481,54 +537,49 @@
   
   .gallery-content {
     position: relative;
-    max-width: 90%;
-    max-height: 90%;
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    text-align: center;
+    width: 90%;
+    max-width: 1200px;
+    height: 90vh;
   }
   
-  .gallery-content img {
-    max-height: 70vh;
-    max-width: 90vw;
+  .modal-image {
+    max-height: 80vh;
+    max-width: 100%;
     object-fit: contain;
     border-radius: 4px;
   }
   
   .close-button {
     position: absolute;
-    top: -40px;
-    right: -10px;
+    top: -50px;
+    right: 0;
     background: none;
     border: none;
     color: white;
-    font-size: 2rem;
+    font-size: 2.5rem;
     cursor: pointer;
+    z-index: 1001;
   }
   
-  .gallery-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 15px;
-    color: white;
+  /* Personalización del carrusel */
+  :deep(.carousel__prev),
+  :deep(.carousel__next) {
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    color: #0a0f64;
   }
   
-  .gallery-controls button {
-    padding: 8px 15px;
-    background: #0a0f64;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+  :deep(.carousel__pagination-button) {
+    background-color: #ccc;
   }
   
-  .gallery-controls button:disabled {
-    background: #666;
-    cursor: not-allowed;
+  :deep(.carousel__pagination-button--active) {
+    background-color: #0a0f64;
   }
   
+  /* Estilos responsivos */
   @media (max-width: 768px) {
     .property-header h1 {
       font-size: 1.5rem;
@@ -542,16 +593,16 @@
       font-size: 1.5rem;
     }
     
+    .main-carousel-image {
+      height: 350px;
+    }
+    
     .details-grid {
       grid-template-columns: 1fr 1fr;
     }
     
     .features-section ul {
       grid-template-columns: 1fr 1fr;
-    }
-    
-    .gallery-image {
-      height: 200px;
     }
   }
   
@@ -560,23 +611,30 @@
       padding: 15px;
     }
     
+    .main-carousel-image {
+      height: 250px;
+    }
+    
     .details-grid,
     .features-section ul {
       grid-template-columns: 1fr;
     }
     
     .gallery-content {
-      padding: 10px;
-    }
-    
-    .gallery-content img {
-      max-height: 60vh;
+      width: 95%;
+      height: 85vh;
     }
     
     .close-button {
-      top: -35px;
-      right: 0;
-      font-size: 1.8rem;
+      top: -40px;
+      right: -10px;
+      font-size: 2rem;
+    }
+    
+    :deep(.carousel__prev),
+    :deep(.carousel__next) {
+      width: 30px;
+      height: 30px;
     }
   }
   </style>
