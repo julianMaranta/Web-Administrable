@@ -2,137 +2,190 @@
     <div class="page-container">
       <Header />
       
-      <div v-if="loading" class="loading">Cargando propiedad...</div>
-      
-      <div v-else-if="property" class="property-detail-container">
-        <div class="property-header">
-          <h1>{{ property.direccion }}</h1>
-          <p class="location">{{ property.ubicacion }}</p>
+      <main class="property-detail-container">
+        <div v-if="loading" class="loading">Cargando propiedad...</div>
+        
+        <div v-else-if="property" class="property-detail">
+          <!-- Botón de volver -->
+          <button class="back-button" @click="goBack">
+            ← Volver a propiedades
+          </button>
           
-          <div class="property-badges">
+          <!-- Encabezado -->
+          <div class="property-header">
             <span class="property-badge" :class="property.tipo">
               {{ property.tipo === 'venta' ? 'VENTA' : 'ALQUILER' }}
             </span>
             <span v-if="property.destacada" class="featured-badge">DESTACADA</span>
-            <span class="property-type">{{ property.tipoPropiedad }}</span>
+            <h1>{{ property.direccion }}</h1>
+            <p class="property-location">{{ property.ubicacion }}</p>
+            <p class="property-type">{{ property.tipoPropiedad }}</p>
           </div>
-        </div>
-        
-        <!-- Carrusel de imágenes IDÉNTICO al de la vista principal -->
-        <div class="property-carousel" v-if="propertyImages.length > 0">
-          <Carousel :items-to-show="1" :wrap-around="true">
-            <Slide v-for="(image, index) in propertyImages" :key="index">
-              <img 
-                :src="image.url" 
-                :alt="`Imagen ${index + 1} de la propiedad`"
-                class="carousel-image"
-                @error="handleImageError"
-              />
-            </Slide>
-            <template #addons>
-              <Navigation />
-              <Pagination />
-            </template>
-          </Carousel>
-        </div>
-        
-        <div v-else class="no-images-placeholder">
-          <img src="@/assets/placeholder-property.jpg" alt="Imagen no disponible" class="placeholder-image" />
-        </div>
-        
-        <div class="property-info">
+          
+          <!-- Carrusel de imágenes (más grande que en la lista) -->
+          <div class="property-carousel-detail" v-if="propertyImages.length > 0">
+            <Carousel :items-to-show="1" :wrap-around="true">
+              <Slide v-for="(image, index) in propertyImages" :key="index">
+                <img 
+                  :src="image.url" 
+                  :alt="image.title || `Imagen ${index + 1} de la propiedad`"
+                  class="carousel-image-detail"
+                  @error="handleImageError"
+                />
+              </Slide>
+              
+              <template #addons>
+                <Navigation />
+                <Pagination />
+              </template>
+            </Carousel>
+          </div>
+          
+          <div v-else class="no-images-placeholder-detail">
+            <img src="@/assets/placeholder-property.jpg" alt="Imagen no disponible" />
+          </div>
+          
+          <!-- Sección de precio y características principales -->
           <div class="price-section">
-            <h2>{{ formatPrice(property.tipo === 'venta' ? property.precioVenta : property.precioAlquiler) }}</h2>
-            <p v-if="property.tipo === 'alquiler'" class="expenses">Expensas: {{ formatPrice(property.expensas) || 'No incluye' }}</p>
-          </div>
-          
-          <div class="details-grid">
-            <div class="detail-item">
-              <span class="detail-label">Habitaciones:</span>
-              <span class="detail-value">{{ property.habitaciones || '-' }}</span>
+            <div class="price-tag">
+              {{ formatPrice(property.tipo === 'venta' ? property.precioVenta : property.precioAlquiler) }}
             </div>
-            <div class="detail-item">
-              <span class="detail-label">Baños:</span>
-              <span class="detail-value">{{ property.banos || '-' }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">Metros cuadrados:</span>
-              <span class="detail-value">{{ property.metrosCuadrados || '-' }} m²</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">Antigüedad:</span>
-              <span class="detail-value">{{ property.antiguedad || '-' }} años</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">Cochera:</span>
-              <span class="detail-value">{{ property.cochera === 'Si' ? 'Sí' : 'No' }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">Ambientes:</span>
-              <span class="detail-value">{{ property.ambientes || '-' }}</span>
+            
+            <div class="main-features">
+              <div class="feature">
+                <span class="feature-icon">🛏️</span>
+                <span>{{ property.habitaciones ?? '-' }} hab.</span>
+              </div>
+              <div class="feature">
+                <span class="feature-icon">🚿</span>
+                <span>{{ property.banos ?? '-' }} baños</span>
+              </div>
+              <div class="feature">
+                <span class="feature-icon">📏</span>
+                <span>{{ property.metrosCuadrados ?? '-' }} m²</span>
+              </div>
+              <div class="feature" v-if="property.cochera">
+                <span class="feature-icon">🚗</span>
+                <span>Cochera: {{ property.cochera }}</span>
+              </div>
             </div>
           </div>
           
+          <!-- Descripción detallada -->
           <div class="description-section" v-if="property.descripcion">
-            <h3>Descripción</h3>
+            <h2>Descripción</h2>
             <p>{{ property.descripcion }}</p>
           </div>
           
-          <div class="features-section" v-if="property.caracteristicas">
-            <h3>Características</h3>
-            <ul>
-              <li v-for="(feature, index) in property.caracteristicas.split(',')" :key="index">
-                {{ feature.trim() }}
-              </li>
-            </ul>
+          <!-- Características adicionales -->
+          <div class="additional-features">
+            <h2>Características</h2>
+            
+            <div class="features-grid">
+              <div class="feature-item" v-if="property.antiguedad">
+                <span class="feature-label">Antigüedad:</span>
+                <span class="feature-value">{{ property.antiguedad }} años</span>
+              </div>
+              
+              <div class="feature-item" v-if="property.estado">
+                <span class="feature-label">Estado:</span>
+                <span class="feature-value">{{ property.estado }}</span>
+              </div>
+              
+              <div class="feature-item" v-if="property.orientacion">
+                <span class="feature-label">Orientación:</span>
+                <span class="feature-value">{{ property.orientacion }}</span>
+              </div>
+              
+              <div class="feature-item" v-if="property.pisos">
+                <span class="feature-label">Pisos:</span>
+                <span class="feature-value">{{ property.pisos }}</span>
+              </div>
+              
+              <div class="feature-item" v-if="property.ambientes">
+                <span class="feature-label">Ambientes:</span>
+                <span class="feature-value">{{ property.ambientes }}</span>
+              </div>
+              
+              <div class="feature-item" v-if="property.jardin">
+                <span class="feature-label">Jardín:</span>
+                <span class="feature-value">{{ property.jardin ? 'Sí' : 'No' }}</span>
+              </div>
+              
+              <div class="feature-item" v-if="property.pileta">
+                <span class="feature-label">Pileta:</span>
+                <span class="feature-value">{{ property.pileta ? 'Sí' : 'No' }}</span>
+              </div>
+              
+              <div class="feature-item" v-if="property.amueblada">
+                <span class="feature-label">Amueblada:</span>
+                <span class="feature-value">{{ property.amueblada ? 'Sí' : 'No' }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Contacto -->
+          <div class="contact-section">
+            <h2>Contacto</h2>
+            <p>Para más información sobre esta propiedad:</p>
+            
+            <div class="contact-options">
+              <button class="contact-button whatsapp">
+                <span>📱 WhatsApp</span>
+              </button>
+              <button class="contact-button email">
+                <span>✉️ Email</span>
+              </button>
+              <button class="contact-button phone">
+                <span>📞 Llamar</span>
+              </button>
+            </div>
           </div>
         </div>
         
-        <button class="back-button" @click="goBack">Volver al listado</button>
-      </div>
-      
-      <div v-else class="not-found">
-        <h2>Propiedad no encontrada</h2>
-        <button class="back-button" @click="goBack">Volver al listado</button>
-      </div>
+        <div v-else class="not-found">
+          <h2>Propiedad no encontrada</h2>
+          <p>La propiedad que buscas no está disponible o no existe.</p>
+          <button class="back-button" @click="goBack">
+            ← Volver a propiedades
+          </button>
+        </div>
+      </main>
       
       <Footer />
     </div>
   </template>
   
   <script setup lang="ts">
-  import { ref, computed, onMounted } from 'vue';
+  import { ref, onMounted, computed } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
-  import Header from '@/components/Header.vue';
-  import Footer from '@/components/Footer.vue';
   import { generateClient } from 'aws-amplify/data';
   import type { Schema } from '../../amplify/data/resource';
   import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
   import 'vue3-carousel/dist/carousel.css';
+  import Header from '@/components/Header.vue';
+  import Footer from '@/components/Footer.vue';
   
-  const client = generateClient<Schema>();
   const route = useRoute();
   const router = useRouter();
+  const client = generateClient<Schema>();
   
-  const property = ref<any>(null);
   const loading = ref(true);
+  const property = ref<any>(null);
   
-  const propertyId = route.params.id as string;
-  const propertyType = route.params.type as 'venta' | 'alquiler';
-  
-  // Función IDÉNTICA a la de la vista principal para procesar imágenes
-  const getPropertyImages = (propiedad: any) => {
-    if (!propiedad.imagenes) return [];
+  // Obtener imágenes de la propiedad
+  const propertyImages = computed(() => {
+    if (!property.value?.imagenes) return [];
     
     try {
-      const imagenes = typeof propiedad.imagenes === 'string' 
-        ? JSON.parse(propiedad.imagenes) 
-        : propiedad.imagenes;
+      const imagenes = typeof property.value.imagenes === 'string' 
+        ? JSON.parse(property.value.imagenes) 
+        : property.value.imagenes;
   
       return imagenes.map((img: any) => {
         let url = img.url || img;
         
-        // Transformar URLs de Dropbox (igual que en la vista principal)
+        // Transformar URLs de Dropbox
         if (url.includes('dropbox.com')) {
           url = url.replace('www.dropbox.com', 'dl.dropboxusercontent.com');
           
@@ -152,19 +205,14 @@
       console.error('Error procesando imágenes:', error);
       return [];
     }
-  };
-  
-  // Computed para obtener las imágenes transformadas
-  const propertyImages = computed(() => {
-    return property.value ? getPropertyImages(property.value) : [];
   });
   
-  // Función IDÉNTICA a la de la vista principal para formatear precios
+  // Formatear precio
   const formatPrice = (price?: number | null) => {
     return price ? '$' + price.toLocaleString('es-AR') : 'Consultar';
   };
   
-  // Manejador de errores IDÉNTICO al de la vista principal
+  // Manejar error de imagen
   const handleImageError = (event: Event) => {
     const target = event.target as HTMLImageElement | null;
     if (target) {
@@ -172,27 +220,30 @@
     }
   };
   
+  // Volver atrás
+  const goBack = () => {
+    router.go(-1);
+  };
+  
+  // Cargar los datos de la propiedad
   const loadProperty = async () => {
     try {
       loading.value = true;
+      const { id, type } = route.params;
       
-      if (propertyType === 'venta') {
-        const response = await client.models.PropiedadVenta.get({ id: propertyId });
+      if (type === 'venta') {
+        const response = await client.models.PropiedadVenta.get({ id: id as string });
         property.value = { ...response.data, tipo: 'venta' };
-      } else {
-        const response = await client.models.PropiedadAlquiler.get({ id: propertyId });
+      } else if (type === 'alquiler') {
+        const response = await client.models.PropiedadAlquiler.get({ id: id as string });
         property.value = { ...response.data, tipo: 'alquiler' };
       }
-      
     } catch (error) {
-      console.error('Error al cargar propiedad:', error);
+      console.error('Error cargando propiedad:', error);
+      property.value = null;
     } finally {
       loading.value = false;
     }
-  };
-  
-  const goBack = () => {
-    router.go(-1);
   };
   
   onMounted(() => {
@@ -201,50 +252,64 @@
   </script>
   
   <style scoped>
-  /* Estilos del contenedor principal */
-  .page-container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-  
   .property-detail-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    flex: 1;
   }
   
-  /* Estilos del header de la propiedad */
+  .back-button {
+    background: none;
+    border: none;
+    color: #0a0f64;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+  }
+  
+  .back-button:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .property-detail {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 20px;
+  }
+  
   .property-header {
-    margin-bottom: 30px;
-    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    padding-right: 120px;
   }
   
   .property-header h1 {
-    font-size: 2rem;
     color: #0a0f64;
+    margin: 10px 0 5px;
+  }
+  
+  .property-location {
+    color: #666;
+    font-size: 18px;
     margin-bottom: 5px;
   }
   
-  .location {
-    font-size: 1.2rem;
+  .property-type {
     color: #666;
-    margin-bottom: 15px;
-  }
-  
-  .property-badges {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
+    font-style: italic;
   }
   
   .property-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
     padding: 5px 15px;
     border-radius: 4px;
-    font-size: 0.9rem;
+    font-size: 14px;
     font-weight: bold;
     color: white;
   }
@@ -263,111 +328,82 @@
     color: #333;
     padding: 5px 10px;
     border-radius: 4px;
-    font-size: 0.9rem;
+    font-size: 14px;
     font-weight: bold;
+    margin-right: 10px;
   }
   
-  .property-type {
-    font-size: 0.9rem;
-    color: #666;
-    padding: 5px 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  
-  /* Estilos del carrusel IDÉNTICOS a los de la vista principal */
-  .property-carousel {
+  /* Carrusel detallado */
+  .property-carousel-detail {
+    width: 100%;
+    height: 500px;
     margin-bottom: 30px;
     border-radius: 8px;
     overflow: hidden;
   }
   
-  .carousel-image {
+  .carousel-image-detail {
     width: 100%;
     height: 500px;
     object-fit: cover;
   }
   
-  .no-images-placeholder {
+  .no-images-placeholder-detail {
     width: 100%;
-    height: 300px;
+    height: 500px;
     background: #f5f5f5;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 30px;
     border-radius: 8px;
+    margin-bottom: 30px;
   }
   
-  .placeholder-image {
+  .no-images-placeholder-detail img {
     max-width: 100%;
     max-height: 100%;
-    opacity: 0.7;
   }
   
-  /* Estilos de la información de la propiedad */
-  .property-info {
-    background: #f9f9f9;
-    padding: 25px;
-    border-radius: 8px;
-    margin-bottom: 30px;
-  }
-  
+  /* Sección de precio */
   .price-section {
-    text-align: center;
-    margin-bottom: 25px;
-  }
-  
-  .price-section h2 {
-    font-size: 1.8rem;
-    color: #0a0f64;
-    margin-bottom: 5px;
-  }
-  
-  .expenses {
-    font-size: 1rem;
-    color: #666;
-  }
-  
-  .details-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 15px;
-    margin-bottom: 25px;
-  }
-  
-  .detail-item {
-    background: white;
-    padding: 15px;
-    border-radius: 6px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  }
-  
-  .detail-label {
-    font-size: 0.9rem;
-    color: #666;
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  .detail-value {
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .description-section,
-  .features-section {
-    margin-bottom: 25px;
-  }
-  
-  .description-section h3,
-  .features-section h3 {
-    font-size: 1.3rem;
-    color: #0a0f64;
-    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
     border-bottom: 1px solid #eee;
-    padding-bottom: 5px;
+  }
+  
+  .price-tag {
+    font-size: 28px;
+    font-weight: bold;
+    color: #0a0f64;
+  }
+  
+  .main-features {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .feature {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 16px;
+  }
+  
+  .feature-icon {
+    font-size: 24px;
+    margin-bottom: 5px;
+  }
+  
+  /* Secciones de contenido */
+  .description-section,
+  .additional-features,
+  .contact-section {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
   }
   
   .description-section p {
@@ -375,59 +411,68 @@
     color: #333;
   }
   
-  .features-section ul {
-    list-style-type: none;
-    padding: 0;
+  /* Características adicionales */
+  .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
   }
   
-  .features-section li {
-    background: white;
+  .feature-item {
+    display: flex;
+    justify-content: space-between;
     padding: 10px;
+    background: #f9f9f9;
     border-radius: 4px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
   }
   
-  /* Estilos del botón de volver */
-  .back-button {
-    display: block;
-    margin: 0 auto;
-    padding: 12px 25px;
-    background: #0a0f64;
-    color: white;
+  .feature-label {
+    font-weight: bold;
+    color: #666;
+  }
+  
+  .feature-value {
+    color: #333;
+  }
+  
+  /* Contacto */
+  .contact-options {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+  }
+  
+  .contact-button {
+    padding: 10px 20px;
     border: none;
-    border-radius: 6px;
-    font-size: 1rem;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
     cursor: pointer;
-    transition: background 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: opacity 0.3s;
   }
   
-  .back-button:hover {
-    background: #1a237e;
+  .contact-button:hover {
+    opacity: 0.9;
   }
   
-  /* Estilos para cuando no se encuentra la propiedad */
-  .not-found {
-    text-align: center;
-    padding: 50px 20px;
+  .contact-button.whatsapp {
+    background-color: #25D366;
   }
   
-  .not-found h2 {
-    font-size: 1.5rem;
-    color: #666;
-    margin-bottom: 20px;
+  .contact-button.email {
+    background-color: #0a0f64;
   }
   
-  .loading {
-    text-align: center;
-    padding: 50px;
-    font-size: 1.2rem;
-    color: #666;
+  .contact-button.phone {
+    background-color: #FF5722;
   }
   
-  /* Personalización del carrusel IDÉNTICA a la de la vista principal */
+  /* Estilos para el carrusel */
   :deep(.carousel__prev),
   :deep(.carousel__next) {
     background-color: rgba(255, 255, 255, 0.7);
@@ -445,41 +490,16 @@
     background-color: #0a0f64;
   }
   
-  /* Estilos responsivos */
-  @media (max-width: 768px) {
-    .property-header h1 {
-      font-size: 1.5rem;
-    }
-    
-    .location {
-      font-size: 1rem;
-    }
-    
-    .carousel-image {
-      height: 350px;
-    }
-    
-    .details-grid {
-      grid-template-columns: 1fr 1fr;
-    }
-    
-    .features-section ul {
-      grid-template-columns: 1fr 1fr;
-    }
+  /* Estado de carga y no encontrado */
+  .loading,
+  .not-found {
+    text-align: center;
+    padding: 50px;
+    font-size: 18px;
   }
   
-  @media (max-width: 480px) {
-    .property-detail-container {
-      padding: 15px;
-    }
-    
-    .carousel-image {
-      height: 250px;
-    }
-    
-    .details-grid,
-    .features-section ul {
-      grid-template-columns: 1fr;
-    }
+  .not-found h2 {
+    color: #d32f2f;
+    margin-bottom: 15px;
   }
   </style>
