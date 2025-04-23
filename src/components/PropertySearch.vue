@@ -81,39 +81,7 @@
       </div>
 
       <div class="form-row">
-        <div class="form-group">
-          <label>Precio (USD)</label>
-          <div class="range-inputs">
-            <input 
-              type="number" 
-              v-model.number="searchQuery.precioMin" 
-              placeholder="Mínimo" 
-            />
-            <span>a</span>
-            <input 
-              type="number" 
-              v-model.number="searchQuery.precioMax" 
-              placeholder="Máximo" 
-            />
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Metros Cuadrados (m²)</label>
-          <div class="range-inputs">
-            <input 
-              type="number" 
-              v-model.number="searchQuery.metrosMin" 
-              placeholder="Mínimo" 
-            />
-            <span>a</span>
-            <input 
-              type="number" 
-              v-model.number="searchQuery.metrosMax" 
-              placeholder="Máximo" 
-            />
-          </div>
-        </div>
+        
 
         <div class="form-group">
           <label for="habitaciones">Habitaciones</label>
@@ -124,9 +92,7 @@
             placeholder="Cualquier cantidad" 
           />
         </div>
-      </div>
 
-      <div class="form-row">
         <div class="form-group">
           <label for="banos">Baños</label>
           <input 
@@ -145,17 +111,9 @@
             <option value="No">No</option>
           </select>
         </div>
-
-        <div class="form-group">
-          <label for="antiguedad">Antigüedad Máxima (años)</label>
-          <input 
-            id="antiguedad" 
-            type="number" 
-            v-model.number="searchQuery.antiguedadMax" 
-            placeholder="Sin límite" 
-          />
-        </div>
       </div>
+
+    
 
       <div class="form-actions">
         <button type="button" @click="resetFilters" class="secondary-button">

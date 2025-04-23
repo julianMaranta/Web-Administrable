@@ -125,22 +125,25 @@
           </div>
           
           <!-- Contacto -->
-          <div class="contact-section">
-            <h2>Contacto</h2>
-            <p>Para más información sobre esta propiedad:</p>
-            
-            <div class="contact-options">
-              <button class="contact-button whatsapp">
-                <span>📱 WhatsApp</span>
-              </button>
-              <button class="contact-button email">
-                <span>✉️ Email</span>
-              </button>
-              <button class="contact-button phone">
-                <span>📞 Llamar</span>
-              </button>
-            </div>
-          </div>
+<div class="contact-section">
+  <h2>Contacto</h2>
+  <p>Para más información sobre esta propiedad:</p>
+  
+  <div class="contact-options">
+    <button class="contact-button whatsapp">
+      <img src="@/assets/whatsapp-icon.png" alt="WhatsApp" class="contact-icon">
+      <span>WhatsApp</span>
+    </button>
+    <button class="contact-button email">
+      <img src="@/assets/email-icon.png" alt="Email" class="contact-icon">
+      <span>Email</span>
+    </button>
+    <button class="contact-button phone">
+      <img src="@/assets/phone-icon.png" alt="Teléfono" class="contact-icon">
+      <span>Llamar</span>
+    </button>
+  </div>
+</div>
         </div>
         
         <div v-else class="not-found">

@@ -1,19 +1,22 @@
 <template>
     <footer class="footer">
       <div class="info">
-        <p><strong>Dirección</strong> -</p>
-        <p><strong>Teléfono</strong> -</p>
+        <p><strong>Dirección:</strong> Calle 58 N° 1013 entre 15 y 16</p>
+        <p><strong>Teléfono:</strong> (0221)453-3262</p>
       </div>
       <div class="info">
-        <p><strong>Horarios</strong> -</p>
-        <p><strong>Email</strong> -</p>
+        <p><strong>Horarios:</strong> Lunes a Viernes desde 9:30 hs hasta 13:00 hs</p>
+        <p><strong>Email:</strong> germanmaranta@yahoo.com.ar</p>
       </div>
       <div class="social-icons">
-        <img src="" alt="WhatsApp" />
-        <img src="" alt="Instagram" />
-        <img src="" alt="Facebook" />
-        <img src="" alt="Twitter" />
-        <img src="" alt="TikTok" />
+        <img src="@/assets/icono-facebook.png" alt="WhatsApp" />
+        <img src="@/assets/icono-instagram.png" alt="Instagram" />
+        <img src="@/assets/icono-linkedin.png" alt="Facebook" />
+        <img src="@/assets/icono-x.png" alt="Twitter" />
+        <img src="@/assets/icono-youtube.png" alt="TikTok" />
+        <img src="@/assets/logo-argenprop-1.png" alt="Argencasas" />
+        <img src="@/assets/logo-zonaprop-2.png" alt="Argencasas" />
+        <img src="@/assets/logo-wsap.png" alt="Argencasas" />
       </div>
       <div class="partners">
         <img src="" alt="Argencasas" />
@@ -46,6 +49,7 @@
     flex-direction: column;
     gap: 5px;
   }
+
   
   img {
     height: 30px;
