@@ -125,27 +125,69 @@
           </div>
           
           <!-- Contacto -->
-<div class="contact-section">
-  <h2>Contacto</h2>
-  <p>Para más información sobre esta propiedad:</p>
-  
-  <div class="contact-options">
-    <button class="contact-button whatsapp">
-      <img src="@/assets/whatsapp-icon.png" alt="WhatsApp" class="contact-icon">
-      <span>WhatsApp</span>
-    </button>
-    <button class="contact-button email">
-      <img src="@/assets/email-icon.png" alt="Email" class="contact-icon">
-      <span>Email</span>
-    </button>
-    <button class="contact-button phone">
-      <img src="@/assets/phone-icon.png" alt="Teléfono" class="contact-icon">
-      <span>Llamar</span>
-    </button>
+  <div class="contact-section">
+    <h2>Contacto</h2>
+    <p>Para más información sobre esta propiedad:</p>
+    
+    <div class="contact-options">
+      <button class="contact-button whatsapp" @click="showWhatsAppModal = true">
+        <span>📱 WhatsApp</span>
+      </button>
+      <button class="contact-button email" @click="showEmailModal = true">
+        <span>✉️ Email</span>
+      </button>
+      <button class="contact-button phone" @click="showPhoneModal = true">
+        <span>📞 Llamar</span>
+      </button>
+    </div>
   </div>
-</div>
-        </div>
-        
+
+  <!-- Modales de contacto -->
+  <!-- Modal de WhatsApp -->
+  <div v-if="showWhatsAppModal" class="modal-overlay" @click.self="showWhatsAppModal = false">
+    <div class="modal-content">
+      <button class="modal-close" @click="showWhatsAppModal = false">&times;</button>
+      <h3>Contactar por WhatsApp</h3>
+      <p>Para contactar al agente por WhatsApp:</p>
+      <div class="contact-info">
+        <p><strong>Número:</strong> +54 11 1234-5678</p>
+        <a href="https://wa.me/541112345678" target="_blank" class="whatsapp-link">
+          Abrir conversación en WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Email -->
+  <div v-if="showEmailModal" class="modal-overlay" @click.self="showEmailModal = false">
+    <div class="modal-content">
+      <button class="modal-close" @click="showEmailModal = false">&times;</button>
+      <h3>Contactar por Email</h3>
+      <p>Para contactar al agente por correo electrónico:</p>
+      <div class="contact-info">
+        <p><strong>Email:</strong> contacto@inmobiliaria.com</p>
+        <a href="mailto:contacto@inmobiliaria.com" class="email-link">
+          Enviar correo electrónico
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Teléfono -->
+  <div v-if="showPhoneModal" class="modal-overlay" @click.self="showPhoneModal = false">
+    <div class="modal-content">
+      <button class="modal-close" @click="showPhoneModal = false">&times;</button>
+      <h3>Contactar por Teléfono</h3>
+      <p>Para llamar al agente:</p>
+      <div class="contact-info">
+        <p><strong>Teléfono:</strong> +54 11 4321-5678</p>
+        <a href="tel:+541143215678" class="phone-link">
+          Llamar ahora
+        </a>
+      </div>
+    </div>
+  </div>
+</div>    
         <div v-else class="not-found">
           <h2>Propiedad no encontrada</h2>
           <p>La propiedad que buscas no está disponible o no existe.</p>
@@ -176,6 +218,11 @@
   const loading = ref(true);
   const property = ref<any>(null);
   
+// Añadir estas variables para controlar los modales
+const showWhatsAppModal = ref(false);
+const showEmailModal = ref(false);
+const showPhoneModal = ref(false);
+
   // Obtener imágenes de la propiedad
   const propertyImages = computed(() => {
     if (!property.value?.imagenes) return [];
@@ -505,4 +552,79 @@
     color: #d32f2f;
     margin-bottom: 15px;
   }
+
+  .modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+}
+
+.modal-close:hover {
+  color: #333;
+}
+
+.contact-info {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 6px;
+}
+
+.contact-info p {
+  margin-bottom: 10px;
+}
+
+.whatsapp-link, .email-link, .phone-link {
+  display: inline-block;
+  padding: 10px 15px;
+  border-radius: 4px;
+  color: white;
+  text-decoration: none;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.whatsapp-link {
+  background-color: #25D366;
+}
+
+.email-link {
+  background-color: #0a0f64;
+}
+
+.phone-link {
+  background-color: #FF5722;
+}
+
+.whatsapp-link:hover, .email-link:hover, .phone-link:hover {
+  opacity: 0.9;
+}
   </style>
