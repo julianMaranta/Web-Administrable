@@ -13,7 +13,7 @@
           
           
           
-         <!-- Carrusel de imágenes con capacidad de hacer clic -->
+       <!-- Carrusel de imágenes modificado para soportar clic -->
     <div class="property-carousel-detail" v-if="propertyImages.length > 0">
       <Carousel :items-to-show="1" :wrap-around="true">
         <Slide v-for="(image, index) in propertyImages" :key="index">
@@ -22,7 +22,7 @@
             :alt="image.title || `Imagen ${index + 1} de la propiedad`"
             class="carousel-image-detail"
             @error="handleImageError"
-            @click="openImageLightbox(index)"
+            @click="viewFullscreen(image.url)"
           />
         </Slide>
         
@@ -32,30 +32,10 @@
         </template>
       </Carousel>
     </div>
-    
-    <!-- Lightbox para visualización fullscreen -->
-    <div v-if="lightboxVisible" class="lightbox-overlay" @click.self="closeLightbox">
-      <button class="lightbox-close" @click="closeLightbox">&times;</button>
-      <button class="lightbox-nav prev" @click.stop="prevImage" v-if="propertyImages.length > 1">
-        &larr;
-      </button>
-      
-      <div class="lightbox-content">
-        <img 
-          :src="currentImage.url" 
-          :alt="currentImage.title"
-          class="lightbox-image"
-        />
-      </div>
-      
-      <button class="lightbox-nav next" @click.stop="nextImage" v-if="propertyImages.length > 1">
-        &rarr;
-      </button>
-      
-      <div class="lightbox-footer">
-        <span class="image-counter">{{ currentImageIndex + 1 }} / {{ propertyImages.length }}</span>
-      </div>
-    </div>
+          
+          <div v-else class="no-images-placeholder-detail">
+            <img src="@/assets/placeholder-property.jpg" alt="Imagen no disponible" />
+          </div>
           
 <!-- Encabezado -->
 <div class="property-header">
@@ -225,7 +205,7 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+  import { ref, onMounted, computed } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import { generateClient } from 'aws-amplify/data';
   import type { Schema } from '../../amplify/data/resource';
@@ -280,6 +260,30 @@ const showPhoneModal = ref(false);
     }
   });
   
+// Función para ver imagen en pantalla completa (igual que en el ejemplo)
+const viewFullscreen = (imageSrc: string) => {
+  const image = new Image();
+  image.src = imageSrc;
+  const fullscreenContainer = document.createElement('div');
+  fullscreenContainer.style.position = 'fixed';
+  fullscreenContainer.style.top = '0';
+  fullscreenContainer.style.left = '0';
+  fullscreenContainer.style.width = '100%';
+  fullscreenContainer.style.height = '100%';
+  fullscreenContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+  fullscreenContainer.style.display = 'flex';
+  fullscreenContainer.style.justifyContent = 'center';
+  fullscreenContainer.style.alignItems = 'center';
+  fullscreenContainer.style.zIndex = '1000';
+  fullscreenContainer.appendChild(image);
+
+  document.body.appendChild(fullscreenContainer);
+
+  fullscreenContainer.addEventListener('click', () => {
+    document.body.removeChild(fullscreenContainer);
+  });
+};
+
   // Formatear precio
   const formatPrice = (price?: number | null) => {
     return price ? '$' + price.toLocaleString('es-AR') : 'Consultar';
@@ -318,65 +322,6 @@ const showPhoneModal = ref(false);
       loading.value = false;
     }
   };
-
-  // Variables para el lightbox
-const lightboxVisible = ref(false);
-const currentImageIndex = ref(0);
-
-// Imagen actual en el lightbox
-const currentImage = computed(() => {
-  return propertyImages.value[currentImageIndex.value] || { url: '', title: '' };
-});
-
-// Abrir lightbox en una imagen específica
-const openImageLightbox = (index: number) => {
-  currentImageIndex.value = index;
-  lightboxVisible.value = true;
-  document.body.style.overflow = 'hidden'; // Deshabilitar scroll
-};
-
-// Cerrar lightbox
-const closeLightbox = () => {
-  lightboxVisible.value = false;
-  document.body.style.overflow = ''; // Habilitar scroll
-};
-
-// Navegar a la imagen anterior
-const prevImage = () => {
-  currentImageIndex.value = (currentImageIndex.value - 1 + propertyImages.value.length) % propertyImages.value.length;
-};
-
-// Navegar a la siguiente imagen
-const nextImage = () => {
-  currentImageIndex.value = (currentImageIndex.value + 1) % propertyImages.value.length;
-};
-
-// Manejar teclado para navegación
-const handleKeyDown = (e: KeyboardEvent) => {
-  if (!lightboxVisible.value) return;
-  
-  switch (e.key) {
-    case 'Escape':
-      closeLightbox();
-      break;
-    case 'ArrowLeft':
-      prevImage();
-      break;
-    case 'ArrowRight':
-      nextImage();
-      break;
-  }
-};
-
-// Escuchar eventos de teclado
-onMounted(() => {
-  window.addEventListener('keydown', handleKeyDown);
-});
-
-onBeforeUnmount(() => {
-  window.removeEventListener('keydown', handleKeyDown);
-});
-
   
   onMounted(() => {
     loadProperty();
@@ -717,6 +662,15 @@ onBeforeUnmount(() => {
 .whatsapp-link:hover, .email-link:hover, .phone-link:hover {
   opacity: 0.9;
   transform: translateY(-2px);
+}
+
+.carousel-image-detail {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.carousel-image-detail:hover {
+  transform: scale(1.02);
 }
 
 /* Estilos responsivos */

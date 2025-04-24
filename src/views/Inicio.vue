@@ -312,7 +312,7 @@ onMounted(() => {
 .featured-properties {
   padding: 20px;
   flex: 1;
-  margin-bottom: 50px;
+  margin-bottom: 80px;
 }
 
 .property-grid {
