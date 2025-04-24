@@ -4,7 +4,7 @@
 
     <PropertySearch @search="handleSearch" />
 
-    <main class="featured-properties">
+    <main class="featured-properties"  ref="propertiesSection">
       <div v-if="loading" class="loading">Cargando propiedades...</div>
       
       <div v-else>
@@ -100,7 +100,7 @@ import '@/assets/main.css';
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
 import PropertySearch from '@/components/PropertySearch.vue';
-import { ref, onMounted, reactive, computed } from 'vue';
+import { ref, onMounted, reactive, computed, nextTick } from 'vue';
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '../../amplify/data/resource';
 import { useRouter } from 'vue-router';
@@ -210,9 +210,24 @@ const filterProperties = () => {
   filteredPropiedadesAlquiler.value = allPropiedadesAlquiler.value.filter(prop => filterFn(prop, 'alquiler'));
 };
 
-const handleSearch = (params: typeof searchParams) => {
+// Añadir referencia al contenedor de propiedades
+const propertiesSection = ref<HTMLElement | null>(null);
+
+// Modificar la función handleSearch
+const handleSearch = async (params: typeof searchParams) => {
   Object.assign(searchParams, params);
   filterProperties();
+  
+  // Esperar a que Vue actualice el DOM
+  await nextTick();
+  
+  // Hacer scroll al contenedor de propiedades
+  if (propertiesSection.value) {
+    propertiesSection.value.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'start'
+    });
+  }
 };
 
 const propiedadesMostradas = computed(() => {

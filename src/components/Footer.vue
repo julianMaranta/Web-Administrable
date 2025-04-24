@@ -26,34 +26,38 @@
   </template>
   
   <style scoped>
-  .footer {
-    background-color: #0a0f64;
-    color: white;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .info {
-    text-align: left;
-  }
-  
-  .social-icons {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .partners {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
+ .footer {
+  background-color: #0a0f64;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
 
-  
-  img {
-    height: 30px;
-    cursor: pointer;
-  }
+.info {
+  text-align: left;
+}
+
+.social-icons {
+  display: flex;
+  gap: 10px;
+}
+
+.partners {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+img {
+  height: 30px;
+  cursor: pointer;
+}
   </style>
   

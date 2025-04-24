@@ -1,7 +1,12 @@
 <template>
     <header>
       <div class="header-container">
-        <img src="@/assets/Logo NUEVO Maranta-2.png" alt="" class="logo" />
+        <img 
+        src="@/assets/logo-maranta.png" 
+        alt="Logo Maranta" 
+        class="logo" 
+        @click="goToHome"
+      />
         
       </div>
       <!-- <nav class="navbar">
@@ -17,7 +22,13 @@
   </template>
   
   <script setup>
-  // No se requieren variables o funciones en este caso
+  import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const goToHome = () => {
+  router.push('/');
+};
   </script>
   
   <style scoped>
@@ -32,7 +43,7 @@
     padding: 10px 0;
   }
   .logo {
-    height:90px;
+    height:75px;
     padding: 5px;
   }
   .title {

@@ -11,16 +11,7 @@
             ← Volver a propiedades
           </button>
           
-          <!-- Encabezado -->
-          <div class="property-header">
-            <span class="property-badge" :class="property.tipo">
-              {{ property.tipo === 'venta' ? 'VENTA' : 'ALQUILER' }}
-            </span>
-            <span v-if="property.destacada" class="featured-badge">DESTACADA</span>
-            <h1>{{ property.direccion }}</h1>
-            <p class="property-location">{{ property.ubicacion }}</p>
-            <p class="property-type">{{ property.tipoPropiedad }}</p>
-          </div>
+          
           
           <!-- Carrusel de imágenes (más grande que en la lista) -->
           <div class="property-carousel-detail" v-if="propertyImages.length > 0">
@@ -45,6 +36,17 @@
             <img src="@/assets/placeholder-property.jpg" alt="Imagen no disponible" />
           </div>
           
+<!-- Encabezado -->
+<div class="property-header">
+            <span class="property-badge" :class="property.tipo">
+              {{ property.tipo === 'venta' ? 'VENTA' : 'ALQUILER' }}
+            </span>
+            <span v-if="property.destacada" class="featured-badge">DESTACADA</span>
+            <h1>{{ property.direccion }}</h1>
+            <p class="property-location">{{ property.ubicacion }}</p>
+            <p class="property-type">{{ property.tipoPropiedad }}</p>
+          </div>
+
           <!-- Sección de precio y características principales -->
           <div class="price-section">
             <div class="price-tag">
@@ -142,48 +144,54 @@
     </div>
   </div>
 
-  <!-- Modales de contacto -->
+  <!-- Modales de contacto - Versión con contenido centrado -->
   <!-- Modal de WhatsApp -->
   <div v-if="showWhatsAppModal" class="modal-overlay" @click.self="showWhatsAppModal = false">
-    <div class="modal-content">
+    <div class="modal-content centered-modal">
       <button class="modal-close" @click="showWhatsAppModal = false">&times;</button>
-      <h3>Contactar por WhatsApp</h3>
-      <p>Para contactar al agente por WhatsApp:</p>
-      <div class="contact-info">
-        <p><strong>Número:</strong> +54 11 1234-5678</p>
-        <a href="https://wa.me/541112345678" target="_blank" class="whatsapp-link">
-          Abrir conversación en WhatsApp
-        </a>
+      <div class="modal-body">
+        <h3>Contactar por WhatsApp</h3>
+        <p>Para contactar al agente por WhatsApp:</p>
+        <div class="contact-info">
+          <p><strong>Número:</strong> +54 11 1234-5678</p>
+          <a href="https://wa.me/541112345678" target="_blank" class="whatsapp-link">
+            Abrir conversación en WhatsApp
+          </a>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Modal de Email -->
   <div v-if="showEmailModal" class="modal-overlay" @click.self="showEmailModal = false">
-    <div class="modal-content">
+    <div class="modal-content centered-modal">
       <button class="modal-close" @click="showEmailModal = false">&times;</button>
-      <h3>Contactar por Email</h3>
-      <p>Para contactar al agente por correo electrónico:</p>
-      <div class="contact-info">
-        <p><strong>Email:</strong> contacto@inmobiliaria.com</p>
-        <a href="mailto:contacto@inmobiliaria.com" class="email-link">
-          Enviar correo electrónico
-        </a>
+      <div class="modal-body">
+        <h3>Contactar por Email</h3>
+        <p>Para contactar al agente por correo electrónico:</p>
+        <div class="contact-info">
+          <p><strong>Email:</strong> contacto@inmobiliaria.com</p>
+          <a href="mailto:contacto@inmobiliaria.com" class="email-link">
+            Enviar correo electrónico
+          </a>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Modal de Teléfono -->
   <div v-if="showPhoneModal" class="modal-overlay" @click.self="showPhoneModal = false">
-    <div class="modal-content">
+    <div class="modal-content centered-modal">
       <button class="modal-close" @click="showPhoneModal = false">&times;</button>
-      <h3>Contactar por Teléfono</h3>
-      <p>Para llamar al agente:</p>
-      <div class="contact-info">
-        <p><strong>Teléfono:</strong> +54 11 4321-5678</p>
-        <a href="tel:+541143215678" class="phone-link">
-          Llamar ahora
-        </a>
+      <div class="modal-body">
+        <h3>Contactar por Teléfono</h3>
+        <p>Para llamar al agente:</p>
+        <div class="contact-info">
+          <p><strong>Teléfono:</strong> +54 11 4321-5678</p>
+          <a href="tel:+541143215678" class="phone-link">
+            Llamar ahora
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -568,23 +576,38 @@ const showPhoneModal = ref(false);
 
 .modal-content {
   background: white;
-  padding: 25px;
-  border-radius: 8px;
-  max-width: 500px;
+  padding: 30px;
+  border-radius: 12px;
   width: 90%;
-  position: relative;
+  max-width: 450px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+.centered-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.modal-body {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .modal-close {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 15px;
+  right: 15px;
   font-size: 24px;
   background: none;
   border: none;
   cursor: pointer;
   color: #666;
+  transition: color 0.2s;
 }
 
 .modal-close:hover {
@@ -593,38 +616,48 @@ const showPhoneModal = ref(false);
 
 .contact-info {
   margin-top: 20px;
-  padding: 15px;
+  padding: 20px;
   background: #f9f9f9;
-  border-radius: 6px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 300px;
 }
 
 .contact-info p {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  font-size: 16px;
 }
 
 .whatsapp-link, .email-link, .phone-link {
   display: inline-block;
-  padding: 10px 15px;
-  border-radius: 4px;
+  padding: 12px 20px;
+  border-radius: 6px;
   color: white;
   text-decoration: none;
   margin-top: 10px;
   font-weight: bold;
-}
-
-.whatsapp-link {
-  background-color: #25D366;
-}
-
-.email-link {
-  background-color: #0a0f64;
-}
-
-.phone-link {
-  background-color: #FF5722;
+  font-size: 15px;
+  transition: transform 0.2s, opacity 0.2s;
 }
 
 .whatsapp-link:hover, .email-link:hover, .phone-link:hover {
   opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+/* Estilos responsivos */
+@media (max-width: 480px) {
+  .modal-content {
+    padding: 25px 15px;
+  }
+  
+  .contact-info {
+    padding: 15px 10px;
+  }
+  
+  .whatsapp-link, .email-link, .phone-link {
+    padding: 10px 15px;
+    font-size: 14px;
+  }
 }
   </style>
