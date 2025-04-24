@@ -13,28 +13,49 @@
           
           
           
-          <!-- Carrusel de imágenes (más grande que en la lista) -->
-          <div class="property-carousel-detail" v-if="propertyImages.length > 0">
-            <Carousel :items-to-show="1" :wrap-around="true">
-              <Slide v-for="(image, index) in propertyImages" :key="index">
-                <img 
-                  :src="image.url" 
-                  :alt="image.title || `Imagen ${index + 1} de la propiedad`"
-                  class="carousel-image-detail"
-                  @error="handleImageError"
-                />
-              </Slide>
-              
-              <template #addons>
-                <Navigation />
-                <Pagination />
-              </template>
-            </Carousel>
-          </div>
-          
-          <div v-else class="no-images-placeholder-detail">
-            <img src="@/assets/placeholder-property.jpg" alt="Imagen no disponible" />
-          </div>
+         <!-- Carrusel de imágenes con capacidad de hacer clic -->
+    <div class="property-carousel-detail" v-if="propertyImages.length > 0">
+      <Carousel :items-to-show="1" :wrap-around="true">
+        <Slide v-for="(image, index) in propertyImages" :key="index">
+          <img 
+            :src="image.url" 
+            :alt="image.title || `Imagen ${index + 1} de la propiedad`"
+            class="carousel-image-detail"
+            @error="handleImageError"
+            @click="openImageLightbox(index)"
+          />
+        </Slide>
+        
+        <template #addons>
+          <Navigation />
+          <Pagination />
+        </template>
+      </Carousel>
+    </div>
+    
+    <!-- Lightbox para visualización fullscreen -->
+    <div v-if="lightboxVisible" class="lightbox-overlay" @click.self="closeLightbox">
+      <button class="lightbox-close" @click="closeLightbox">&times;</button>
+      <button class="lightbox-nav prev" @click.stop="prevImage" v-if="propertyImages.length > 1">
+        &larr;
+      </button>
+      
+      <div class="lightbox-content">
+        <img 
+          :src="currentImage.url" 
+          :alt="currentImage.title"
+          class="lightbox-image"
+        />
+      </div>
+      
+      <button class="lightbox-nav next" @click.stop="nextImage" v-if="propertyImages.length > 1">
+        &rarr;
+      </button>
+      
+      <div class="lightbox-footer">
+        <span class="image-counter">{{ currentImageIndex + 1 }} / {{ propertyImages.length }}</span>
+      </div>
+    </div>
           
 <!-- Encabezado -->
 <div class="property-header">
@@ -204,7 +225,7 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, onMounted, computed } from 'vue';
+  import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import { generateClient } from 'aws-amplify/data';
   import type { Schema } from '../../amplify/data/resource';
@@ -297,6 +318,65 @@ const showPhoneModal = ref(false);
       loading.value = false;
     }
   };
+
+  // Variables para el lightbox
+const lightboxVisible = ref(false);
+const currentImageIndex = ref(0);
+
+// Imagen actual en el lightbox
+const currentImage = computed(() => {
+  return propertyImages.value[currentImageIndex.value] || { url: '', title: '' };
+});
+
+// Abrir lightbox en una imagen específica
+const openImageLightbox = (index: number) => {
+  currentImageIndex.value = index;
+  lightboxVisible.value = true;
+  document.body.style.overflow = 'hidden'; // Deshabilitar scroll
+};
+
+// Cerrar lightbox
+const closeLightbox = () => {
+  lightboxVisible.value = false;
+  document.body.style.overflow = ''; // Habilitar scroll
+};
+
+// Navegar a la imagen anterior
+const prevImage = () => {
+  currentImageIndex.value = (currentImageIndex.value - 1 + propertyImages.value.length) % propertyImages.value.length;
+};
+
+// Navegar a la siguiente imagen
+const nextImage = () => {
+  currentImageIndex.value = (currentImageIndex.value + 1) % propertyImages.value.length;
+};
+
+// Manejar teclado para navegación
+const handleKeyDown = (e: KeyboardEvent) => {
+  if (!lightboxVisible.value) return;
+  
+  switch (e.key) {
+    case 'Escape':
+      closeLightbox();
+      break;
+    case 'ArrowLeft':
+      prevImage();
+      break;
+    case 'ArrowRight':
+      nextImage();
+      break;
+  }
+};
+
+// Escuchar eventos de teclado
+onMounted(() => {
+  window.addEventListener('keydown', handleKeyDown);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeyDown);
+});
+
   
   onMounted(() => {
     loadProperty();
