@@ -13,7 +13,7 @@
           
           
           
-       <!-- Carrusel de imágenes modificado para soportar clic -->
+         <!-- Carrusel de imágenes -->
     <div class="property-carousel-detail" v-if="propertyImages.length > 0">
       <Carousel :items-to-show="1" :wrap-around="true">
         <Slide v-for="(image, index) in propertyImages" :key="index">
@@ -22,7 +22,7 @@
             :alt="image.title || `Imagen ${index + 1} de la propiedad`"
             class="carousel-image-detail"
             @error="handleImageError"
-            @click="viewFullscreen(image.url)"
+            @click="openLightbox(index)"
           />
         </Slide>
         
@@ -32,10 +32,27 @@
         </template>
       </Carousel>
     </div>
-          
-          <div v-else class="no-images-placeholder-detail">
-            <img src="@/assets/placeholder-property.jpg" alt="Imagen no disponible" />
-          </div>
+    
+    <!-- Lightbox para visualización fullscreen con navegación -->
+    <div v-if="lightboxVisible" class="fullscreen-overlay" @click.self="closeLightbox">
+      <div class="fullscreen-container">
+        <button class="nav-button prev" @click.stop="prevImage">&larr;</button>
+        
+        <img 
+          :src="currentImage.url" 
+          :alt="currentImage.title"
+          class="fullscreen-image"
+        />
+        
+        <button class="nav-button next" @click.stop="nextImage">&rarr;</button>
+        
+        <button class="close-button" @click="closeLightbox">&times;</button>
+        
+        <div class="image-counter">
+          {{ currentImageIndex + 1 }} / {{ propertyImages.length }}
+        </div>
+      </div>
+    </div>
           
 <!-- Encabezado -->
 <div class="property-header">
@@ -205,7 +222,7 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, onMounted, computed } from 'vue';
+  import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import { generateClient } from 'aws-amplify/data';
   import type { Schema } from '../../amplify/data/resource';
@@ -283,6 +300,64 @@ const viewFullscreen = (imageSrc: string) => {
     document.body.removeChild(fullscreenContainer);
   });
 };
+
+// Variables para el lightbox
+const lightboxVisible = ref(false);
+const currentImageIndex = ref(0);
+
+// Imagen actual en el lightbox
+const currentImage = computed(() => {
+  return propertyImages.value[currentImageIndex.value] || { url: '', title: '' };
+});
+
+// Abrir lightbox en una imagen específica
+const openLightbox = (index: number) => {
+  currentImageIndex.value = index;
+  lightboxVisible.value = true;
+  document.body.style.overflow = 'hidden';
+};
+
+// Cerrar lightbox
+const closeLightbox = () => {
+  lightboxVisible.value = false;
+  document.body.style.overflow = '';
+};
+
+// Navegar a la imagen anterior
+const prevImage = () => {
+  currentImageIndex.value = (currentImageIndex.value - 1 + propertyImages.value.length) % propertyImages.value.length;
+};
+
+// Navegar a la siguiente imagen
+const nextImage = () => {
+  currentImageIndex.value = (currentImageIndex.value + 1) % propertyImages.value.length;
+};
+
+// Manejar navegación con teclado
+const handleKeyDown = (e: KeyboardEvent) => {
+  if (!lightboxVisible.value) return;
+  
+  switch (e.key) {
+    case 'Escape':
+      closeLightbox();
+      break;
+    case 'ArrowLeft':
+      prevImage();
+      break;
+    case 'ArrowRight':
+      nextImage();
+      break;
+  }
+};
+
+// Configurar event listeners
+onMounted(() => {
+  window.addEventListener('keydown', handleKeyDown);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeyDown);
+});
 
   // Formatear precio
   const formatPrice = (price?: number | null) => {
@@ -686,6 +761,108 @@ const viewFullscreen = (imageSrc: string) => {
   .whatsapp-link, .email-link, .phone-link {
     padding: 10px 15px;
     font-size: 14px;
+  }
+}
+
+/* Estilos para el lightbox mejorado */
+.fullscreen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.fullscreen-container {
+  position: relative;
+  width: 90%;
+  height: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.fullscreen-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: white;
+  font-size: 2rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 1001;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-button.prev {
+  left: 20px;
+}
+
+.nav-button.next {
+  right: 20px;
+}
+
+.close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.image-counter {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 1rem;
+}
+
+/* Hacer imágenes del carrusel clickeables */
+.carousel-image-detail {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.carousel-image-detail:hover {
+  transform: scale(1.02);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav-button {
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+  }
+  
+  .close-button {
+    font-size: 1.5rem;
   }
 }
   </style>
