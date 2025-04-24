@@ -153,10 +153,8 @@
         <h3>Contactar por WhatsApp</h3>
         <p>Para contactar al agente por WhatsApp:</p>
         <div class="contact-info">
-          <p><strong>Número:</strong> +54 11 1234-5678</p>
-          <a href="https://wa.me/541112345678" target="_blank" class="whatsapp-link">
-            Abrir conversación en WhatsApp
-          </a>
+          <p><strong>Número:</strong> +54 9</p>
+         
         </div>
       </div>
     </div>
@@ -171,9 +169,7 @@
         <p>Para contactar al agente por correo electrónico:</p>
         <div class="contact-info">
           <p><strong>Email:</strong> contacto@inmobiliaria.com</p>
-          <a href="mailto:contacto@inmobiliaria.com" class="email-link">
-            Enviar correo electrónico
-          </a>
+          
         </div>
       </div>
     </div>
@@ -187,10 +183,8 @@
         <h3>Contactar por Teléfono</h3>
         <p>Para llamar al agente:</p>
         <div class="contact-info">
-          <p><strong>Teléfono:</strong> +54 11 4321-5678</p>
-          <a href="tel:+541143215678" class="phone-link">
-            Llamar ahora
-          </a>
+          <p><strong>Teléfono:</strong> +54 9</p>
+          
         </div>
       </div>
     </div>

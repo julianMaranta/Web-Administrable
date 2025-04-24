@@ -1,8 +1,8 @@
 <template>
   <div class="search-container">
     <div class="search-header">
-      <h2>Buscar Propiedades</h2>
-      <div class="operation-toggle">
+       <h2>Buscador de Propiedades:</h2>
+      <!--<div class="operation-toggle">
         <button 
           @click="searchQuery.operacion = ''" 
           :class="{ active: searchQuery.operacion === '' }"
@@ -21,18 +21,19 @@
         >
           En Venta
         </button>
-      </div>
-    </div>
+      </div> -->
+    </div> 
 
     <form @submit.prevent="searchProperties" class="search-form">
       <div class="form-row">
-        <div class="form-group">
-          <label for="direccion">Dirección</label>
-          <input 
-            id="direccion" 
-            v-model="searchQuery.direccion" 
-            placeholder="Ej: Av. Corrientes 1234" 
-          />
+         <!-- Reemplazado el input de Dirección por el select de Tipo de Operación -->
+         <div class="form-group">
+          <label for="operacion">Tipo de Operación</label>
+          <select id="operacion" v-model="searchQuery.operacion">
+            <option value="">Todas</option>
+            <option value="alquiler">En Alquiler</option>
+            <option value="venta">En Venta</option>
+          </select>
         </div>
 
         <div class="form-group">
