@@ -26,7 +26,6 @@ const schema = a.schema({
         ubicacion: a.string().required(),
         tipoPropiedad: a.string().required(), // Sin validación de valores específicos
         precioAlquiler: a.float().required(),
-        moneda: a.string().required(),
         precioExpensas: a.float(),
         habitaciones: a.integer(),
         ambientes: a.integer(),
@@ -53,7 +52,6 @@ const schema = a.schema({
         ubicacion: a.string().required(),
         tipoPropiedad: a.string().required(), // Sin validación de valores específicos
         precioVenta: a.float().required(),
-        moneda: a.string().required(),
         precioExpensas: a.float(),
         habitaciones: a.integer(),
         ambientes: a.integer(),

@@ -61,14 +61,10 @@
   </select>
 </div>
 
-<div class="form-group">
-  <label for="precio-alquiler">Precio Alquiler ($)</label>
-  <input id="precio-alquiler" v-model.number="precioAlquiler" type="number" placeholder="Ej: 150000" />
-  <div class="checkbox-option">
-    <input type="checkbox" id="en-dolares" v-model="enDolares">
-    <label for="en-dolares">El precio está en dólares (USD)</label>
-  </div>
-</div>
+        <div class="form-group">
+          <label for="precio-alquiler">Precio Alquiler ($)</label>
+          <input id="precio-alquiler" v-model.number="precioAlquiler" type="number" placeholder="Ej: 150000" />
+        </div>
 
         <div class="form-group">
   <label for="precio-expensas">Precio Expensas ($)</label>
@@ -169,7 +165,6 @@ const direccion = ref('');
 const ubicacion = ref('');
 const tipoPropiedad = ref('');
 const precioAlquiler = ref(0);
-const enDolares = ref(false); // Nueva ref para el checkbox
 const precioExpensas = ref(0);
 const sinExpensas = ref(false);
 const habitaciones = ref(0);
@@ -221,7 +216,6 @@ const createProperty = async () => {
       ubicacion: ubicacion.value,
       tipoPropiedad: tipoPropiedad.value,
       precioAlquiler: precioAlquiler.value,
-      moneda: enDolares.value ? 'USD' : 'ARS', // Guardar la moneda
       precioExpensas: precioExpensas.value,
       habitaciones: habitaciones.value,
       ambientes: ambientes.value,
