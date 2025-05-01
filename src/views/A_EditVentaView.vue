@@ -86,7 +86,7 @@
                 </div>
               </div>
 
-              <div class="form-group">
+                          <div class="form-group">
     <label for="precio-expensas">Precio Expensas ($)</label>
     <input id="precio-expensas" v-model.number="formData.precioExpensas" type="number" min="0" />
     <div class="checkbox-option">
@@ -263,7 +263,6 @@ const loadPropertyData = async (id: string) => {
       formData.tipoPropiedad = propiedad.tipoPropiedad || '';
       formData.precioVenta = propiedad.precioVenta || 0;
       formData.precioExpensas = propiedad.precioExpensas || 0;
-      sinExpensas.value = !propiedad.precioExpensas || propiedad.precioExpensas <= 0;
       formData.habitaciones = propiedad.habitaciones || 0;
       formData.banos = propiedad.banos || 0;
       formData.cochera = propiedad.cochera || 'No';
@@ -556,24 +555,6 @@ button:hover {
   padding: 30px;
   color: #555;
   font-size: 18px;
-}
-
-.checkbox-option {
-  display: flex;
-  align-items: center;
-  margin-top: 8px;
-}
-
-.checkbox-option input[type="checkbox"] {
-  width: auto;
-  margin-right: 8px;
-}
-
-.checkbox-option label {
-  font-weight: normal;
-  margin-bottom: 0;
-  color: #555;
-  font-size: 14px;
 }
 
 @media screen and (max-width: 768px) {

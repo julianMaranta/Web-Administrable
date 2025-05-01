@@ -53,9 +53,11 @@
                 </span>
               </div>
 
-              <div class="detail-row" v-if="propiedad.tipo === 'alquiler' && propiedad.precioExpensas !== undefined">
+              <div class="detail-row" v-if="propiedad.precioExpensas !== undefined && propiedad.precioExpensas !== null">
   <span class="detail-label">Expensas:</span>
-  <span class="detail-value">{{ formatPrice(propiedad.precioExpensas) }}</span>
+  <span class="detail-value">
+    {{ propiedad.precioExpensas > 0 ? formatPrice(propiedad.precioExpensas) : 'Sin Expensas' }}
+  </span>
 </div>
               
               <div class="detail-row">
