@@ -46,7 +46,9 @@
         
         <button class="nav-button next" @click.stop="nextImage">&rarr;</button>
         
-        <button class="close-button" @click="closeLightbox">&times;</button>
+        <button class="close-button" @click="closeLightbox">
+  <span class="close-icon">&times;</span>
+</button>
         
         <div class="image-counter">
           {{ currentImageIndex + 1 }} / {{ propertyImages.length }}
@@ -822,14 +824,32 @@ onBeforeUnmount(() => {
 
 .close-button {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  background: none;
+  top: 30px;
+  right: 30px;
+  background: rgba(0, 0, 0, 0.7);
   border: none;
   color: white;
-  font-size: 2rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
   cursor: pointer;
   z-index: 1001;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.close-icon {
+  font-size: 30px;
+  line-height: 1;
+  display: block;
+  margin-top: -2px;
+}
+
+.close-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
 }
 
 .image-counter {
@@ -856,14 +876,15 @@ onBeforeUnmount(() => {
 
 /* Responsive */
 @media (max-width: 768px) {
-  .nav-button {
+  .close-button {
+    top: 20px;
+    right: 20px;
     width: 40px;
     height: 40px;
-    font-size: 1.5rem;
   }
   
-  .close-button {
-    font-size: 1.5rem;
+  .close-icon {
+    font-size: 25px;
   }
 }
   </style>

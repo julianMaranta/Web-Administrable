@@ -61,15 +61,23 @@
   </select>
 </div>
 
-        <div class="form-group">
-          <label for="precio-alquiler">Precio Alquiler ($)</label>
-          <input id="precio-alquiler" v-model.number="precioAlquiler" type="number" placeholder="Ej: 150000" />
-        </div>
+<div class="form-group">
+  <label for="precio-alquiler">Precio Alquiler ($)</label>
+  <input id="precio-alquiler" v-model.number="precioAlquiler" type="number" placeholder="Ej: 150000" />
+  <div class="checkbox-option">
+    <input type="checkbox" id="en-dolares" v-model="enDolares">
+    <label for="en-dolares">El precio está en dólares (USD)</label>
+  </div>
+</div>
 
         <div class="form-group">
-          <label for="precio-expensas">Precio Expensas ($)</label>
-          <input id="precio-expensas" v-model.number="precioExpensas" type="number" placeholder="Ej: 15000" />
-        </div>
+  <label for="precio-expensas">Precio Expensas ($)</label>
+  <input id="precio-expensas" v-model.number="precioExpensas" type="number" placeholder="Ej: 15000" />
+  <div class="checkbox-option">
+    <input type="checkbox" id="sin-expensas" v-model="sinExpensas" @change="handleExpensasChange">
+    <label for="sin-expensas">Sin Expensas</label>
+  </div>
+</div>
 
         <div class="form-group">
           <label for="habitaciones">Cantidad de Habitaciones</label>
@@ -161,7 +169,9 @@ const direccion = ref('');
 const ubicacion = ref('');
 const tipoPropiedad = ref('');
 const precioAlquiler = ref(0);
+const enDolares = ref(false); // Nueva ref para el checkbox
 const precioExpensas = ref(0);
+const sinExpensas = ref(false);
 const habitaciones = ref(0);
 const ambientes = ref(0);
 const antiguedad = ref(0);
@@ -181,6 +191,12 @@ const addImage = () => {
 
 const removeImage = (index: number) => {
   imagenes.value.splice(index, 1);
+};
+
+const handleExpensasChange = () => {
+  if (sinExpensas.value) {
+    precioExpensas.value = 0;
+  }
 };
 
 const createProperty = async () => {
@@ -205,6 +221,7 @@ const createProperty = async () => {
       ubicacion: ubicacion.value,
       tipoPropiedad: tipoPropiedad.value,
       precioAlquiler: precioAlquiler.value,
+      moneda: enDolares.value ? 'USD' : 'ARS', // Guardar la moneda
       precioExpensas: precioExpensas.value,
       habitaciones: habitaciones.value,
       ambientes: ambientes.value,
@@ -385,5 +402,20 @@ button[type="button"] {
 
 button[type="button"]:hover {
   background-color: #0014ac;
+}
+.checkbox-option {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.checkbox-option input[type="checkbox"] {
+  width: auto;
+  margin-right: 8px;
+}
+
+.checkbox-option label {
+  font-weight: normal;
+  margin-bottom: 0;
 }
 </style>

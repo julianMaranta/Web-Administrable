@@ -18,10 +18,10 @@
         <img src="@/assets/logo-zonaprop-2.png" alt="Argencasas" />
         <img src="@/assets/logo-wsap.png" alt="Argencasas" />
       </div>
-      <div class="partners">
+      <!-- <div class="partners">
         <img src="" alt="Argencasas" />
         <img src="" alt="Zonaprop" />
-      </div>
+      </div> -->
     </footer>
   </template>
   
