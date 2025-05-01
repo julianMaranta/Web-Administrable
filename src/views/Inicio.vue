@@ -52,6 +52,11 @@
                   {{ formatPrice(propiedad.tipo === 'venta' ? propiedad.precioVenta : propiedad.precioAlquiler) }}
                 </span>
               </div>
+
+              <div class="detail-row" v-if="propiedad.tipo === 'alquiler' && propiedad.precioExpensas !== undefined">
+  <span class="detail-label">Expensas:</span>
+  <span class="detail-value">{{ formatPrice(propiedad.precioExpensas) }}</span>
+</div>
               
               <div class="detail-row">
                 <div class="detail-item">
