@@ -557,6 +557,24 @@ button:hover {
   font-size: 18px;
 }
 
+.checkbox-option {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.checkbox-option input[type="checkbox"] {
+  width: auto;
+  margin-right: 8px;
+}
+
+.checkbox-option label {
+  font-weight: normal;
+  margin-bottom: 0;
+  color: #555;
+  font-size: 14px;
+}
+
 @media screen and (max-width: 768px) {
   .form-row {
     flex-direction: column;

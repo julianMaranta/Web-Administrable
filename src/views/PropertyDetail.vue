@@ -72,6 +72,9 @@
             <div class="price-tag">
               {{ formatPrice(property.tipo === 'venta' ? property.precioVenta : property.precioAlquiler) }}
             </div>
+            <div v-if="property.precioExpensas !== undefined && property.precioExpensas !== null" class="expenses-tag">
+      {{ property.precioExpensas > 0 ? formatPrice(property.precioExpensas) + ' expensas' : 'Sin expensas' }}
+    </div>
             
             <div class="main-features">
               <div class="feature">
@@ -872,6 +875,18 @@ onBeforeUnmount(() => {
 
 .carousel-image-detail:hover {
   transform: scale(1.02);
+}
+
+.expenses-tag {
+  font-size: 18px;
+  color: #666;
+  margin-top: 5px;
+  font-weight: normal;
+}
+
+.price-section > div:first-child {
+  display: flex;
+  flex-direction: column;
 }
 
 /* Responsive */
