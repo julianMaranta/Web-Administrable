@@ -85,24 +85,28 @@
         
 
         <div class="form-group">
-          <label for="habitaciones">Habitaciones</label>
-          <input 
-            id="habitaciones" 
-            type="number" 
-            v-model.number="searchQuery.habitaciones" 
-            placeholder="Cualquier cantidad" 
-          />
-        </div>
+  <label for="habitaciones">Habitaciones (Para Monoambiente escribir 0)</label>
+  <input 
+    id="habitaciones" 
+    type="number" 
+    v-model.number="searchQuery.habitaciones" 
+    placeholder="Cualquier cantidad"
+    min="0"
+    oninput="this.value = Math.abs(this.value)"
+  />
+</div>
 
-        <div class="form-group">
-          <label for="banos">Baños</label>
-          <input 
-            id="banos" 
-            type="number" 
-            v-model.number="searchQuery.banos" 
-            placeholder="Cualquier cantidad" 
-          />
-        </div>
+<div class="form-group">
+  <label for="banos">Baños</label>
+  <input 
+    id="banos" 
+    type="number" 
+    v-model.number="searchQuery.banos" 
+    placeholder="Cualquier cantidad"
+    min="0"
+    oninput="this.value = Math.abs(this.value)"
+  />
+</div>
 
         <div class="form-group">
           <label for="cochera">Cochera</label>

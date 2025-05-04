@@ -71,7 +71,8 @@
                   <span class="detail-value">{{ propiedad.banos ?? '-' }}</span>
                 </div>
                 
-              
+               
+              </div>
               
               <div v-if="propiedad.cochera" class="detail-row">
                 <span class="detail-label">Cochera:</span>
@@ -92,7 +93,6 @@
           No se encontraron propiedades con los filtros seleccionados
         </div>
       </div>
-    </div>
     </main>
 
     <Footer />
