@@ -71,11 +71,7 @@
                   <span class="detail-value">{{ propiedad.banos ?? '-' }}</span>
                 </div>
                 
-                <div class="detail-item">
-                  <span class="detail-label">m²:</span>
-                  <span class="detail-value">{{ propiedad.metrosCuadrados ?? '-' }}</span>
-                </div>
-              </div>
+              
               
               <div v-if="propiedad.cochera" class="detail-row">
                 <span class="detail-label">Cochera:</span>
@@ -96,6 +92,7 @@
           No se encontraron propiedades con los filtros seleccionados
         </div>
       </div>
+    </div>
     </main>
 
     <Footer />
@@ -206,8 +203,7 @@ const filterProperties = () => {
     if (searchParams.habitaciones !== null && prop.habitaciones !== searchParams.habitaciones) return false;
     if (searchParams.banos !== null && prop.banos !== searchParams.banos) return false;
     if (searchParams.cochera && prop.cochera !== searchParams.cochera) return false;
-    if (searchParams.metrosMin !== null && (prop.metrosCuadrados ?? 0) < searchParams.metrosMin) return false;
-    if (searchParams.metrosMax !== null && (prop.metrosCuadrados ?? 0) > searchParams.metrosMax) return false;
+    
     if (searchParams.antiguedadMax !== null && (prop.antiguedad ?? 0) > searchParams.antiguedadMax) return false;
     
     return true;
