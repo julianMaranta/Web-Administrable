@@ -58,7 +58,11 @@ const schema = a.schema({
         antiguedad: a.integer(),
         banos: a.integer(),
         cochera: a.string(), // "Si" o "No" pero sin validación
-        metrosCuadrados: a.float().required(),
+        
+        superficieTotal: a.float().required(),
+        superficieCubierta: a.float().required(),
+        superficieSemicubierta: a.float().required(),
+        superficieTerreno: a.float().required(),
         mapLink: a.string(), // URL como string normal
         descripcion: a.string(),
         imagenes: a.string(), // Cadena JSON simple

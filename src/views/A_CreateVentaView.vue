@@ -8,72 +8,96 @@
       <br>   
       <br>
       <form @submit.prevent="createProperty">
+        <!-- Sección de información básica -->
         <div class="form-group">
           <label for="direccion">Dirección de la Propiedad</label>
           <input id="direccion" v-model="direccion" placeholder="Ej: Av. Corrientes 1234" />
         </div>
 
         <div class="form-group">
-  <label for="ubicacion">Ubicación</label>
-  <select id="ubicacion" v-model="ubicacion" required>
-    <option value="">Seleccione una ubicación</option>
-    
-    <optgroup label="Zona Centro">
-      <option value="La Plata (Casco Urbano)">La Plata (Casco Urbano)</option>
-      <option value="Tolosa">Tolosa</option>
-      <option value="Villa Elvira">Villa Elvira</option>
-    </optgroup>
-    
-    <optgroup label="Barrios Residenciales">
-      <option value="City Bell">City Bell</option>
-      <option value="Manuel B. Gonnet">Manuel B. Gonnet</option>
-      <option value="Villa Elisa">Villa Elisa</option>
-    </optgroup>
-    
-    <optgroup label="Localidades Periféricas">
-      <option value="Abasto">Abasto</option>
-      <option value="Joaquín Gorina">Joaquín Gorina</option>
-      <option value="Lisandro Olmos">Lisandro Olmos</option>
-      <option value="Melchor Romero">Melchor Romero</option>
-      <option value="Ringuelet">Ringuelet</option>
-    </optgroup>
-    
-    <option value="Los Hornos">Los Hornos</option>
-  </select>
-</div>
+          <label for="ubicacion">Ubicación</label>
+          <select id="ubicacion" v-model="ubicacion" required>
+            <option value="">Seleccione una ubicación</option>
+            <optgroup label="Zona Centro">
+              <option value="La Plata (Casco Urbano)">La Plata (Casco Urbano)</option>
+              <option value="Tolosa">Tolosa</option>
+              <option value="Villa Elvira">Villa Elvira</option>
+            </optgroup>
+            <optgroup label="Barrios Residenciales">
+              <option value="City Bell">City Bell</option>
+              <option value="Manuel B. Gonnet">Manuel B. Gonnet</option>
+              <option value="Villa Elisa">Villa Elisa</option>
+            </optgroup>
+            <optgroup label="Localidades Periféricas">
+              <option value="Abasto">Abasto</option>
+              <option value="Joaquín Gorina">Joaquín Gorina</option>
+              <option value="Lisandro Olmos">Lisandro Olmos</option>
+              <option value="Melchor Romero">Melchor Romero</option>
+              <option value="Ringuelet">Ringuelet</option>
+            </optgroup>
+            <option value="Los Hornos">Los Hornos</option>
+          </select>
+        </div>
 
         <div class="form-group">
-  <label for="tipo-propiedad">Tipo de Propiedad</label>
-  <select id="tipo-propiedad" v-model="tipoPropiedad" required>
-    <option value="">Seleccione un tipo</option>
-    <option value="Casa">Casa</option>
-    <option value="Departamento">Departamento</option>
-    <option value="PH">PH</option>
-    <option value="Local Comercial">Local Comercial</option>
-    <option value="Oficina">Oficina</option>
-    <option value="Quinta">Quinta</option>
-    <option value="Cochera">Cochera</option>
-    <option value="Hotel">Hotel</option>
-    <option value="Terreno">Terreno</option>
-    <option value="Campo">Campo</option>
-    <option value="Fondo de Comercio">Fondo de Comercio</option>
-    <option value="Galpón">Galpón</option>
-  </select>
-</div>
+          <label for="tipo-propiedad">Tipo de Propiedad</label>
+          <select id="tipo-propiedad" v-model="tipoPropiedad" required>
+            <option value="">Seleccione un tipo</option>
+            <option value="Casa">Casa</option>
+            <option value="Departamento">Departamento</option>
+            <option value="PH">PH</option>
+            <option value="Local Comercial">Local Comercial</option>
+            <option value="Oficina">Oficina</option>
+            <option value="Quinta">Quinta</option>
+            <option value="Cochera">Cochera</option>
+            <option value="Hotel">Hotel</option>
+            <option value="Terreno">Terreno</option>
+            <option value="Campo">Campo</option>
+            <option value="Fondo de Comercio">Fondo de Comercio</option>
+            <option value="Galpón">Galpón</option>
+          </select>
+        </div>
 
+        <!-- Sección de precios -->
         <div class="form-group">
           <label for="precio-alquiler">Precio Venta ($)</label>
           <input id="precio-alquiler" v-model.number="precioVenta" type="number" placeholder="Ej: 150000" />
         </div>
 
         <div class="form-group">
-  <label for="precio-expensas">Precio Expensas ($)</label>
-  <input id="precio-expensas" v-model.number="precioExpensas" type="number" placeholder="Ej: 15000" />
-  <div class="checkbox-option">
-    <input type="checkbox" id="sin-expensas" v-model="sinExpensas" @change="handleExpensasChange">
-    <label for="sin-expensas">Sin Expensas</label>
-  </div>
-</div>
+          <label for="precio-expensas">Precio Expensas ($)</label>
+          <input id="precio-expensas" v-model.number="precioExpensas" type="number" placeholder="Ej: 15000" />
+          <div class="checkbox-option">
+            <input type="checkbox" id="sin-expensas" v-model="sinExpensas" @change="handleExpensasChange">
+            <label for="sin-expensas">Sin Expensas</label>
+          </div>
+        </div>
+
+        <!-- Sección de medidas de superficie -->
+        <div class="form-section-title">Medidas de Superficie</div>
+        
+        <div class="form-group">
+          <label for="superficie-total">Superficie Total (m²)</label>
+          <input id="superficie-total" v-model.number="superficieTotal" type="number" placeholder="Ej: 120" />
+        </div>
+
+        <div class="form-group">
+          <label for="superficie-cubierta">Superficie Cubierta (m²)</label>
+          <input id="superficie-cubierta" v-model.number="superficieCubierta" type="number" placeholder="Ej: 80" />
+        </div>
+
+        <div class="form-group">
+          <label for="superficie-semicubierta">Superficie Semicubierta (m²)</label>
+          <input id="superficie-semicubierta" v-model.number="superficieSemicubierta" type="number" placeholder="Ej: 20" />
+        </div>
+
+        <div class="form-group">
+          <label for="superficie-terreno">Superficie de Terreno (m²)</label>
+          <input id="superficie-terreno" v-model.number="superficieTerreno" type="number" placeholder="Ej: 300" />
+        </div>
+
+        <!-- Sección de características -->
+        <div class="form-section-title">Características</div>
 
         <div class="form-group">
           <label for="habitaciones">Cantidad de Habitaciones</label>
@@ -86,13 +110,13 @@
         </div>
 
         <div class="form-group">
-          <label for="antiguedad">Antigüedad (años)</label>
-          <input id="antiguedad" v-model.number="antiguedad" type="number" placeholder="Ej: 10" />
+          <label for="banos">Cantidad de Baños</label>
+          <input id="banos" v-model.number="banos" type="number" placeholder="Ej: 2" />
         </div>
 
         <div class="form-group">
-          <label for="banos">Cantidad de Baños</label>
-          <input id="banos" v-model.number="banos" type="number" placeholder="Ej: 2" />
+          <label for="antiguedad">Antigüedad (años)</label>
+          <input id="antiguedad" v-model.number="antiguedad" type="number" placeholder="Ej: 10" />
         </div>
 
         <div class="form-group">
@@ -103,10 +127,8 @@
           </select>
         </div>
 
-        <div class="form-group">
-          <label for="metros-cuadrados">Metros Cuadrados (m²)</label>
-          <input id="metros-cuadrados" v-model.number="metrosCuadrados" type="number" placeholder="Ej: 80" />
-        </div>
+        <!-- Sección de información adicional -->
+        <div class="form-section-title">Información Adicional</div>
 
         <div class="form-group">
           <label for="map-link">Link de Google Maps</label>
@@ -162,12 +184,17 @@ const tipoPropiedad = ref('');
 const precioVenta = ref(0);
 const precioExpensas = ref(0);
 const sinExpensas = ref(false);
+// Nuevas medidas de superficie
+const superficieTotal = ref(0);
+const superficieCubierta = ref(0);
+const superficieSemicubierta = ref(0);
+const superficieTerreno = ref(0);
+// Características
 const habitaciones = ref(0);
 const ambientes = ref(0);
 const antiguedad = ref(0);
 const banos = ref(0);
 const cochera = ref('Si');
-const metrosCuadrados = ref(0);
 const mapLink = ref('');
 const youtubeVideoUrl = ref('');
 const descripcion = ref('');
@@ -199,10 +226,10 @@ const createProperty = async () => {
       throw new Error('El tipo de propiedad es obligatorio.');
     }
     if (precioVenta.value <= 0) {
-      throw new Error('El precio de alquiler debe ser mayor a cero.');
+      throw new Error('El precio de venta debe ser mayor a cero.');
     }
-    if (metrosCuadrados.value <= 0) {
-      throw new Error('Los metros cuadrados deben ser mayores a cero.');
+    if (superficieTotal.value <= 0) {
+      throw new Error('La superficie total debe ser mayor a cero.');
     }
 
     // Crear la propiedad
@@ -212,12 +239,17 @@ const createProperty = async () => {
       tipoPropiedad: tipoPropiedad.value,
       precioVenta: precioVenta.value,
       precioExpensas: precioExpensas.value,
+      // Nuevas medidas
+      superficieTotal: superficieTotal.value,
+      superficieCubierta: superficieCubierta.value,
+      superficieSemicubierta: superficieSemicubierta.value,
+      superficieTerreno: superficieTerreno.value,
+      // Características
       habitaciones: habitaciones.value,
       ambientes: ambientes.value,
       antiguedad: antiguedad.value,
       banos: banos.value,
       cochera: cochera.value,
-      metrosCuadrados: metrosCuadrados.value,
       mapLink: mapLink.value,
       youtubeVideoUrl: youtubeVideoUrl.value,
       descripcion: descripcion.value,
@@ -274,6 +306,15 @@ body {
   margin-bottom: 5px;
   width: 160px;
   height: auto;
+}
+
+.form-section-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 20px 0 15px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #0014ac;
+  color: #0014ac;
 }
 
 .form-group {
@@ -392,6 +433,7 @@ button[type="button"] {
 button[type="button"]:hover {
   background-color: #0014ac;
 }
+
 .checkbox-option {
   display: flex;
   align-items: center;
@@ -406,5 +448,24 @@ button[type="button"]:hover {
 .checkbox-option label {
   font-weight: normal;
   margin-bottom: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .content {
+    margin-left: 0;
+    width: 100%;
+    padding: 15px;
+  }
+  
+  .image-link-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .image-link-item input {
+    width: 100%;
+    margin-bottom: 5px;
+  }
 }
 </style>

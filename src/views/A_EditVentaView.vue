@@ -36,26 +36,23 @@
                   <select id="ubicacion" v-model="formData.ubicacion" required>
                     <option value="">Seleccione una ubicación</option>
                     <optgroup label="Zona Centro">
-      <option value="La Plata (Casco Urbano)">La Plata (Casco Urbano)</option>
-      <option value="Tolosa">Tolosa</option>
-      <option value="Villa Elvira">Villa Elvira</option>
-    </optgroup>
-    
-    <optgroup label="Barrios Residenciales">
-      <option value="City Bell">City Bell</option>
-      <option value="Manuel B. Gonnet">Manuel B. Gonnet</option>
-      <option value="Villa Elisa">Villa Elisa</option>
-    </optgroup>
-    
-    <optgroup label="Localidades Periféricas">
-      <option value="Abasto">Abasto</option>
-      <option value="Joaquín Gorina">Joaquín Gorina</option>
-      <option value="Lisandro Olmos">Lisandro Olmos</option>
-      <option value="Melchor Romero">Melchor Romero</option>
-      <option value="Ringuelet">Ringuelet</option>
-    </optgroup>
-    
-    <option value="Los Hornos">Los Hornos</option>
+                      <option value="La Plata (Casco Urbano)">La Plata (Casco Urbano)</option>
+                      <option value="Tolosa">Tolosa</option>
+                      <option value="Villa Elvira">Villa Elvira</option>
+                    </optgroup>
+                    <optgroup label="Barrios Residenciales">
+                      <option value="City Bell">City Bell</option>
+                      <option value="Manuel B. Gonnet">Manuel B. Gonnet</option>
+                      <option value="Villa Elisa">Villa Elisa</option>
+                    </optgroup>
+                    <optgroup label="Localidades Periféricas">
+                      <option value="Abasto">Abasto</option>
+                      <option value="Joaquín Gorina">Joaquín Gorina</option>
+                      <option value="Lisandro Olmos">Lisandro Olmos</option>
+                      <option value="Melchor Romero">Melchor Romero</option>
+                      <option value="Ringuelet">Ringuelet</option>
+                    </optgroup>
+                    <option value="Los Hornos">Los Hornos</option>
                   </select>
                 </div>
               </div>
@@ -66,17 +63,17 @@
                   <select id="tipo-propiedad" v-model="formData.tipoPropiedad" required>
                     <option value="">Seleccione un tipo</option>
                     <option value="Casa">Casa</option>
-    <option value="Departamento">Departamento</option>
-    <option value="PH">PH</option>
-    <option value="Local Comercial">Local Comercial</option>
-    <option value="Oficina">Oficina</option>
-    <option value="Quinta">Quinta</option>
-    <option value="Cochera">Cochera</option>
-    <option value="Hotel">Hotel</option>
-    <option value="Terreno">Terreno</option>
-    <option value="Campo">Campo</option>
-    <option value="Fondo de Comercio">Fondo de Comercio</option>
-    <option value="Galpón">Galpón</option>
+                    <option value="Departamento">Departamento</option>
+                    <option value="PH">PH</option>
+                    <option value="Local Comercial">Local Comercial</option>
+                    <option value="Oficina">Oficina</option>
+                    <option value="Quinta">Quinta</option>
+                    <option value="Cochera">Cochera</option>
+                    <option value="Hotel">Hotel</option>
+                    <option value="Terreno">Terreno</option>
+                    <option value="Campo">Campo</option>
+                    <option value="Fondo de Comercio">Fondo de Comercio</option>
+                    <option value="Galpón">Galpón</option>
                   </select>
                 </div>
 
@@ -86,14 +83,44 @@
                 </div>
               </div>
 
-                          <div class="form-group">
-    <label for="precio-expensas">Precio Expensas ($)</label>
-    <input id="precio-expensas" v-model.number="formData.precioExpensas" type="number" min="0" />
-    <div class="checkbox-option">
-      <input type="checkbox" id="sin-expensas" v-model="sinExpensas" @change="handleExpensasChange">
-      <label for="sin-expensas">Sin Expensas</label>
-    </div>
-  </div>
+              <div class="form-group">
+                <label for="precio-expensas">Precio Expensas ($)</label>
+                <input id="precio-expensas" v-model.number="formData.precioExpensas" type="number" min="0" />
+                <div class="checkbox-option">
+                  <input type="checkbox" id="sin-expensas" v-model="sinExpensas" @change="handleExpensasChange">
+                  <label for="sin-expensas">Sin Expensas</label>
+                </div>
+              </div>
+
+              <!-- Sección de medidas de superficie -->
+              <div class="form-section-title">Medidas de Superficie</div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="superficie-total">Superficie Total (m²)</label>
+                  <input id="superficie-total" v-model.number="formData.superficieTotal" type="number" min="0" />
+                </div>
+                
+                <div class="form-group">
+                  <label for="superficie-cubierta">Superficie Cubierta (m²)</label>
+                  <input id="superficie-cubierta" v-model.number="formData.superficieCubierta" type="number" min="0" />
+                </div>
+              </div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="superficie-semicubierta">Superficie Semicubierta (m²)</label>
+                  <input id="superficie-semicubierta" v-model.number="formData.superficieSemicubierta" type="number" min="0" />
+                </div>
+                
+                <div class="form-group">
+                  <label for="superficie-terreno">Superficie de Terreno (m²)</label>
+                  <input id="superficie-terreno" v-model.number="formData.superficieTerreno" type="number" min="0" />
+                </div>
+              </div>
+
+              <!-- Sección de características -->
+              <div class="form-section-title">Características</div>
 
               <div class="form-row">
                 <div class="form-group">
@@ -104,6 +131,18 @@
                 <div class="form-group">
                   <label for="banos">Baños</label>
                   <input id="banos" v-model.number="formData.banos" type="number" min="0" />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="ambientes">Ambientes</label>
+                  <input id="ambientes" v-model.number="formData.ambientes" type="number" min="0" />
+                </div>
+
+                <div class="form-group">
+                  <label for="antiguedad">Antigüedad (años)</label>
+                  <input id="antiguedad" v-model.number="formData.antiguedad" type="number" min="0" />
                 </div>
               </div>
 
@@ -121,6 +160,9 @@
                   </select>
                 </div>
               </div>
+
+              <!-- Sección de información adicional -->
+              <div class="form-section-title">Información Adicional</div>
 
               <div class="form-group">
                 <label for="descripcion">Descripción</label>
@@ -216,8 +258,16 @@ const formData = reactive({
   tipoPropiedad: '',
   precioVenta: 0,
   precioExpensas: 0,
+  // Nuevas medidas de superficie
+  superficieTotal: 0,
+  superficieCubierta: 0,
+  superficieSemicubierta: 0,
+  superficieTerreno: 0,
+  // Características
   habitaciones: 0,
   banos: 0,
+  ambientes: 0,
+  antiguedad: 0,
   cochera: 'No',
   metrosCuadrados: 0,
   mapLink: '',
@@ -263,10 +313,18 @@ const loadPropertyData = async (id: string) => {
       formData.tipoPropiedad = propiedad.tipoPropiedad || '';
       formData.precioVenta = propiedad.precioVenta || 0;
       formData.precioExpensas = propiedad.precioExpensas || 0;
+      // Cargar medidas de superficie
+      formData.superficieTotal = propiedad.superficieTotal || 0;
+      formData.superficieCubierta = propiedad.superficieCubierta || 0;
+      formData.superficieSemicubierta = propiedad.superficieSemicubierta || 0;
+      formData.superficieTerreno = propiedad.superficieTerreno || 0;
+      // Cargar características
       formData.habitaciones = propiedad.habitaciones || 0;
       formData.banos = propiedad.banos || 0;
+      formData.ambientes = propiedad.ambientes || 0;
+      formData.antiguedad = propiedad.antiguedad || 0;
       formData.cochera = propiedad.cochera || 'No';
-      formData.metrosCuadrados = propiedad.metrosCuadrados || 0;
+      
       formData.mapLink = propiedad.mapLink || '';
       formData.youtubeVideoUrl = propiedad.youtubeVideoUrl || '';
       formData.descripcion = propiedad.descripcion || '';
@@ -298,10 +356,18 @@ const updateProperty = async () => {
       tipoPropiedad: formData.tipoPropiedad,
       precioVenta: formData.precioVenta,
       precioExpensas: formData.precioExpensas,
+      // Medidas de superficie
+      superficieTotal: formData.superficieTotal,
+      superficieCubierta: formData.superficieCubierta,
+      superficieSemicubierta: formData.superficieSemicubierta,
+      superficieTerreno: formData.superficieTerreno,
+      // Características
       habitaciones: formData.habitaciones,
       banos: formData.banos,
+      ambientes: formData.ambientes,
+      antiguedad: formData.antiguedad,
       cochera: formData.cochera,
-      metrosCuadrados: formData.metrosCuadrados,
+      
       mapLink: formData.mapLink,
       youtubeVideoUrl: formData.youtubeVideoUrl,
       descripcion: formData.descripcion,
@@ -397,6 +463,15 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+.form-section-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 20px 0 15px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #0014ac;
+  color: #0014ac;
 }
 
 .form-row {

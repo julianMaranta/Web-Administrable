@@ -63,6 +63,10 @@
               <span class="property-badge" :class="property.tipo">
                 {{ property.tipo === 'venta' ? 'VENTA' : 'ALQUILER' }}
               </span>
+              <!-- Agregar este botón debajo -->
+<button class="copy-link-button" @click="copyPropertyLink">
+  <span class="copy-icon">📋</span> Copiar link
+</button>
               <span v-if="property.destacada" class="featured-badge">DESTACADA</span>
               <h1>{{ property.direccion }}</h1>
               <p class="property-location">{{ property.ubicacion }}</p>
@@ -95,10 +99,7 @@
                 <span class="feature-value">{{ property.banos ?? '-' }} baños</span>
             </div>
             
-            <div class="feature-item" v-if="property.metrosCuadrados">
-                <span class="feature-icon">📏</span>
-                <span class="feature-value">{{ property.metrosCuadrados ?? '-' }} m²</span>
-            </div>
+        
             
             <div class="feature-item" v-if="property.cochera">
                 <span class="feature-icon">🚗</span>
@@ -145,6 +146,39 @@
                 <span class="feature-icon">🪑</span>
                 <span class="feature-value">{{ property.amueblada ? 'Amueblada' : 'Sin amueblar' }}</span>
             </div>
+
+            <!-- Superficies -->
+      <div class="feature-item" v-if="property.superficieTotal">
+        <span class="feature-icon">📐</span>
+        <div class="feature-text">
+          <span class="feature-label">Superficie Total</span>
+          <span class="feature-value">{{ property.superficieTotal }} m²</span>
+        </div>
+      </div>
+      
+      <div class="feature-item" v-if="property.superficieCubierta">
+        <span class="feature-icon">🏠</span>
+        <div class="feature-text">
+          <span class="feature-label">Cubierta</span>
+          <span class="feature-value">{{ property.superficieCubierta }} m²</span>
+        </div>
+      </div>
+      
+      <div class="feature-item" v-if="property.superficieSemicubierta">
+        <span class="feature-icon">🏡</span>
+        <div class="feature-text">
+          <span class="feature-label">Semicubierta</span>
+          <span class="feature-value">{{ property.superficieSemicubierta }} m²</span>
+        </div>
+      </div>
+      
+      <div class="feature-item" v-if="property.superficieTerreno">
+        <span class="feature-icon">🌱</span>
+        <div class="feature-text">
+          <span class="feature-label">Terreno</span>
+          <span class="feature-value">{{ property.superficieTerreno }} m²</span>
+        </div>
+      </div>
         </div>
     </div>
             
@@ -154,52 +188,7 @@
               <p>{{ property.descripcion }}</p>
             </div>
             
-            <!-- Características adicionales -->
-            <div class="additional-features">
-              <h2>Características</h2>
-              
-              <div class="features-grid">
-                <div class="feature-item" v-if="property.antiguedad">
-                  <span class="feature-label">Antigüedad:</span>
-                  <span class="feature-value">{{ property.antiguedad }} años</span>
-                </div>
-                
-                <div class="feature-item" v-if="property.estado">
-                  <span class="feature-label">Estado:</span>
-                  <span class="feature-value">{{ property.estado }}</span>
-                </div>
-                
-                <div class="feature-item" v-if="property.orientacion">
-                  <span class="feature-label">Orientación:</span>
-                  <span class="feature-value">{{ property.orientacion }}</span>
-                </div>
-                
-                <div class="feature-item" v-if="property.pisos">
-                  <span class="feature-label">Pisos:</span>
-                  <span class="feature-value">{{ property.pisos }}</span>
-                </div>
-                
-                <div class="feature-item" v-if="property.ambientes">
-                  <span class="feature-label">Ambientes:</span>
-                  <span class="feature-value">{{ property.ambientes }}</span>
-                </div>
-                
-                <div class="feature-item" v-if="property.jardin">
-                  <span class="feature-label">Jardín:</span>
-                  <span class="feature-value">{{ property.jardin ? 'Sí' : 'No' }}</span>
-                </div>
-                
-                <div class="feature-item" v-if="property.pileta">
-                  <span class="feature-label">Pileta:</span>
-                  <span class="feature-value">{{ property.pileta ? 'Sí' : 'No' }}</span>
-                </div>
-                
-                <div class="feature-item" v-if="property.amueblada">
-                  <span class="feature-label">Amueblada:</span>
-                  <span class="feature-value">{{ property.amueblada ? 'Sí' : 'No' }}</span>
-                </div>
-              </div>
-            </div>
+           
           </div>
           
           <!-- Columna derecha - Datos de contacto -->
@@ -302,6 +291,36 @@ const property = ref<any>(null);
 const showWhatsAppModal = ref(false);
 const showEmailModal = ref(false);
 const showPhoneModal = ref(false);
+
+// Función para copiar el link de la propiedad
+const copyPropertyLink = () => {
+  const propertyUrl = window.location.href;
+  navigator.clipboard.writeText(propertyUrl)
+    .then(() => {
+      // Mostrar feedback visual (opcional)
+      const copyBtn = document.querySelector('.copy-link-button');
+      if (copyBtn) {
+        copyBtn.textContent = '✓ Copiado!';
+        setTimeout(() => {
+          copyBtn.innerHTML = '<span class="copy-icon">📋</span> Copiar link';
+        }, 2000);
+      }
+    })
+    .catch(err => {
+      console.error('Error al copiar: ', err);
+      // Fallback para navegadores antiguos
+      const textArea = document.createElement('textarea');
+      textArea.value = propertyUrl;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+      } catch (err) {
+        console.error('Fallback copy failed: ', err);
+      }
+      document.body.removeChild(textArea);
+    });
+};
 
 // Obtener imágenes de la propiedad
 const propertyImages = computed(() => {
@@ -522,10 +541,37 @@ padding: 20px;
 box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
+.copy-link-button {
+  background: #f0f2f5;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 13px;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.copy-link-button:hover {
+  background: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.copy-link-button .copy-icon {
+  font-size: 14px;
+}
+
 .property-header {
-margin-bottom: 20px;
-position: relative;
-padding-right: 120px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  position: relative;
+  padding-right: 0; /* Eliminamos el padding derecho anterior */
 }
 
 .property-header h1 {
@@ -545,7 +591,7 @@ font-style: italic;
 }
 
 .property-badge {
-position: absolute;
+position: static;
 top: 0;
 right: 0;
 padding: 5px 15px;
