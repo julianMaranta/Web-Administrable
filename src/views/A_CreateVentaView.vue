@@ -73,27 +73,9 @@
           </div>
         </div>
 
-        <!-- Sección de medidas de superficie -->
-        <div class="form-section-title">Medidas de Superficie</div>
-        
         <div class="form-group">
-          <label for="superficie-total">Superficie Total (m²)</label>
-          <input id="superficie-total" v-model.number="superficieTotal" type="number" placeholder="Ej: 120" />
-        </div>
-
-        <div class="form-group">
-          <label for="superficie-cubierta">Superficie Cubierta (m²)</label>
-          <input id="superficie-cubierta" v-model.number="superficieCubierta" type="number" placeholder="Ej: 80" />
-        </div>
-
-        <div class="form-group">
-          <label for="superficie-semicubierta">Superficie Semicubierta (m²)</label>
-          <input id="superficie-semicubierta" v-model.number="superficieSemicubierta" type="number" placeholder="Ej: 20" />
-        </div>
-
-        <div class="form-group">
-          <label for="superficie-terreno">Superficie de Terreno (m²)</label>
-          <input id="superficie-terreno" v-model.number="superficieTerreno" type="number" placeholder="Ej: 300" />
+          <label for="metros-cuadrados">Metros Cuadrados (m²)</label>
+          <input id="metros-cuadrados" v-model.number="metrosCuadrados" type="number" placeholder="Ej: 80" />
         </div>
 
         <!-- Sección de características -->
@@ -184,11 +166,7 @@ const tipoPropiedad = ref('');
 const precioVenta = ref(0);
 const precioExpensas = ref(0);
 const sinExpensas = ref(false);
-// Nuevas medidas de superficie
-const superficieTotal = ref(0);
-const superficieCubierta = ref(0);
-const superficieSemicubierta = ref(0);
-const superficieTerreno = ref(0);
+const metrosCuadrados = ref(0);
 // Características
 const habitaciones = ref(0);
 const ambientes = ref(0);
@@ -228,9 +206,7 @@ const createProperty = async () => {
     if (precioVenta.value <= 0) {
       throw new Error('El precio de venta debe ser mayor a cero.');
     }
-    if (superficieTotal.value <= 0) {
-      throw new Error('La superficie total debe ser mayor a cero.');
-    }
+   
 
     // Crear la propiedad
     const nuevaPropiedad = await client.models.PropiedadVenta.create({
@@ -239,11 +215,7 @@ const createProperty = async () => {
       tipoPropiedad: tipoPropiedad.value,
       precioVenta: precioVenta.value,
       precioExpensas: precioExpensas.value,
-      // Nuevas medidas
-      superficieTotal: superficieTotal.value,
-      superficieCubierta: superficieCubierta.value,
-      superficieSemicubierta: superficieSemicubierta.value,
-      superficieTerreno: superficieTerreno.value,
+      metrosCuadrados: metrosCuadrados.value,
       // Características
       habitaciones: habitaciones.value,
       ambientes: ambientes.value,

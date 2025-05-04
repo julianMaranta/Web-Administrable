@@ -92,32 +92,11 @@
                 </div>
               </div>
 
-              <!-- Sección de medidas de superficie -->
-              <div class="form-section-title">Medidas de Superficie</div>
               
-              <div class="form-row">
                 <div class="form-group">
-                  <label for="superficie-total">Superficie Total (m²)</label>
-                  <input id="superficie-total" v-model.number="formData.superficieTotal" type="number" min="0" />
+                  <label for="metros">Metros Cuadrados</label>
+                  <input id="metros" v-model.number="formData.metrosCuadrados" type="number" min="0" />
                 </div>
-                
-                <div class="form-group">
-                  <label for="superficie-cubierta">Superficie Cubierta (m²)</label>
-                  <input id="superficie-cubierta" v-model.number="formData.superficieCubierta" type="number" min="0" />
-                </div>
-              </div>
-              
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="superficie-semicubierta">Superficie Semicubierta (m²)</label>
-                  <input id="superficie-semicubierta" v-model.number="formData.superficieSemicubierta" type="number" min="0" />
-                </div>
-                
-                <div class="form-group">
-                  <label for="superficie-terreno">Superficie de Terreno (m²)</label>
-                  <input id="superficie-terreno" v-model.number="formData.superficieTerreno" type="number" min="0" />
-                </div>
-              </div>
 
               <!-- Sección de características -->
               <div class="form-section-title">Características</div>
@@ -258,11 +237,6 @@ const formData = reactive({
   tipoPropiedad: '',
   precioVenta: 0,
   precioExpensas: 0,
-  // Nuevas medidas de superficie
-  superficieTotal: 0,
-  superficieCubierta: 0,
-  superficieSemicubierta: 0,
-  superficieTerreno: 0,
   // Características
   habitaciones: 0,
   banos: 0,
@@ -313,11 +287,7 @@ const loadPropertyData = async (id: string) => {
       formData.tipoPropiedad = propiedad.tipoPropiedad || '';
       formData.precioVenta = propiedad.precioVenta || 0;
       formData.precioExpensas = propiedad.precioExpensas || 0;
-      // Cargar medidas de superficie
-      formData.superficieTotal = propiedad.superficieTotal || 0;
-      formData.superficieCubierta = propiedad.superficieCubierta || 0;
-      formData.superficieSemicubierta = propiedad.superficieSemicubierta || 0;
-      formData.superficieTerreno = propiedad.superficieTerreno || 0;
+      formData.metrosCuadrados = propiedad.metrosCuadrados || 0;
       // Cargar características
       formData.habitaciones = propiedad.habitaciones || 0;
       formData.banos = propiedad.banos || 0;
@@ -356,11 +326,7 @@ const updateProperty = async () => {
       tipoPropiedad: formData.tipoPropiedad,
       precioVenta: formData.precioVenta,
       precioExpensas: formData.precioExpensas,
-      // Medidas de superficie
-      superficieTotal: formData.superficieTotal,
-      superficieCubierta: formData.superficieCubierta,
-      superficieSemicubierta: formData.superficieSemicubierta,
-      superficieTerreno: formData.superficieTerreno,
+      metrosCuadrados: formData.metrosCuadrados,
       // Características
       habitaciones: formData.habitaciones,
       banos: formData.banos,

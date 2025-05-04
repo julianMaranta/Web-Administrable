@@ -103,7 +103,7 @@
     type="number" 
     v-model.number="searchQuery.banos" 
     placeholder="Cualquier cantidad"
-    min="0"
+    min="1"
     oninput="this.value = Math.abs(this.value)"
   />
 </div>
