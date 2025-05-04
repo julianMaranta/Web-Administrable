@@ -113,7 +113,10 @@ const loadProperties = async () => {
       ambientes: prop.ambientes ?? undefined,
       habitaciones: prop.habitaciones ?? undefined,
       banos: prop.banos ?? undefined,
-      metrosCuadrados: prop.metrosCuadrados ?? undefined,
+      superficieTotal: prop.superficieTotal ?? undefined,
+      superficieCubierta: prop.superficieCubierta ?? undefined,
+      superficieSemicubierta: prop.superficieSemicubierta ?? undefined,
+      superficieTerreno: prop.superficieTerreno ?? undefined,
       estado: prop.estado ?? undefined
     }));
   } catch (error) {
