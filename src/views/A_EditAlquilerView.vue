@@ -273,17 +273,6 @@ const handleExpensasChange = () => {
   }
 };
 
-// Cargar propiedades
-const loadProperties = async () => {
-  try {
-    const response = await client.models.PropiedadAlquiler.list();
-    propiedades.value = response.data || [];
-  } catch (error) {
-    console.error('Error al cargar propiedades:', error);
-  } finally {
-    loading.value = false;
-  }
-};
 
 // Seleccionar propiedad para editar
 const selectProperty = async (id: string) => {
@@ -291,28 +280,79 @@ const selectProperty = async (id: string) => {
   await loadPropertyData(id);
 };
 
-// Cargar datos de una propiedad específica
+// Modificar la función loadProperties
+const loadProperties = async () => {
+  try {
+    loading.value = true;
+    const { data, errors } = await client.models.PropiedadAlquiler.list();
+    
+    if (errors) {
+      console.error('Errores al cargar propiedades:', errors);
+      return;
+    }
+    
+    propiedades.value = data.map(prop => ({
+      ...prop,
+      // Parsear las imágenes si existen
+      imagenes: prop.imagenes ? JSON.parse(prop.imagenes) : []
+    }));
+    
+  } catch (error) {
+    console.error('Error al cargar propiedades:', error);
+    // Mostrar mensaje de error al usuario
+  } finally {
+    loading.value = false;
+  }
+};
+
+// Modificar la función loadPropertyData
 const loadPropertyData = async (id: string) => {
   try {
-    const response = await client.models.PropiedadAlquiler.get({ id });
-    if (response.data) {
-      const propiedad = response.data;
-      formData.direccion = propiedad.direccion || '';
-      formData.ubicacion = propiedad.ubicacion || '';
-      formData.tipoPropiedad = propiedad.tipoPropiedad || '';
-      formData.precioAlquiler = propiedad.precioAlquiler || 0;
-      formData.moneda = propiedad.moneda || 'ARS'; // Cargar moneda
-      formData.precioExpensas = propiedad.precioExpensas || 0;
-      sinExpensas.value = !propiedad.precioExpensas || propiedad.precioExpensas <= 0;
-      formData.habitaciones = propiedad.habitaciones || 0;
-      formData.banos = propiedad.banos || 0;
-      formData.cochera = propiedad.cochera || 'No';
-      formData.metrosCuadrados = propiedad.metrosCuadrados || 0;
-      formData.mapLink = propiedad.mapLink || '';
-      formData.youtubeVideoUrl = propiedad.youtubeVideoUrl || '';
-      formData.descripcion = propiedad.descripcion || '';
-      formData.imagenes = propiedad.imagenes ? JSON.parse(propiedad.imagenes) : [];
+    const { data: propiedad, errors } = await client.models.PropiedadAlquiler.get({ id });
+    
+    if (errors || !propiedad) {
+      console.error('Error al cargar propiedad:', errors);
+      return;
     }
+    
+    // Resetear el formulario primero
+    Object.assign(formData, {
+      direccion: '',
+      ubicacion: '',
+      tipoPropiedad: '',
+      precioAlquiler: 0,
+      moneda: 'ARS',
+      precioExpensas: 0,
+      habitaciones: 0,
+      banos: 0,
+      cochera: 'No',
+      metrosCuadrados: 0,
+      mapLink: '',
+      youtubeVideoUrl: '',
+      descripcion: '',
+      imagenes: []
+    });
+    
+    // Llenar con los datos de la propiedad
+    Object.assign(formData, {
+      direccion: propiedad.direccion || '',
+      ubicacion: propiedad.ubicacion || '',
+      tipoPropiedad: propiedad.tipoPropiedad || '',
+      precioAlquiler: propiedad.precioAlquiler || 0,
+      moneda: propiedad.moneda || 'ARS',
+      precioExpensas: propiedad.precioExpensas || 0,
+      habitaciones: propiedad.habitaciones || 0,
+      banos: propiedad.banos || 0,
+      cochera: propiedad.cochera || 'No',
+      metrosCuadrados: propiedad.metrosCuadrados || 0,
+      mapLink: propiedad.mapLink || '',
+      youtubeVideoUrl: propiedad.youtubeVideoUrl || '',
+      descripcion: propiedad.descripcion || '',
+      imagenes: propiedad.imagenes ? JSON.parse(propiedad.imagenes) : []
+    });
+    
+    sinExpensas.value = !propiedad.precioExpensas || propiedad.precioExpensas <= 0;
+    
   } catch (error) {
     console.error('Error al cargar datos de la propiedad:', error);
   }
