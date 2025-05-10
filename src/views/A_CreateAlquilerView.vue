@@ -61,14 +61,47 @@
   </select>
 </div>
 
-        <div class="form-group">
-          <label for="precio-alquiler">Precio Alquiler ($)</label>
-          <input id="precio-alquiler" v-model.number="precioAlquiler" type="number" placeholder="Ej: 150000" />
-        </div>
+<div class="form-group">
+  <label>Precio Alquiler</label>
+  <div class="price-container">
+    <input 
+      id="precio-alquiler" 
+      v-model.number="precioAlquiler" 
+      type="number" 
+      :placeholder="moneda === 'ARS' ? 'Ej: 150000' : 'Ej: 150'"
+      class="price-input"
+    />
+    <div class="currency-options">
+      <label class="currency-option">
+        <input 
+          type="radio" 
+          v-model="moneda" 
+          value="ARS" 
+          :checked="moneda === 'ARS'"
+        />
+        ARS
+      </label>
+      <label class="currency-option">
+        <input 
+          type="radio" 
+          v-model="moneda" 
+          value="USD" 
+          :checked="moneda === 'USD'"
+        />
+        USD
+      </label>
+    </div>
+  </div>
+</div>
 
-        <div class="form-group">
-  <label for="precio-expensas">Precio Expensas ($)</label>
-  <input id="precio-expensas" v-model.number="precioExpensas" type="number" placeholder="Ej: 15000" />
+<div class="form-group">
+  <label for="precio-expensas">Precio Expensas ({{ moneda }})</label>
+  <input 
+    id="precio-expensas" 
+    v-model.number="precioExpensas" 
+    type="number" 
+    :placeholder="moneda === 'ARS' ? 'Ej: 15000' : 'Ej: 50'"
+  />
   <div class="checkbox-option">
     <input type="checkbox" id="sin-expensas" v-model="sinExpensas" @change="handleExpensasChange">
     <label for="sin-expensas">Sin Expensas</label>
@@ -180,6 +213,10 @@ const imagenes = ref([{ url: '', descripcion: '' }]);
 
 const showConfirmationModal = ref(false);
 
+// Agrega esta línea con las otras refs
+const moneda = ref<'ARS' | 'USD'>('ARS');
+
+
 const addImage = () => {
   imagenes.value.push({ url: '', descripcion: '' });
 };
@@ -216,6 +253,7 @@ const createProperty = async () => {
       ubicacion: ubicacion.value,
       tipoPropiedad: tipoPropiedad.value,
       precioAlquiler: precioAlquiler.value,
+      moneda: moneda.value, // Nuevo campo
       precioExpensas: precioExpensas.value,
       habitaciones: habitaciones.value,
       ambientes: ambientes.value,
@@ -411,5 +449,45 @@ button[type="button"]:hover {
 .checkbox-option label {
   font-weight: normal;
   margin-bottom: 0;
+}
+
+/* Agrega estos estilos al final de tu <style scoped> */
+
+.price-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.price-input {
+  flex: 1;
+}
+
+.currency-options {
+  display: flex;
+  gap: 10px;
+}
+
+.currency-option {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.currency-option input[type="radio"] {
+  margin: 0;
+}
+
+.currency-option:hover {
+  border-color: #0014ac;
+}
+
+.currency-option input[type="radio"]:checked + label {
+  background-color: #0014ac;
+  color: white;
 }
 </style>
