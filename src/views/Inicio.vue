@@ -47,11 +47,11 @@
             
             <div class="property-details">
               <div class="detail-row">
-                <span class="detail-label">Precio:</span>
-                <span class="detail-value">
-                  {{ formatPrice(propiedad.tipo === 'venta' ? propiedad.precioVenta : propiedad.precioAlquiler) }}
-                </span>
-              </div>
+  <span class="detail-label">Precio:</span>
+  <span class="detail-value">
+    {{ formatPrice(propiedad.tipo === 'venta' ? propiedad.precioVenta : propiedad.precioAlquiler, propiedad) }}
+  </span>
+</div>
 
               <div class="detail-row" v-if="propiedad.precioExpensas !== undefined && propiedad.precioExpensas !== null">
   <span class="detail-label">Expensas:</span>
@@ -277,8 +277,15 @@ const getPropertyImages = (propiedad: any) => {
   }
 };
 
-const formatPrice = (price?: number | null) => {
-  return price ? '$' + price.toLocaleString('es-AR') : 'Consultar';
+const formatPrice = (price?: number | null, propiedad?: any) => {
+  if (!price) return 'Consultar';
+  
+  const formattedPrice = price.toLocaleString('es-AR');
+  const currency = propiedad?.moneda || 'ARS';
+  
+  return currency === 'USD' 
+    ? `U$D ${formattedPrice}` 
+    : `$${formattedPrice}`;
 };
 
 const handleImageError = (event: Event) => {
