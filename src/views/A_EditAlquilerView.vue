@@ -246,6 +246,7 @@ const loading = ref(true);
 const selectedPropertyId = ref<string | null>(null);
 const showModal = ref(false);
 const showSuccessModal = ref(false);
+const errorMessage = ref<string>('');
 
 // Formulario de edición
 const formData = reactive({
@@ -280,48 +281,82 @@ const selectProperty = async (id: string) => {
   await loadPropertyData(id);
 };
 
-// Modificar la función loadProperties
 const loadProperties = async () => {
   try {
     loading.value = true;
-    const { data, errors } = await client.models.PropiedadAlquiler.list();
+    errorMessage.value = '';
+    
+    // 1. Obtener todas las propiedades
+    const { data: rawProperties, errors } = await client.models.PropiedadAlquiler.list();
     
     if (errors) {
       console.error('Errores al cargar propiedades:', errors);
+      errorMessage.value = 'Error técnico al cargar propiedades';
       return;
     }
-    
-    propiedades.value = data.map(prop => ({
-      ...prop,
-      // Parsear las imágenes si existen
-      imagenes: prop.imagenes ? JSON.parse(prop.imagenes) : []
-    }));
-    
+
+    // 2. Filtrar propiedades válidas
+    propiedades.value = (rawProperties || [])
+      .filter(prop => {
+        // Verificar que la propiedad existe y tiene ID
+        if (!prop || !prop.id) return false;
+        
+        // Validar que el campo moneda tenga un valor correcto
+        const hasValidMoneda = prop.moneda && ['ARS', 'USD'].includes(prop.moneda);
+        
+        // Solo incluir si tiene moneda válida
+        return hasValidMoneda;
+      })
+      .map(prop => ({
+        ...prop,
+        // Asegurar otros campos importantes
+        tipoPropiedad: prop.tipoPropiedad || 'No especificado',
+        imagenes: prop.imagenes ? safeJsonParse(prop.imagenes) : []
+      }));
+
+    // 3. Mostrar advertencia si se filtraron propiedades
+    if (rawProperties?.length > 0 && propiedades.value.length < rawProperties.length) {
+      const filteredCount = rawProperties.length - propiedades.value.length;
+      console.warn(`Se filtraron ${filteredCount} propiedades por datos inválidos`);
+      // Opcional: Mostrar advertencia al usuario
+      errorMessage.value = `Advertencia: ${filteredCount} propiedades no cumplen los requisitos`;
+    }
+
   } catch (error) {
-    console.error('Error al cargar propiedades:', error);
-    // Mostrar mensaje de error al usuario
+    console.error('Error inesperado:', error);
+    errorMessage.value = 'Error inesperado al cargar propiedades';
   } finally {
     loading.value = false;
   }
 };
 
-// Modificar la función loadPropertyData
+// Función auxiliar para parseo seguro de JSON
+const safeJsonParse = (str: string) => {
+  try {
+    return JSON.parse(str);
+  } catch (e) {
+    console.error('Error al parsear imágenes:', e);
+    return [];
+  }
+};
+
 const loadPropertyData = async (id: string) => {
   try {
     const { data: propiedad, errors } = await client.models.PropiedadAlquiler.get({ id });
     
     if (errors || !propiedad) {
       console.error('Error al cargar propiedad:', errors);
+      // Mostrar mensaje al usuario
       return;
     }
     
-    // Resetear el formulario primero
+    // Resetear el formulario con valores por defecto
     Object.assign(formData, {
       direccion: '',
       ubicacion: '',
       tipoPropiedad: '',
       precioAlquiler: 0,
-      moneda: 'ARS',
+      moneda: 'ARS', // Valor por defecto
       precioExpensas: 0,
       habitaciones: 0,
       banos: 0,
@@ -333,28 +368,31 @@ const loadPropertyData = async (id: string) => {
       imagenes: []
     });
     
-    // Llenar con los datos de la propiedad
-    Object.assign(formData, {
-      direccion: propiedad.direccion || '',
-      ubicacion: propiedad.ubicacion || '',
-      tipoPropiedad: propiedad.tipoPropiedad || '',
-      precioAlquiler: propiedad.precioAlquiler || 0,
-      moneda: propiedad.moneda || 'ARS',
-      precioExpensas: propiedad.precioExpensas || 0,
-      habitaciones: propiedad.habitaciones || 0,
-      banos: propiedad.banos || 0,
-      cochera: propiedad.cochera || 'No',
-      metrosCuadrados: propiedad.metrosCuadrados || 0,
-      mapLink: propiedad.mapLink || '',
-      youtubeVideoUrl: propiedad.youtubeVideoUrl || '',
-      descripcion: propiedad.descripcion || '',
-      imagenes: propiedad.imagenes ? JSON.parse(propiedad.imagenes) : []
-    });
-    
-    sinExpensas.value = !propiedad.precioExpensas || propiedad.precioExpensas <= 0;
+    // Llenar con datos existentes, usando valores por defecto donde sea necesario
+    if (propiedad) {
+      Object.assign(formData, {
+        direccion: propiedad.direccion || '',
+        ubicacion: propiedad.ubicacion || '',
+        tipoPropiedad: propiedad.tipoPropiedad || '',
+        precioAlquiler: propiedad.precioAlquiler || 0,
+        moneda: propiedad.moneda || 'ARS', // Asegurar valor no nulo
+        precioExpensas: propiedad.precioExpensas || 0,
+        habitaciones: propiedad.habitaciones || 0,
+        banos: propiedad.banos || 0,
+        cochera: propiedad.cochera || 'No',
+        metrosCuadrados: propiedad.metrosCuadrados || 0,
+        mapLink: propiedad.mapLink || '',
+        youtubeVideoUrl: propiedad.youtubeVideoUrl || '',
+        descripcion: propiedad.descripcion || '',
+        imagenes: propiedad.imagenes ? safeJsonParse(propiedad.imagenes) : []
+      });
+      
+      sinExpensas.value = !propiedad.precioExpensas || propiedad.precioExpensas <= 0;
+    }
     
   } catch (error) {
     console.error('Error al cargar datos de la propiedad:', error);
+    // Mostrar mensaje de error al usuario
   }
 };
 
