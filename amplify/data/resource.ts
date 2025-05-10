@@ -28,6 +28,7 @@ const schema = a.schema({
         precioAlquiler: a.float().required(),
         moneda: a.string().required(),
         precioExpensas: a.float(),
+        monedaExpensas: a.string().default('ARS'), // Siempre ARS
         habitaciones: a.integer(),
         ambientes: a.integer(),
         antiguedad: a.integer(),
@@ -55,6 +56,7 @@ const schema = a.schema({
         precioVenta: a.float().required(),
         moneda: a.string().required(),
         precioExpensas: a.float(),
+        monedaExpensas: a.string().default('ARS'), // Siempre ARS
         habitaciones: a.integer(),
         ambientes: a.integer(),
         antiguedad: a.integer(),

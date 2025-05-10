@@ -15,7 +15,8 @@
             <h3>{{ propiedad.direccion }}</h3>
             <div class="property-details">
               <span><strong>Tipo:</strong> {{ propiedad.tipoPropiedad }}</span>
-              <span><strong>Precio:</strong> ${{ propiedad.precioVenta?.toLocaleString() }}</span>
+              <span><strong>Precio:</strong> {{ formatPrice(propiedad.precioVenta, propiedad.moneda) }}</span>
+              <span v-if="propiedad.precioExpensas"><strong>Expensas:</strong> {{ formatPrice(propiedad.precioExpensas, 'ARS') }}</span>
               <span><strong>Estado:</strong> {{ propiedad.estado }}</span>
             </div>
           </div>
@@ -24,6 +25,8 @@
             <h2>Eliminar Propiedad</h2>
             <div class="property-full-details">
               <p><strong>Dirección:</strong> {{ propiedad.direccion }}</p>
+              <p><strong>Precio Alquiler:</strong> {{ formatPrice(propiedad.precioVenta, propiedad.moneda) }}</p>
+              <p v-if="propiedad.precioExpensas"><strong>Expensas:</strong> {{ formatPrice(propiedad.precioExpensas, 'ARS') }}</p>
               <p><strong>Ambientes:</strong> {{ propiedad.ambientes }}</p>
               <p><strong>Habitaciones:</strong> {{ propiedad.habitaciones }}</p>
               <p><strong>Baños:</strong> {{ propiedad.banos }}</p>
@@ -44,7 +47,8 @@
           <div class="property-to-delete">
             <h3>{{ propiedadSeleccionada?.direccion }}</h3>
             <p>Tipo: {{ propiedadSeleccionada?.tipoPropiedad }}</p>
-            <p>Precio: ${{ propiedadSeleccionada?.precioVenta?.toLocaleString() }}</p>
+            <p>Precio: {{ formatPrice(propiedadSeleccionada?.precioVenta, propiedadSeleccionada?.moneda) }}</p>
+            <p v-if="propiedadSeleccionada?.precioExpensas">Expensas: {{ formatPrice(propiedadSeleccionada?.precioExpensas, 'ARS') }}</p>
           </div>
           <div class="modal-buttons">
             <button @click="confirmDelete" class="confirm-button">Confirmar</button>
@@ -83,6 +87,8 @@ interface Propiedad {
   direccion: string;
   tipoPropiedad: string;
   precioVenta: number;
+  moneda: string;
+  precioExpensas?: number;
   ambientes?: number;
   habitaciones?: number;
   banos?: number;
@@ -95,6 +101,14 @@ const loading = ref(true);
 const selectedPropertyId = ref<string | null>(null);
 const showModal = ref(false);
 const showSuccessModal = ref(false);
+
+// Función para formatear precios
+const formatPrice = (price?: number, currency?: string) => {
+  if (!price) return 'Consultar';
+  const formatted = price.toLocaleString('es-AR');
+  return currency === 'USD' ? `U$D ${formatted}` : `$${formatted}`;
+};
+
 
 // Computed
 const propiedadSeleccionada = computed(() => {
@@ -110,6 +124,8 @@ const loadProperties = async () => {
       direccion: prop.direccion,
       tipoPropiedad: prop.tipoPropiedad,
       precioVenta: prop.precioVenta,
+      moneda: prop.moneda || 'ARS', // Default a ARS si no existe
+      precioExpensas: prop.precioExpensas ?? undefined,
       ambientes: prop.ambientes ?? undefined,
       habitaciones: prop.habitaciones ?? undefined,
       banos: prop.banos ?? undefined,

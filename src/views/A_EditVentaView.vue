@@ -78,19 +78,57 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="precio-venta">Precio Venta ($)</label>
-                  <input id="precio-venta" v-model.number="formData.precioVenta" type="number" min="0" required />
-                </div>
+    <label>Precio Venta</label>
+    <div class="price-container">
+      <input 
+        id="precio-alquiler" 
+        v-model.number="formData.precioVenta" 
+        type="number" 
+        min="0"
+        :placeholder="formData.moneda === 'ARS' ? 'Ej: 150000' : 'Ej: 150'"
+        class="price-input"
+        required
+      />
+      <div class="currency-options">
+        <label class="currency-option">
+          <input 
+            type="radio" 
+            v-model="formData.moneda" 
+            value="ARS" 
+          />
+          ARS
+        </label>
+        <label class="currency-option">
+          <input 
+            type="radio" 
+            v-model="formData.moneda" 
+            value="USD" 
+          />
+          USD
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="precio-expensas">Precio Expensas (ARS)</label>
+    <input 
+      id="precio-expensas" 
+      v-model.number="formData.precioExpensas" 
+      type="number" 
+      min="0" 
+      placeholder="Ej: 15000"
+    />
+    <div class="checkbox-option">
+      <input type="checkbox" id="sin-expensas" v-model="sinExpensas" @change="handleExpensasChange">
+      <label for="sin-expensas">Sin Expensas</label>
+    </div>
+  </div>
+
+                
               </div>
 
-              <div class="form-group">
-                <label for="precio-expensas">Precio Expensas ($)</label>
-                <input id="precio-expensas" v-model.number="formData.precioExpensas" type="number" min="0" />
-                <div class="checkbox-option">
-                  <input type="checkbox" id="sin-expensas" v-model="sinExpensas" @change="handleExpensasChange">
-                  <label for="sin-expensas">Sin Expensas</label>
-                </div>
-              </div>
+              
 
               
                 <div class="form-group">
@@ -236,6 +274,7 @@ const formData = reactive({
   ubicacion: '',
   tipoPropiedad: '',
   precioVenta: 0,
+  moneda: 'ARS', // Nuevo campo para la moneda
   precioExpensas: 0,
   // Características
   habitaciones: 0,
@@ -286,6 +325,7 @@ const loadPropertyData = async (id: string) => {
       formData.ubicacion = propiedad.ubicacion || '';
       formData.tipoPropiedad = propiedad.tipoPropiedad || '';
       formData.precioVenta = propiedad.precioVenta || 0;
+      formData.moneda = propiedad.moneda || 'ARS'; // Cargar moneda
       formData.precioExpensas = propiedad.precioExpensas || 0;
       formData.metrosCuadrados = propiedad.metrosCuadrados || 0;
       // Cargar características
@@ -325,6 +365,7 @@ const updateProperty = async () => {
       ubicacion: formData.ubicacion,
       tipoPropiedad: formData.tipoPropiedad,
       precioVenta: formData.precioVenta,
+      moneda: formData.moneda, // Guardar moneda
       precioExpensas: formData.precioExpensas,
       metrosCuadrados: formData.metrosCuadrados,
       // Características

@@ -95,12 +95,15 @@
 </div>
 
 <div class="form-group">
-  <label for="precio-expensas">Precio Expensas ({{ moneda }})</label>
+  <label for="precio-expensas" class="expensas-label">
+  Precio Expensas 
+  <span class="expensas-badge">ARS</span>
+</label>
   <input 
     id="precio-expensas" 
     v-model.number="precioExpensas" 
     type="number" 
-    :placeholder="moneda === 'ARS' ? 'Ej: 15000' : 'Ej: 50'"
+    placeholder="Ej: 15000" <!-- Solo ejemplo en pesos -->
   />
   <div class="checkbox-option">
     <input type="checkbox" id="sin-expensas" v-model="sinExpensas" @change="handleExpensasChange">
@@ -255,6 +258,7 @@ const createProperty = async () => {
       precioAlquiler: precioAlquiler.value,
       moneda: moneda.value, // Nuevo campo
       precioExpensas: precioExpensas.value,
+      monedaExpensas: 'ARS', // Nuevo campo para claridad
       habitaciones: habitaciones.value,
       ambientes: ambientes.value,
       antiguedad: antiguedad.value,
@@ -489,5 +493,20 @@ button[type="button"]:hover {
 .currency-option input[type="radio"]:checked + label {
   background-color: #0014ac;
   color: white;
+}
+
+.expensas-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.expensas-badge {
+  background-color: #4CAF50;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
 }
 </style>

@@ -81,19 +81,57 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="precio-alquiler">Precio Alquiler ($)</label>
-                  <input id="precio-alquiler" v-model.number="formData.precioAlquiler" type="number" min="0" required />
-                </div>
-              </div>
+    <label>Precio Alquiler</label>
+    <div class="price-container">
+      <input 
+        id="precio-alquiler" 
+        v-model.number="formData.precioAlquiler" 
+        type="number" 
+        min="0"
+        :placeholder="formData.moneda === 'ARS' ? 'Ej: 150000' : 'Ej: 150'"
+        class="price-input"
+        required
+      />
+      <div class="currency-options">
+        <label class="currency-option">
+          <input 
+            type="radio" 
+            v-model="formData.moneda" 
+            value="ARS" 
+          />
+          ARS
+        </label>
+        <label class="currency-option">
+          <input 
+            type="radio" 
+            v-model="formData.moneda" 
+            value="USD" 
+          />
+          USD
+        </label>
+      </div>
+    </div>
+  </div>
 
-              <div class="form-group">
-    <label for="precio-expensas">Precio Expensas ($)</label>
-    <input id="precio-expensas" v-model.number="formData.precioExpensas" type="number" min="0" />
+  <div class="form-group">
+    <label for="precio-expensas">Precio Expensas (ARS)</label>
+    <input 
+      id="precio-expensas" 
+      v-model.number="formData.precioExpensas" 
+      type="number" 
+      min="0" 
+      placeholder="Ej: 15000"
+    />
     <div class="checkbox-option">
       <input type="checkbox" id="sin-expensas" v-model="sinExpensas" @change="handleExpensasChange">
       <label for="sin-expensas">Sin Expensas</label>
     </div>
   </div>
+
+               
+              </div>
+
+              
 
               <div class="form-row">
                 <div class="form-group">
@@ -215,6 +253,7 @@ const formData = reactive({
   ubicacion: '',
   tipoPropiedad: '',
   precioAlquiler: 0,
+  moneda: 'ARS', // Nuevo campo para la moneda
   precioExpensas: 0,
   habitaciones: 0,
   banos: 0,
@@ -262,6 +301,7 @@ const loadPropertyData = async (id: string) => {
       formData.ubicacion = propiedad.ubicacion || '';
       formData.tipoPropiedad = propiedad.tipoPropiedad || '';
       formData.precioAlquiler = propiedad.precioAlquiler || 0;
+      formData.moneda = propiedad.moneda || 'ARS'; // Cargar moneda
       formData.precioExpensas = propiedad.precioExpensas || 0;
       sinExpensas.value = !propiedad.precioExpensas || propiedad.precioExpensas <= 0;
       formData.habitaciones = propiedad.habitaciones || 0;
@@ -298,6 +338,7 @@ const updateProperty = async () => {
       ubicacion: formData.ubicacion,
       tipoPropiedad: formData.tipoPropiedad,
       precioAlquiler: formData.precioAlquiler,
+      moneda: formData.moneda, // Guardar moneda
       precioExpensas: formData.precioExpensas,
       habitaciones: formData.habitaciones,
       banos: formData.banos,
@@ -574,6 +615,60 @@ button:hover {
   margin-bottom: 0;
   color: #555;
   font-size: 14px;
+}
+
+.price-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.price-input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.currency-options {
+  display: flex;
+  gap: 10px;
+}
+
+.currency-option {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  background: white;
+  transition: all 0.2s;
+}
+
+.currency-option:hover {
+  border-color: #0014ac;
+}
+
+.currency-option input[type="radio"] {
+  margin: 0;
+  appearance: none;
+}
+
+.currency-option input[type="radio"]:checked {
+  background-color: #0014ac;
+}
+
+.currency-option input[type="radio"]:checked + label {
+  color: white;
+}
+
+.expensas-ars-label {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+  font-style: italic;
 }
 
 @media screen and (max-width: 768px) {
