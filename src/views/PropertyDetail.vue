@@ -74,14 +74,16 @@
             </div>
 
              <!-- Sección de precio y características principales -->
-    <div class="price-section">
-        <div class="price-tag">
-            {{ formatPrice(property.tipo === 'venta' ? property.precioVenta : property.precioAlquiler) }}
-        </div>
-        <div v-if="property.precioExpensas !== undefined && property.precioExpensas !== null" class="expenses-tag">
-            {{ property.precioExpensas > 0 ? formatPrice(property.precioExpensas) + ' expensas' : 'Sin expensas' }}
-        </div>
+             <div class="price-section">
+    <div class="price-tag">
+        <span class="currency-symbol">{{ property.moneda === 'USD' ? 'U$D' : '$' }}</span>
+        {{ formatPrice(property.tipo === 'venta' ? property.precioVenta : property.precioAlquiler) }}
     </div>
+    <div v-if="property.precioExpensas !== undefined && property.precioExpensas !== null" class="expenses-tag">
+        <span class="currency-symbol">{{ property.moneda === 'USD' ? 'U$D' : '$' }}</span>
+        {{ property.precioExpensas > 0 ? formatPrice(property.precioExpensas) + ' expensas' : 'Sin expensas' }}
+    </div>
+</div>
     
     <!-- Todas las características agrupadas -->
     <div class="all-features-section">
@@ -440,7 +442,8 @@ window.removeEventListener('keydown', handleKeyDown);
 
 // Formatear precio
 const formatPrice = (price?: number | null) => {
-return price ? '$' + price.toLocaleString('es-AR') : 'Consultar';
+  if (!price) return 'Consultar';
+  return price.toLocaleString('es-AR');
 };
 
 // Manejar error de imagen
@@ -1029,6 +1032,28 @@ font-weight: normal;
 .price-section > div:first-child {
 display: flex;
 flex-direction: column;
+}
+
+.currency-symbol {
+  font-weight: bold;
+  margin-right: 4px;
+  color: #0a0f64;
+}
+
+.price-tag {
+  display: flex;
+  align-items: center;
+  font-size: 28px;
+  font-weight: bold;
+  color: #0a0f64;
+}
+
+.expenses-tag {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  color: #666;
+  margin-top: 5px;
 }
 
 /* Responsive para el lightbox */

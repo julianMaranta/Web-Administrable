@@ -58,20 +58,52 @@
           </select>
         </div>
 
-        <!-- Sección de precios -->
         <div class="form-group">
-          <label for="precio-alquiler">Precio Venta ($)</label>
-          <input id="precio-alquiler" v-model.number="precioVenta" type="number" placeholder="Ej: 150000" />
-        </div>
+  <label>Precio Venta</label>
+  <div class="price-container">
+    <input 
+      id="precio-alquiler" 
+      v-model.number="precioVenta" 
+      type="number" 
+      :placeholder="moneda === 'ARS' ? 'Ej: 150000' : 'Ej: 150'"
+      class="price-input"
+    />
+    <div class="currency-options">
+      <label class="currency-option">
+        <input 
+          type="radio" 
+          v-model="moneda" 
+          value="ARS" 
+          :checked="moneda === 'ARS'"
+        />
+        ARS
+      </label>
+      <label class="currency-option">
+        <input 
+          type="radio" 
+          v-model="moneda" 
+          value="USD" 
+          :checked="moneda === 'USD'"
+        />
+        USD
+      </label>
+    </div>
+  </div>
+</div>
 
-        <div class="form-group">
-          <label for="precio-expensas">Precio Expensas ($)</label>
-          <input id="precio-expensas" v-model.number="precioExpensas" type="number" placeholder="Ej: 15000" />
-          <div class="checkbox-option">
-            <input type="checkbox" id="sin-expensas" v-model="sinExpensas" @change="handleExpensasChange">
-            <label for="sin-expensas">Sin Expensas</label>
-          </div>
-        </div>
+<div class="form-group">
+  <label for="precio-expensas">Precio Expensas ({{ moneda }})</label>
+  <input 
+    id="precio-expensas" 
+    v-model.number="precioExpensas" 
+    type="number" 
+    :placeholder="moneda === 'ARS' ? 'Ej: 15000' : 'Ej: 50'"
+  />
+  <div class="checkbox-option">
+    <input type="checkbox" id="sin-expensas" v-model="sinExpensas" @change="handleExpensasChange">
+    <label for="sin-expensas">Sin Expensas</label>
+  </div>
+</div>
 
         <div class="form-group">
           <label for="metros-cuadrados">Metros Cuadrados (m²)</label>
@@ -180,6 +212,9 @@ const imagenes = ref([{ url: '', descripcion: '' }]);
 
 const showConfirmationModal = ref(false);
 
+// Agrega esta línea con las otras refs
+const moneda = ref<'ARS' | 'USD'>('ARS');
+
 const addImage = () => {
   imagenes.value.push({ url: '', descripcion: '' });
 };
@@ -214,6 +249,7 @@ const createProperty = async () => {
       ubicacion: ubicacion.value,
       tipoPropiedad: tipoPropiedad.value,
       precioVenta: precioVenta.value,
+      moneda: moneda.value, // Nuevo campo
       precioExpensas: precioExpensas.value,
       metrosCuadrados: metrosCuadrados.value,
       // Características
