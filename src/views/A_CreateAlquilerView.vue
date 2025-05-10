@@ -258,7 +258,7 @@ const createProperty = async () => {
       precioAlquiler: precioAlquiler.value,
       moneda: moneda.value, // Nuevo campo
       precioExpensas: precioExpensas.value,
-      monedaExpensas: 'ARS', // Nuevo campo para claridad
+      
       habitaciones: habitaciones.value,
       ambientes: ambientes.value,
       antiguedad: antiguedad.value,
