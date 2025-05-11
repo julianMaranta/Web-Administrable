@@ -62,7 +62,7 @@
               
               <div class="detail-row">
                 <div class="detail-item">
-                  <span class="detail-label">Hab:</span>
+                  <span class="detail-label">Habitaciones:</span>
                   <span class="detail-value">{{ propiedad.habitaciones ?? '-' }}</span>
                 </div>
                 
@@ -70,15 +70,25 @@
                   <span class="detail-label">Baños:</span>
                   <span class="detail-value">{{ propiedad.banos ?? '-' }}</span>
                 </div>
+
+                <div class="detail-item">
+                  <span class="detail-label">Cochera:</span>
+                <span class="detail-value">{{ propiedad.cochera }}</span>
+                </div>
+
+                <div class="detail-item">
+                  <span class="detail-label">Metros:</span>
+                  <span class="detail-value">{{ propiedad.metrosCuadradosTotales ?? '-' }}</span>
+                </div>
                 
                
               </div>
               
-              <div v-if="propiedad.cochera" class="detail-row">
+              <!-- <div v-if="propiedad.cochera" class="detail-row">
                 <span class="detail-label">Cochera:</span>
                 <span class="detail-value">{{ propiedad.cochera }}</span>
-              </div>
-            </div>
+              </div> -->
+            </div> 
             
             <button 
     class="view-details-button"
@@ -494,7 +504,7 @@ h2 {
 .featured-properties {
   padding: 20px;
   flex: 1;
-  margin-bottom: 150px;
+  margin-bottom: 120px;
 }
 }
 </style>

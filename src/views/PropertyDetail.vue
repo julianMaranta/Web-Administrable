@@ -93,12 +93,12 @@
             <!-- Características principales -->
             <div class="feature-item" v-if="property.habitaciones">
                 <span class="feature-icon">🛏️</span>
-                <span class="feature-value">{{ property.habitaciones ?? '-' }} hab.</span>
+                <span class="feature-value">{{ property.habitaciones ?? '-' }} Habitaciones</span>
             </div>
             
             <div class="feature-item" v-if="property.banos">
                 <span class="feature-icon">🚿</span>
-                <span class="feature-value">{{ property.banos ?? '-' }} baños</span>
+                <span class="feature-value">{{ property.banos ?? '-' }} Baños</span>
             </div>       
             
             <div class="feature-item" v-if="property.cochera">
@@ -109,12 +109,12 @@
             <!-- Características adicionales -->
             <div class="feature-item" v-if="property.antiguedad">
                 <span class="feature-icon">⏳</span>
-                <span class="feature-value">{{ property.antiguedad }} años</span>
+                <span class="feature-value">{{ property.antiguedad }} Años</span>
             </div>                
             
             <div class="feature-item" v-if="property.ambientes">
                 <span class="feature-icon">🚪</span>
-                <span class="feature-value">{{ property.ambientes }} amb.</span>
+                <span class="feature-value">{{ property.ambientes }} Ambientes</span>
             </div>
             
             <!-- <div class="feature-item" v-if="property.orientacion">
@@ -146,7 +146,7 @@
       <div class="feature-item" v-if="property.metrosCuadradosTotales">
         <span class="feature-icon">📐</span>
         <div class="feature-text">
-          <span class="feature-label">Superficie Total</span>
+          <span class="feature-label">Superficie Total </span>
           <span class="feature-value">{{ property.metrosCuadradosTotales }} m²</span>
         </div>
       </div>
@@ -154,7 +154,7 @@
       <div class="feature-item" v-if="property.metrosCuadradosCubiertos">
         <span class="feature-icon">🏠</span>
         <div class="feature-text">
-          <span class="feature-label">Superficie Cubierta</span>
+          <span class="feature-label">Superficie Cubierta </span>
           <span class="feature-value">{{ property.metrosCuadradosCubiertos }} m²</span>
         </div>
       </div>
@@ -480,7 +480,7 @@ loadProperty();
 
 <style scoped>
 .property-detail-container {
-max-width: 1200px;
+max-width: 1350px;
 margin: 0 auto;
 padding: 20px;
 margin-bottom: 80px;
@@ -490,10 +490,10 @@ margin-bottom: 80px;
 background: none;
 border: none;
 color: #0a0f64;
-font-size: 16px;
+font-size: 20px;
 cursor: pointer;
 margin-bottom: 20px;
-padding: 10px 20px;
+padding: 20px 30px;
 border-radius: 4px;
 transition: background-color 0.3s;
 }
@@ -576,13 +576,14 @@ margin: 10px 0 5px;
 }
 
 .property-location {
-color: #666;
-font-size: 18px;
-margin-bottom: 5px;
+color: #000000;
+font-size: 20px;
+
 }
 
 .property-type {
-color: #666;
+color: #000000;
+font-size: 20px;
 font-style: italic;
 }
 
@@ -653,11 +654,17 @@ display: flex;
 justify-content: space-between;
 align-items: center;
 margin-bottom: 30px;
-padding-bottom: 20px;
+padding-bottom: 0px;
 border-bottom: 1px solid #eee;
 }
 
 .price-tag {
+font-size: 28px;
+font-weight: bold;
+color: #0a0f64;
+}
+
+.expenses-tag {
 font-size: 28px;
 font-weight: bold;
 color: #0a0f64;
@@ -680,8 +687,8 @@ color: #0a0f64;
 .feature-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px;
+    gap: 12px;
+    padding: 16px;
     background: #f9f9f9;
     border-radius: 8px;
     transition: all 0.3s ease;
@@ -1066,7 +1073,7 @@ flex-direction: column;
 max-width: 1200px;
 margin: 0 auto;
 padding: 20px;
-margin-bottom: 150px;
+margin-bottom: 120px;
 }
 }
 </style>

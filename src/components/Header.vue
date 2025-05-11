@@ -81,7 +81,7 @@ const goToHome = () => {
 
   @media (max-width: 768px) {
     .logo {
-    height:35px;
+    height:45px;
     padding: 5px;
   }
   }
