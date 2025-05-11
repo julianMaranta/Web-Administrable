@@ -108,9 +108,14 @@
   </div>
 </div>
 
+<div class="form-group">
+          <label for="metros-cuadrados">Metros Cuadrados Totales (m²)</label>
+          <input id="metros-cuadrados" v-model.number="metrosCuadradosTotales" type="number" placeholder="Ej: 80" />
+        </div>
+
         <div class="form-group">
-          <label for="metros-cuadrados">Metros Cuadrados (m²)</label>
-          <input id="metros-cuadrados" v-model.number="metrosCuadrados" type="number" placeholder="Ej: 80" />
+          <label for="metros-cuadrados">Metros Cuadrados Cubiertos (m²)</label>
+          <input id="metros-cuadrados" v-model.number="metrosCuadradosCubiertos" type="number" placeholder="Ej: 80" />
         </div>
 
         <!-- Sección de características -->
@@ -201,7 +206,8 @@ const tipoPropiedad = ref('');
 const precioVenta = ref(0);
 const precioExpensas = ref(0);
 const sinExpensas = ref(false);
-const metrosCuadrados = ref(0);
+const metrosCuadradosTotales = ref(0);
+const metrosCuadradosCubiertos = ref(0);
 // Características
 const habitaciones = ref(0);
 const ambientes = ref(0);
@@ -255,7 +261,8 @@ const createProperty = async () => {
       moneda: moneda.value, // Nuevo campo
       precioExpensas: precioExpensas.value,
       monedaExpensas: 'ARS', // Nuevo campo para claridad
-      metrosCuadrados: metrosCuadrados.value,
+      metrosCuadradosTotales: metrosCuadradosTotales.value,
+      metrosCuadradosCubiertos: metrosCuadradosCubiertos.value,
       // Características
       habitaciones: habitaciones.value,
       ambientes: ambientes.value,

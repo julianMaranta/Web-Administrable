@@ -30,7 +30,8 @@
               <p><strong>Ambientes:</strong> {{ propiedad.ambientes }}</p>
               <p><strong>Habitaciones:</strong> {{ propiedad.habitaciones }}</p>
               <p><strong>Baños:</strong> {{ propiedad.banos }}</p>
-              <p><strong>Metros Cuadrados:</strong> {{ propiedad.metrosCuadrados }} m²</p>
+              <p><strong>Metros Cuadrados Totales:</strong> {{ propiedad.metrosCuadradosTotales }} m²</p>
+              <p><strong>Metros Cuadrados Cubiertos:</strong> {{ propiedad.metrosCuadradosCubiertos }} m²</p>
             </div>
             <button @click="showModal = true" class="delete-button">
               Eliminar Propiedad
@@ -92,7 +93,8 @@ interface Propiedad {
   ambientes?: number;
   habitaciones?: number;
   banos?: number;
-  metrosCuadrados?: number;
+  metrosCuadradosTotales?: number;
+  metrosCuadradosCubiertos?: number;
   estado?: string;
 }
 
@@ -128,7 +130,8 @@ const loadProperties = async () => {
       ambientes: prop.ambientes ?? undefined,
       habitaciones: prop.habitaciones ?? undefined,
       banos: prop.banos ?? undefined,
-      metrosCuadrados: prop.metrosCuadrados ?? undefined,
+      metrosCuadradosTotales: prop.metrosCuadradosTotales ?? undefined,
+      metrosCuadradosCubiertos: prop.metrosCuadradosCubiertos ?? undefined,
       estado: prop.estado ?? undefined
     }));
   } catch (error) {

@@ -140,8 +140,13 @@
         </div>
 
         <div class="form-group">
-          <label for="metros-cuadrados">Metros Cuadrados (m²)</label>
-          <input id="metros-cuadrados" v-model.number="metrosCuadrados" type="number" placeholder="Ej: 80" />
+          <label for="metros-cuadrados">Metros Cuadrados Totales (m²)</label>
+          <input id="metros-cuadrados" v-model.number="metrosCuadradosTotales" type="number" placeholder="Ej: 80" />
+        </div>
+
+        <div class="form-group">
+          <label for="metros-cuadrados">Metros Cuadrados Cubiertos (m²)</label>
+          <input id="metros-cuadrados" v-model.number="metrosCuadradosCubiertos" type="number" placeholder="Ej: 80" />
         </div>
 
         <div class="form-group">
@@ -208,7 +213,8 @@ const ambientes = ref(0);
 const antiguedad = ref(0);
 const banos = ref(0);
 const cochera = ref('Si');
-const metrosCuadrados = ref(0);
+const metrosCuadradosTotales = ref(0);
+const metrosCuadradosCubiertos = ref(0);
 const mapLink = ref('');
 const youtubeVideoUrl = ref('');
 const descripcion = ref('');
@@ -246,9 +252,7 @@ const createProperty = async () => {
     if (precioAlquiler.value <= 0) {
       throw new Error('El precio de alquiler debe ser mayor a cero.');
     }
-    if (metrosCuadrados.value <= 0) {
-      throw new Error('Los metros cuadrados deben ser mayores a cero.');
-    }
+  
 
     // Crear la propiedad
     const nuevaPropiedad = await client.models.PropiedadAlquiler.create({
@@ -264,7 +268,8 @@ const createProperty = async () => {
       antiguedad: antiguedad.value,
       banos: banos.value,
       cochera: cochera.value,
-      metrosCuadrados: metrosCuadrados.value,
+      metrosCuadradosTotales: metrosCuadradosTotales.value,
+      metrosCuadradosCubiertos: metrosCuadradosCubiertos.value,
       mapLink: mapLink.value,
       youtubeVideoUrl: youtubeVideoUrl.value,
       descripcion: descripcion.value,

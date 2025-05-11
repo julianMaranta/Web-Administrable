@@ -131,10 +131,15 @@
               
 
               
-                <div class="form-group">
-                  <label for="metros">Metros Cuadrados</label>
-                  <input id="metros" v-model.number="formData.metrosCuadrados" type="number" min="0" />
-                </div>
+              <div class="form-group">
+          <label for="metros-cuadrados">Metros Cuadrados Totales (m²)</label>
+          <input id="metros-cuadrados" v-model.number="formData.metrosCuadradosTotales" type="number" placeholder="Ej: 80" />
+        </div>
+
+        <div class="form-group">
+          <label for="metros-cuadrados">Metros Cuadrados Cubiertos (m²)</label>
+          <input id="metros-cuadrados" v-model.number="formData.metrosCuadradosCubiertos" type="number" placeholder="Ej: 80" />
+        </div>
 
               <!-- Sección de características -->
               <div class="form-section-title">Características</div>
@@ -164,10 +169,7 @@
               </div>
 
               <div class="form-row">
-                <div class="form-group">
-                  <label for="metros">Metros Cuadrados</label>
-                  <input id="metros" v-model.number="formData.metrosCuadrados" type="number" min="0" />
-                </div>
+             
 
                 <div class="form-group">
                   <label for="cochera">Cochera</label>
@@ -283,7 +285,8 @@ const formData = reactive({
   ambientes: 0,
   antiguedad: 0,
   cochera: 'No',
-  metrosCuadrados: 0,
+  metrosCuadradosTotales: 0,
+  metrosCuadradosCubiertos: 0,
   mapLink: '',
   youtubeVideoUrl: '',
   descripcion: '',
@@ -378,7 +381,8 @@ const loadPropertyData = async (id: string) => {
       habitaciones: 0,
       banos: 0,
       cochera: 'No',
-      metrosCuadrados: 0,
+      metrosCuadradosTotales: 0,
+      metrosCuadradosCubiertos: 0,
       mapLink: '',
       youtubeVideoUrl: '',
       descripcion: '',
@@ -397,7 +401,8 @@ const loadPropertyData = async (id: string) => {
         habitaciones: propiedad.habitaciones || 0,
         banos: propiedad.banos || 0,
         cochera: propiedad.cochera || 'No',
-        metrosCuadrados: propiedad.metrosCuadrados || 0,
+        metrosCuadradosTotales: propiedad.metrosCuadradosTotales || 0,
+        metrosCuadradosCubiertos: propiedad.metrosCuadradosCubiertos || 0,
         mapLink: propiedad.mapLink || '',
         youtubeVideoUrl: propiedad.youtubeVideoUrl || '',
         descripcion: propiedad.descripcion || '',
@@ -443,7 +448,8 @@ const updateProperty = async () => {
       precioVenta: formData.precioVenta,
       moneda: formData.moneda, // Guardar moneda
       precioExpensas: formData.precioExpensas,
-      metrosCuadrados: formData.metrosCuadrados,
+      metrosCuadradosTotales: formData.metrosCuadradosTotales,
+      metrosCuadradosCubiertos: formData.metrosCuadradosCubiertos,
       // Características
       habitaciones: formData.habitaciones,
       banos: formData.banos,
