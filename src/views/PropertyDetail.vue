@@ -69,20 +69,24 @@
 </button>
               <span v-if="property.destacada" class="featured-badge">DESTACADA</span>
               <h1>{{ property.direccion }}</h1>
-              <p class="property-location">{{ property.ubicacion }}</p>
-              <p class="property-type">{{ property.tipoPropiedad }}</p>
+              <p class="property-location">Ubicación: {{ property.ubicacion }} - </p>
+              <p class="property-type">Tipo: {{ property.tipoPropiedad }}</p>
             </div>
 
              <!-- Sección de precio y características principales -->
              <div class="price-section">
-    <div class="price-tag">
-        <span class="currency-symbol">{{ property.moneda === 'USD' ? 'U$D' : '$' }}</span>
-        {{ formatPrice(property.tipo === 'venta' ? property.precioVenta : property.precioAlquiler) }}
+  <div class="price-container">
+    <div class="price-item">
+      <span class="currency-symbol">{{ property.moneda === 'USD' ? 'U$D' : '$' }}</span>
+      <span class="price-value">{{ formatPrice(property.tipo === 'venta' ? property.precioVenta : property.precioAlquiler) }}</span>
     </div>
-    <div v-if="property.precioExpensas !== undefined && property.precioExpensas !== null" class="expenses-tag">
-      <span class="currency-symbol">$</span> 
-        {{ property.precioExpensas > 0 ? formatPrice(property.precioExpensas) + ' expensas' : 'Sin expensas' }}
+    
+    <div v-if="property.precioExpensas !== undefined && property.precioExpensas !== null" class="price-item">
+      <span class="currency-symbol">$</span>
+      <span class="price-value">{{ property.precioExpensas > 0 ? formatPrice(property.precioExpensas) : 'Sin' }}</span>
+      <span class="price-label">expensas</span>
     </div>
+  </div>
 </div>
     
     <!-- Todas las características agrupadas -->
@@ -650,24 +654,40 @@ max-height: 100%;
 
 /* Sección de precio */
 .price-section {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 30px;
-padding-bottom: 0px;
-border-bottom: 1px solid #eee;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
 }
 
-.price-tag {
-font-size: 28px;
-font-weight: bold;
-color: #0a0f64;
+.price-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  align-items: center;
 }
 
-.expenses-tag {
-font-size: 28px;
-font-weight: bold;
-color: #0a0f64;
+.price-item {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.currency-symbol {
+  font-weight: bold;
+  color: #0a0f64;
+  font-size: 28px;
+}
+
+.price-value {
+  font-weight: bold;
+  color: #0a0f64;
+  font-size: 28px;
+}
+
+.price-label {
+  font-size: 18px;
+  color: #666;
+  margin-left: 4px;
 }
 
 /* Sección de características unificadas */
@@ -722,8 +742,6 @@ border-bottom: 1px solid #eee;
 line-height: 1.6;
 color: #333;
 }
-
-
 
 /* Contacto */
 .contact-options {
@@ -887,44 +905,6 @@ transition: transform 0.2s;
 transform: scale(1.02);
 }
 
-/* Estilos responsivos */
-@media (max-width: 768px) {
-.property-content-wrapper {
-  flex-direction: column;
-}
-
-.contact-column {
-  width: 100%;
-}
-
-.contact-section {
-  position: static;
-}
-}
-
-@media (max-width: 480px) {
-.modal-content {
-  padding: 25px 15px;
-}
-
-.contact-info {
-  padding: 15px 10px;
-}
-
-.whatsapp-link, .email-link, .phone-link {
-  padding: 10px 15px;
-  font-size: 14px;
-}
-
-.main-features {
-  flex-wrap: wrap;
-}
-
-.feature {
-  min-width: 45%;
-}
-}
-
 /* Estilos para el lightbox mejorado */
 .fullscreen-overlay {
 position: fixed;
@@ -1022,39 +1002,44 @@ border-radius: 20px;
 font-size: 1rem;
 }
 
-.expenses-tag {
-font-size: 18px;
-color: #666;
-margin-top: 5px;
-font-weight: normal;
+/* Estilos responsivos */
+@media (max-width: 768px) {
+.property-content-wrapper {
+  flex-direction: column;
 }
 
-.price-section > div:first-child {
-display: flex;
-flex-direction: column;
+.contact-column {
+  width: 100%;
 }
 
-.currency-symbol {
-  font-weight: bold;
-  margin-right: 4px;
-  color: #0a0f64;
+.contact-section {
+  position: static;
+}
 }
 
-.price-tag {
-  display: flex;
-  align-items: center;
-  font-size: 28px;
-  font-weight: bold;
-  color: #0a0f64;
+@media (max-width: 480px) {
+.modal-content {
+  padding: 25px 15px;
 }
 
-.expenses-tag {
-  display: flex;
-  align-items: center;
-  font-size: 18px;
-  color: #666;
-  margin-top: 5px;
+.contact-info {
+  padding: 15px 10px;
 }
+
+.whatsapp-link, .email-link, .phone-link {
+  padding: 10px 15px;
+  font-size: 14px;
+}
+
+.main-features {
+  flex-wrap: wrap;
+}
+
+.feature {
+  min-width: 45%;
+}
+}
+
 
 /* Responsive para el lightbox */
 @media (max-width: 768px) {
@@ -1075,5 +1060,23 @@ margin: 0 auto;
 padding: 20px;
 margin-bottom: 120px;
 }
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .price-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .currency-symbol,
+  .price-value {
+    font-size: 24px;
+  }
+  
+  .price-label {
+    font-size: 16px;
+  }
 }
 </style>
