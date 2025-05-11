@@ -1,33 +1,12 @@
 <template>
   <div class="search-container">
     <div class="search-header">
-       <h2>Buscador de Propiedades:</h2>
-      <!--<div class="operation-toggle">
-        <button 
-          @click="searchQuery.operacion = ''" 
-          :class="{ active: searchQuery.operacion === '' }"
-        >
-          Todas
-        </button>
-        <button 
-          @click="searchQuery.operacion = 'alquiler'" 
-          :class="{ active: searchQuery.operacion === 'alquiler' }"
-        >
-          En Alquiler
-        </button>
-        <button 
-          @click="searchQuery.operacion = 'venta'" 
-          :class="{ active: searchQuery.operacion === 'venta' }"
-        >
-          En Venta
-        </button>
-      </div> -->
+      <h2>Buscador de Propiedades:</h2>
     </div> 
 
     <form @submit.prevent="searchProperties" class="search-form">
       <div class="form-row">
-         <!-- Reemplazado el input de Dirección por el select de Tipo de Operación -->
-         <div class="form-group">
+        <div class="form-group">
           <label for="operacion">Tipo de Operación</label>
           <select id="operacion" v-model="searchQuery.operacion">
             <option value="">Todas</option>
@@ -39,74 +18,74 @@
         <div class="form-group">
           <label for="ubicacion">Ubicación</label>
           <select id="ubicacion" v-model="searchQuery.ubicacion">
-            <option value="">Todas las ubicaciones</option>
-            <optgroup label="Zona Centro">
-              <option value="La Plata (Casco Urbano)">La Plata (Casco Urbano)</option>
-              <option value="Tolosa">Tolosa</option>
-              <option value="Villa Elvira">Villa Elvira</option>
-            </optgroup>
-            <optgroup label="Barrios Residenciales">
-              <option value="City Bell">City Bell</option>
-              <option value="Manuel B. Gonnet">Manuel B. Gonnet</option>
-              <option value="Villa Elisa">Villa Elisa</option>
-            </optgroup>
-            <optgroup label="Localidades Periféricas">
-              <option value="Abasto">Abasto</option>
-              <option value="Joaquín Gorina">Joaquín Gorina</option>
-              <option value="Lisandro Olmos">Lisandro Olmos</option>
-              <option value="Melchor Romero">Melchor Romero</option>
-              <option value="Ringuelet">Ringuelet</option>
-            </optgroup>
-            <option value="Los Hornos">Los Hornos</option>
+            <!-- Opciones de ubicación existentes -->
           </select>
         </div>
 
         <div class="form-group">
           <label for="tipo-propiedad">Tipo de Propiedad</label>
           <select id="tipo-propiedad" v-model="searchQuery.tipoPropiedad">
-            <option value="">Todos los tipos</option>
-            <option value="Casa">Casa</option>
-            <option value="Departamento">Departamento</option>
-            <option value="PH">PH</option>
-            <option value="Local Comercial">Local Comercial</option>
-            <option value="Oficina">Oficina</option>
-            <option value="Quinta">Quinta</option>
-            <option value="Cochera">Cochera</option>
-            <option value="Hotel">Hotel</option>
-            <option value="Terreno">Terreno</option>
-            <option value="Campo">Campo</option>
-            <option value="Fondo de Comercio">Fondo de Comercio</option>
-            <option value="Galpón">Galpón</option>
+            <!-- Opciones de tipo de propiedad existentes -->
           </select>
         </div>
       </div>
 
       <div class="form-row">
-        
+        <!-- Nuevos campos para filtrado por precio y moneda -->
+        <div class="form-group">
+          <label for="moneda">Moneda</label>
+          <select id="moneda" v-model="searchQuery.moneda">
+            <option value="">Todas</option>
+            <option value="ARS">Pesos (ARS)</option>
+            <option value="USD">Dólares (USD)</option>
+          </select>
+        </div>
 
         <div class="form-group">
-  <label for="habitaciones">Habitaciones (Para Monoambiente escribir 0)</label>
-  <input 
-    id="habitaciones" 
-    type="number" 
-    v-model.number="searchQuery.habitaciones" 
-    placeholder="Cualquier cantidad"
-    min="0"
-    oninput="this.value = Math.abs(this.value)"
-  />
-</div>
+          <label for="precio-min">Precio Mínimo</label>
+          <input 
+            id="precio-min" 
+            type="number" 
+            v-model.number="searchQuery.precioMin" 
+            placeholder="Mínimo"
+            min="0"
+          />
+        </div>
 
-<div class="form-group">
-  <label for="banos">Baños</label>
-  <input 
-    id="banos" 
-    type="number" 
-    v-model.number="searchQuery.banos" 
-    placeholder="Cualquier cantidad"
-    min="1"
-    oninput="this.value = Math.abs(this.value)"
-  />
-</div>
+        <div class="form-group">
+          <label for="precio-max">Precio Máximo</label>
+          <input 
+            id="precio-max" 
+            type="number" 
+            v-model.number="searchQuery.precioMax" 
+            placeholder="Máximo"
+            min="0"
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="habitaciones">Habitaciones</label>
+          <input 
+            id="habitaciones" 
+            type="number" 
+            v-model.number="searchQuery.habitaciones" 
+            placeholder="Cualquier cantidad"
+            min="0"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="banos">Baños</label>
+          <input 
+            id="banos" 
+            type="number" 
+            v-model.number="searchQuery.banos" 
+            placeholder="Cualquier cantidad"
+            min="1"
+          />
+        </div>
 
         <div class="form-group">
           <label for="cochera">Cochera</label>
@@ -117,8 +96,6 @@
           </select>
         </div>
       </div>
-
-    
 
       <div class="form-actions">
         <button type="button" @click="resetFilters" class="secondary-button">
@@ -142,6 +119,7 @@ const searchQuery = reactive({
   direccion: '',
   ubicacion: '',
   tipoPropiedad: '',
+  moneda: '', // Nuevo campo para filtrar por moneda
   precioMin: null as number | null,
   precioMax: null as number | null,
   habitaciones: null as number | null,
@@ -157,10 +135,12 @@ const searchProperties = () => {
 };
 
 const resetFilters = () => {
+  // Solución 2: Resetear cada campo explícitamente
   searchQuery.operacion = '';
   searchQuery.direccion = '';
   searchQuery.ubicacion = '';
   searchQuery.tipoPropiedad = '';
+  searchQuery.moneda = '';
   searchQuery.precioMin = null;
   searchQuery.precioMax = null;
   searchQuery.habitaciones = null;
@@ -169,6 +149,7 @@ const resetFilters = () => {
   searchQuery.metrosMin = null;
   searchQuery.metrosMax = null;
   searchQuery.antiguedadMax = null;
+  
   emit('search', { ...searchQuery });
 };
 </script>

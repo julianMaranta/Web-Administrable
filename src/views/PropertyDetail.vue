@@ -80,7 +80,7 @@
         {{ formatPrice(property.tipo === 'venta' ? property.precioVenta : property.precioAlquiler) }}
     </div>
     <div v-if="property.precioExpensas !== undefined && property.precioExpensas !== null" class="expenses-tag">
-        <span class="currency-symbol">{{ property.moneda === 'USD' ? 'U$D' : '$' }}</span>
+      <span class="currency-symbol">$</span> 
         {{ property.precioExpensas > 0 ? formatPrice(property.precioExpensas) + ' expensas' : 'Sin expensas' }}
     </div>
 </div>
