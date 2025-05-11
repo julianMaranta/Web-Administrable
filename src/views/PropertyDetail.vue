@@ -84,7 +84,7 @@
     <div v-if="property.precioExpensas !== undefined && property.precioExpensas !== null" class="price-item">
       <span class="currency-symbol">$</span>
       <span class="price-value">{{ property.precioExpensas > 0 ? formatPrice(property.precioExpensas) : 'Sin' }}</span>
-      <span class="price-label">expensas</span>
+      <span class="price-label">Expensas</span>
     </div>
   </div>
 </div>
@@ -685,8 +685,8 @@ max-height: 100%;
 }
 
 .price-label {
-  font-size: 18px;
-  color: #666;
+  font-size: 20px;
+  color: #000000;
   margin-left: 4px;
 }
 
