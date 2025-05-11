@@ -100,7 +100,7 @@
     id="precio-expensas" 
     v-model.number="precioExpensas" 
     type="number" 
-    placeholder="Ej: 15000" <!-- Solo ejemplo en pesos -->
+    placeholder="Ej: 15000" 
   />
   <div class="checkbox-option">
     <input type="checkbox" id="sin-expensas" v-model="sinExpensas" @change="handleExpensasChange">
