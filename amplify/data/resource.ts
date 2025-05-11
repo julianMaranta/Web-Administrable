@@ -34,8 +34,8 @@ const schema = a.schema({
         antiguedad: a.integer(),
         banos: a.integer(),
         cochera: a.string(), // "Si" o "No" pero sin validación
-        metrosCuadradosTotales: a.float().required(),
-        metrosCuadradosCubiertos: a.float().required(),
+        metrosCuadradosTotales: a.float(),
+        metrosCuadradosCubiertos: a.float(),
         mapLink: a.string(), // URL como string normal
         descripcion: a.string(),
         imagenes: a.string(), // Cadena JSON simple

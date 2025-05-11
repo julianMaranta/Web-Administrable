@@ -1,5 +1,6 @@
 <template>
-    <footer class="footer">
+  <footer class="footer">
+    <div class="footer-content">
       <div class="info">
         <p><strong>Dirección:</strong> Calle 58 N° 1013 entre 15 y 16</p>
         <p><strong>Teléfono:</strong> (0221)453-3262</p>
@@ -18,47 +19,78 @@
         <img src="@/assets/logo-zonaprop-2.png" alt="Argencasas" />
         <img src="@/assets/logo-wsap.png" alt="Argencasas" />
       </div>
-      <!-- <div class="partners">
-        <img src="" alt="Argencasas" />
-        <img src="" alt="Zonaprop" />
-      </div> -->
-    </footer>
-  </template>
-  
-  <style scoped>
- .footer {
+    </div>
+  </footer>
+</template>
+
+<style scoped>
+.footer {
   background-color: #0a0f64;
   color: white;
-  padding: 10px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  padding: 20px;
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   z-index: 100;
-  margin-top: 30px;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .info {
   text-align: left;
+  margin: 0 10px;
 }
 
 .social-icons {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
-}
-
-.partners {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+  justify-content: center;
 }
 
 img {
   height: 30px;
   cursor: pointer;
 }
-  </style>
+
+/* Estilos para móviles */
+@media (max-width: 768px) {
+  .footer {
+    position: relative; /* Cambiado de fixed a relative para móviles */
+    padding: 15px;
+  }
   
+  .footer-content {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .info {
+    text-align: center;
+    margin: 5px 0;
+  }
+  
+  .social-icons {
+    justify-content: center;
+    margin-top: 10px;
+  }
+}
+
+/* Estilos para pantallas muy pequeñas */
+@media (max-width: 480px) {
+  .social-icons {
+    gap: 8px;
+  }
+  
+  img {
+    height: 25px;
+  }
+}
+</style>

@@ -78,5 +78,12 @@ const goToHome = () => {
   .nav-links a:hover {
     text-decoration: underline;
   }
+
+  @media (max-width: 768px) {
+    .logo {
+    height:35px;
+    padding: 5px;
+  }
+  }
   </style>
   

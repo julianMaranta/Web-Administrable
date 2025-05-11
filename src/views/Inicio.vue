@@ -488,4 +488,13 @@ h2 {
 :deep(.carousel__pagination-button--active) {
   background-color: #0a0f64;
 }
+
+
+@media (max-width: 768px) {
+.featured-properties {
+  padding: 20px;
+  flex: 1;
+  margin-bottom: 150px;
+}
+}
 </style>

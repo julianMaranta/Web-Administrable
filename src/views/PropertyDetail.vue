@@ -99,9 +99,7 @@
             <div class="feature-item" v-if="property.banos">
                 <span class="feature-icon">🚿</span>
                 <span class="feature-value">{{ property.banos ?? '-' }} baños</span>
-            </div>
-            
-        
+            </div>       
             
             <div class="feature-item" v-if="property.cochera">
                 <span class="feature-icon">🚗</span>
@@ -112,19 +110,14 @@
             <div class="feature-item" v-if="property.antiguedad">
                 <span class="feature-icon">⏳</span>
                 <span class="feature-value">{{ property.antiguedad }} años</span>
-            </div>
-            
-            <div class="feature-item" v-if="property.estado">
-                <span class="feature-icon">🏠</span>
-                <span class="feature-value">{{ property.estado }}</span>
-            </div>
+            </div>                
             
             <div class="feature-item" v-if="property.ambientes">
                 <span class="feature-icon">🚪</span>
                 <span class="feature-value">{{ property.ambientes }} amb.</span>
             </div>
             
-            <div class="feature-item" v-if="property.orientacion">
+            <!-- <div class="feature-item" v-if="property.orientacion">
                 <span class="feature-icon">🧭</span>
                 <span class="feature-value">{{ property.orientacion }}</span>
             </div>
@@ -147,26 +140,26 @@
             <div class="feature-item" v-if="property.amueblada">
                 <span class="feature-icon">🪑</span>
                 <span class="feature-value">{{ property.amueblada ? 'Amueblada' : 'Sin amueblar' }}</span>
-            </div>
+            </div> -->
 
             <!-- Superficies -->
-      <div class="feature-item" v-if="property.superficieTotal">
+      <div class="feature-item" v-if="property.metrosCuadradosTotales">
         <span class="feature-icon">📐</span>
         <div class="feature-text">
           <span class="feature-label">Superficie Total</span>
-          <span class="feature-value">{{ property.superficieTotal }} m²</span>
+          <span class="feature-value">{{ property.metrosCuadradosTotales }} m²</span>
         </div>
       </div>
       
-      <div class="feature-item" v-if="property.superficieCubierta">
+      <div class="feature-item" v-if="property.metrosCuadradosCubiertos">
         <span class="feature-icon">🏠</span>
         <div class="feature-text">
-          <span class="feature-label">Cubierta</span>
-          <span class="feature-value">{{ property.superficieCubierta }} m²</span>
+          <span class="feature-label">Superficie Cubierta</span>
+          <span class="feature-value">{{ property.metrosCuadradosCubiertos }} m²</span>
         </div>
       </div>
       
-      <div class="feature-item" v-if="property.superficieSemicubierta">
+        <!--<div class="feature-item" v-if="property.superficieSemicubierta">
         <span class="feature-icon">🏡</span>
         <div class="feature-text">
           <span class="feature-label">Semicubierta</span>
@@ -180,7 +173,7 @@
           <span class="feature-label">Terreno</span>
           <span class="feature-value">{{ property.superficieTerreno }} m²</span>
         </div>
-      </div>
+      </div> -->
         </div>
     </div>
             
@@ -500,7 +493,7 @@ color: #0a0f64;
 font-size: 16px;
 cursor: pointer;
 margin-bottom: 20px;
-padding: 5px 10px;
+padding: 10px 20px;
 border-radius: 4px;
 transition: background-color 0.3s;
 }
@@ -1067,6 +1060,13 @@ flex-direction: column;
 
 .close-icon {
   font-size: 25px;
+}
+
+.property-detail-container {
+max-width: 1200px;
+margin: 0 auto;
+padding: 20px;
+margin-bottom: 150px;
 }
 }
 </style>
