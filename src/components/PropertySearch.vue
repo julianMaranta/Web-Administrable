@@ -18,14 +18,48 @@
         <div class="form-group">
           <label for="ubicacion">Ubicación</label>
           <select id="ubicacion" v-model="searchQuery.ubicacion">
-            <!-- Opciones de ubicación existentes -->
+              <option value="">Seleccione una ubicación</option>
+    
+    <optgroup label="Zona Centro">
+      <option value="La Plata (Casco Urbano)">La Plata (Casco Urbano)</option>
+      <option value="Tolosa">Tolosa</option>
+      <option value="Villa Elvira">Villa Elvira</option>
+    </optgroup>
+    
+    <optgroup label="Barrios Residenciales">
+      <option value="City Bell">City Bell</option>
+      <option value="Manuel B. Gonnet">Manuel B. Gonnet</option>
+      <option value="Villa Elisa">Villa Elisa</option>
+    </optgroup>
+    
+    <optgroup label="Localidades Periféricas">
+      <option value="Abasto">Abasto</option>
+      <option value="Joaquín Gorina">Joaquín Gorina</option>
+      <option value="Lisandro Olmos">Lisandro Olmos</option>
+      <option value="Melchor Romero">Melchor Romero</option>
+      <option value="Ringuelet">Ringuelet</option>
+    </optgroup>
+    
+    <option value="Los Hornos">Los Hornos</option>
           </select>
         </div>
 
         <div class="form-group">
           <label for="tipo-propiedad">Tipo de Propiedad</label>
           <select id="tipo-propiedad" v-model="searchQuery.tipoPropiedad">
-            <!-- Opciones de tipo de propiedad existentes -->
+            <option value="">Seleccione un tipo</option>
+    <option value="Casa">Casa</option>
+    <option value="Departamento">Departamento</option>
+    <option value="PH">PH</option>
+    <option value="Local Comercial">Local Comercial</option>
+    <option value="Oficina">Oficina</option>
+    <option value="Quinta">Quinta</option>
+    <option value="Cochera">Cochera</option>
+    <option value="Hotel">Hotel</option>
+    <option value="Terreno">Terreno</option>
+    <option value="Campo">Campo</option>
+    <option value="Fondo de Comercio">Fondo de Comercio</option>
+    <option value="Galpón">Galpón</option>
           </select>
         </div>
       </div>
