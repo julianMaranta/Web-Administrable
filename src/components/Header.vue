@@ -2,8 +2,8 @@
     <header>
       <div class="header-container">
         <img 
-        src="" 
-        alt="Logo Maranta" 
+        src="@/assets/logo-real-state.png" 
+        alt="Logo Real State" 
         class="logo" 
         @click="goToHome"
       />
@@ -43,7 +43,7 @@ const goToHome = () => {
     padding: 10px 0;
   }
   .logo {
-    height:75px;
+    height:45px;
     padding: 5px;
   }
   .title {

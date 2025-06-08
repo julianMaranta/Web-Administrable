@@ -1,6 +1,6 @@
 <template>
     <div class="sidebar">
-      <img src="@/assets/logo-maranta-blanco.png" alt="Logo ENSEA" class="logo-sidebar"/>
+      
       <div class="sidebar-buttons">
         <button @click="goToInicio" class="inicio-button"></button>
         <button @click="goToCrear" class="crear-button"></button>

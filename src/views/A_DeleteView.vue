@@ -3,7 +3,7 @@
     <A_Sidebar/>
     <div class="content">
       <div class="logo-container">
-        <img src="@/assets/Logo NUEVO Maranta-2.png" alt="Logo ENSEA" class="logo-plataforma"/>
+        <img src="@/assets/logo-real-state.png" alt="Logo ENSEA" class="logo-plataforma"/>
       </div>
       <br>   
       <br>
