@@ -2,12 +2,12 @@
   <footer class="footer">
     <div class="footer-content">
       <div class="info">
-        <p><strong>Dirección:</strong> Calle 58 N° 1013 entre 15 y 16</p>
-        <p><strong>Teléfono:</strong> (0221)453-3262</p>
+        <p><strong>Dirección:</strong> ----------</p>
+        <p><strong>Teléfono:</strong> ----------</p>
       </div>
       <div class="info">
-        <p><strong>Horarios:</strong> Lunes a Viernes desde 9:30 hs hasta 13:00 hs</p>
-        <p><strong>Email:</strong> germanmaranta@yahoo.com.ar</p>
+        <p><strong>Horarios:</strong> ----------</p>
+        <p><strong>Email:</strong> ----------</p>
       </div>
       <div class="social-icons">
         <img src="@/assets/icono-facebook.png" alt="WhatsApp" />

@@ -2,7 +2,7 @@
     <header>
       <div class="header-container">
         <img 
-        src="@/assets/logo-maranta.png" 
+        src="" 
         alt="Logo Maranta" 
         class="logo" 
         @click="goToHome"
