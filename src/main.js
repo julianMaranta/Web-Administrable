@@ -1,4 +1,4 @@
-// src/main.ts
+// src1/main.ts
 import './assets/main.css';
 
 import { createApp } from 'vue';
