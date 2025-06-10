@@ -5,4 +5,4 @@ A self-managed web solution for agencies to:
 - 🌐 Showcase properties with multimedia
 - 🔍 Manage availability/status
 
-![Event Banner or Logo](https://i.ibb.co/XfDw6TMg/Real-State.png)  
+![Event Banner or Logo](https://i.ibb.co/4wfyv8Ff/Real-State-1.png)  
